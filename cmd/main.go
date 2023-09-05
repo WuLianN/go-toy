@@ -8,6 +8,7 @@ import (
 
 	"go-toy/pkg/setting"
 	"go-toy/pkg/logger"
+	"go-toy/pkg/db"
 	"go-toy/global"
 
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -34,6 +35,11 @@ func init() {
 	err = setupLogger()
 	if err != nil {
 		log.Fatalf("init.setupLogger err: %v", err)
+	}
+
+	err = setupDBEngine()
+	if err != nil {
+		log.Fatalf("init.setupDBEngine err: %v", err)
 	}
 }
 
@@ -96,6 +102,16 @@ func setupLogger() error {
 		MaxAge:    10,
 		LocalTime: true,
 	}, "", log.LstdFlags).WithCaller(2)
+
+	return nil
+}
+
+func setupDBEngine() error {
+	var err error
+	global.DBEngine, err = db.NewDBEngine(global.DatabaseSetting)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
