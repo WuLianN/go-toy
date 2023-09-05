@@ -56,6 +56,9 @@ func init() {
 	}
 }
 
+// @title go-toy
+// @version 1.0
+// @description 玩起来！！！
 func main() {
 	setupRouter()
 }

@@ -65,3 +65,20 @@ import (
 // svc.dao = dao.New(otgorm.WithContext(svc.ctx, global.DBEngine))
 svc.dao = dao.New(global.DBEngine)
 ```
+
+
+## Swagger
+https://pkg.go.dev/github.com/swaggo/gin-swagger
+
+> 配置cmd swag命令
+>
+> cd xxx\mod\github.com\swaggo\swag@v1.16.2\cmd\swag 即go get安装依赖swaggo的目录
+>
+> go build -> swag.exe -> 丢到go的 bin目录下
+
+```bash
+swag init --help
+
+swag init -d ./cmd,./internal/routers -o ./docs
+```
+http:127.0.0.1:8000/swagger/index.html

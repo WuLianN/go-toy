@@ -11,6 +11,9 @@ import (
 	auth "go-toy/internal/routers/api/auth"
 	"go-toy/pkg/limiter"
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	docs "go-toy/docs"
 )
 
 var methodLimiters = limiter.NewMethodLimiter().AddBuckets(
@@ -37,11 +40,17 @@ func SetupRouter() *gin.Engine {
 	r.Use(middleware.RateLimiter(methodLimiters))
 	// 统一超时管理
 	r.Use(middleware.ContextTimeout(global.AppSetting.DefaultContextTimeout))
-     
-	upload := api.NewUpload()
+  
+	// swagger
+	docs.SwaggerInfo.BasePath = "/"
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
-  r.POST("/upload/file", upload.UploadFile)
+	// 静态资源
 	r.StaticFS("/static", http.Dir(global.AppSetting.UploadSavePath))
+
+	// 上传文件
+	upload := api.NewUpload()
+  r.POST("/upload/file", upload.UploadFile)
   
 	// 测试组
 	apiTest := r.Group("api/test")

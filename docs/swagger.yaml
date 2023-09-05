@@ -1,0 +1,17 @@
+info:
+  contact: {}
+  description: 玩起来！！！
+  title: go-toy
+  version: "1.0"
+paths:
+  /api/test/ping:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+      summary: 测试Ping
+swagger: "2.0"
