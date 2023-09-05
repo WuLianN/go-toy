@@ -5,6 +5,7 @@ import (
 
 	"go-toy/global"
 	"go-toy/pkg/setting"
+	otgorm "go-toy/pkg/opentracing-gorm"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -31,6 +32,9 @@ func NewDBEngine(databaseSetting *setting.DatabaseSettingS) (*gorm.DB, error) {
 	if global.ServerSetting.RunMode == "debug" {
 		
 	}
+
+	otgorm.AddGormCallbacks(db)
+
 	return db, nil
 }
 

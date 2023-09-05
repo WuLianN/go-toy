@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	// otgorm "github.com/eddycjy/opentracing-gorm"
+	otgorm "go-toy/pkg/opentracing-gorm"
 
 	"go-toy/global"
 	"go-toy/internal/dao"
@@ -17,9 +17,8 @@ type Service struct {
 func New(ctx context.Context) Service {
 	svc := Service{ctx: ctx}
 
-	// 链路追踪之 SQL 追踪 -> otgorm gorm 版本冲突
-	// svc.dao = dao.New(otgorm.WithContext(svc.ctx, global.DBEngine))
+	// 链路追踪之 SQL 追踪
+	svc.dao = dao.New(otgorm.WithContext(svc.ctx, global.DBEngine))
 
-	svc.dao = dao.New(global.DBEngine)
 	return svc
 }
