@@ -14,6 +14,7 @@ import (
 	"go-toy/pkg/setting"
 	"go-toy/pkg/logger"
 	"go-toy/pkg/db"
+	"go-toy/pkg/tracer"
 	"go-toy/global"
 	"go-toy/internal/routers"
 
@@ -47,6 +48,11 @@ func init() {
 	err = setupDBEngine()
 	if err != nil {
 		log.Fatalf("init.setupDBEngine err: %v", err)
+	}
+
+	err = setupTracer()
+	if err != nil {
+		log.Fatalf("init.setupTracer err: %v", err)
 	}
 }
 
@@ -120,6 +126,15 @@ func setupDBEngine() error {
 		return err
 	}
 
+	return nil
+}
+
+func setupTracer() error {
+	jaegerTracer, _, err := tracer.NewJaegerTracer("toy-service", "127.0.0.1:6831")
+	if err != nil {
+		return err
+	}
+	global.Tracer = jaegerTracer
 	return nil
 }
 

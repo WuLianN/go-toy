@@ -32,7 +32,7 @@ func SetupRouter() *gin.Engine {
 	// 访问日志
 	r.Use(middleware.AccessLog())
 	// 链路追踪
-	// r.Use(middleware.Tracing())
+	r.Use(middleware.Tracing())
 	// 接口限流控制
 	r.Use(middleware.RateLimiter(methodLimiters))
 	// 统一超时管理
