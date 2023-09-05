@@ -4,9 +4,13 @@ import (
 	"time"
 	"strings"
 	"flag"
+	"log"
 
 	"go-toy/pkg/setting"
+	"go-toy/pkg/logger"
 	"go-toy/global"
+
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 var (
@@ -19,12 +23,17 @@ var (
 func init() {
 	err := setupFlag()
 	if err != nil {
-		// log.Fatalf("init.setupFlag err: %v", err)
+		log.Fatalf("init.setupFlag err: %v", err)
 	}
 
 	err = setupSetting()
 	if err != nil {
-		// log.Fatalf("init.setupSetting err: %v", err)
+		log.Fatalf("init.setupSetting err: %v", err)
+	}
+
+	err = setupLogger()
+	if err != nil {
+		log.Fatalf("init.setupLogger err: %v", err)
 	}
 }
 
@@ -75,6 +84,18 @@ func setupSetting() error {
 	if runMode != "" {
 		global.ServerSetting.RunMode = runMode
 	}
+
+	return nil
+}
+
+func setupLogger() error {
+	fileName := global.AppSetting.LogSavePath + "/" + global.AppSetting.LogFileName + global.AppSetting.LogFileExt
+	global.Logger = logger.NewLogger(&lumberjack.Logger{
+		Filename:  fileName,
+		MaxSize:   500,
+		MaxAge:    10,
+		LocalTime: true,
+	}, "", log.LstdFlags).WithCaller(2)
 
 	return nil
 }

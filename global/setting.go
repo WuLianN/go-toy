@@ -1,7 +1,7 @@
 package global
 
 import (
-	// "go-toy/pkg/logger"
+	"go-toy/pkg/logger"
 	"go-toy/pkg/setting"
 )
 
@@ -10,7 +10,7 @@ var (
 	AppSetting      *setting.AppSettingS
 	JWTSetting      *setting.JWTSettingS
 	DatabaseSetting *setting.DatabaseSettingS
-	// Logger          *logger.Logger
+	Logger          *logger.Logger
 )
 
 
