@@ -6,7 +6,7 @@ import (
 
 	"go-toy/global"
 	"go-toy/internal/middleware"
-	// "go-toy/internal/routers/api"
+	"go-toy/internal/routers/api"
 	test "go-toy/internal/routers/api/test"
 	auth "go-toy/internal/routers/api/auth"
 	"go-toy/pkg/limiter"
@@ -38,9 +38,9 @@ func SetupRouter() *gin.Engine {
 	// 统一超时管理
 	r.Use(middleware.ContextTimeout(global.AppSetting.DefaultContextTimeout))
      
-	// upload := api.NewUpload()
+	upload := api.NewUpload()
 
-  // r.POST("/upload/file", upload.UploadFile)
+  r.POST("/upload/file", upload.UploadFile)
 	r.StaticFS("/static", http.Dir(global.AppSetting.UploadSavePath))
   
 	// 测试组
