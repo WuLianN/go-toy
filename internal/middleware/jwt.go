@@ -3,8 +3,8 @@ package middleware
 import (
 	"github.com/golang-jwt/jwt/v5"
 
-	"go-toy/pkg/app"
-	"go-toy/pkg/errcode"
+	"github.com/WuLianN/go-toy/pkg/app"
+	"github.com/WuLianN/go-toy/pkg/errcode"
 	"github.com/gin-gonic/gin"
 	"errors"
 )

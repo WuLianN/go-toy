@@ -1,4 +1,4 @@
-module go-toy
+module github.com/WuLianN/go-toy
 
 go 1.20
 

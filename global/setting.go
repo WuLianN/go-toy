@@ -1,8 +1,8 @@
 package global
 
 import (
-	"go-toy/pkg/logger"
-	"go-toy/pkg/setting"
+	"github.com/WuLianN/go-toy/pkg/logger"
+	"github.com/WuLianN/go-toy/pkg/setting"
 )
 
 var (

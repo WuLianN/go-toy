@@ -3,9 +3,9 @@ package db
 import (
 	"fmt"
 
-	"go-toy/global"
-	"go-toy/pkg/setting"
-	otgorm "go-toy/pkg/opentracing-gorm"
+	"github.com/WuLianN/go-toy/global"
+	"github.com/WuLianN/go-toy/pkg/setting"
+	otgorm "github.com/WuLianN/go-toy/pkg/opentracing-gorm"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )

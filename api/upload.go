@@ -1,12 +1,12 @@
 package api
 
 import (
-	"go-toy/global"
-	"go-toy/internal/service"
-	"go-toy/pkg/app"
-	"go-toy/pkg/convert"
-	"go-toy/pkg/errcode"
-	"go-toy/pkg/upload"
+	"github.com/WuLianN/go-toy/global"
+	"github.com/WuLianN/go-toy/internal/service"
+	"github.com/WuLianN/go-toy/pkg/app"
+	"github.com/WuLianN/go-toy/pkg/convert"
+	"github.com/WuLianN/go-toy/pkg/errcode"
+	"github.com/WuLianN/go-toy/pkg/upload"
 	"github.com/gin-gonic/gin"
 )
 

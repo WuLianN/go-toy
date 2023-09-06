@@ -5,8 +5,8 @@ import (
 	"mime/multipart"
 	"os"
 
-	"go-toy/global"
-	"go-toy/pkg/upload"
+	"github.com/WuLianN/go-toy/global"
+	"github.com/WuLianN/go-toy/pkg/upload"
 )
 
 

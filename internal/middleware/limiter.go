@@ -1,9 +1,9 @@
 package middleware
 
 import (
-	"go-toy/pkg/app"
-	"go-toy/pkg/errcode"
-	"go-toy/pkg/limiter"
+	"github.com/WuLianN/go-toy/pkg/app"
+	"github.com/WuLianN/go-toy/pkg/errcode"
+	"github.com/WuLianN/go-toy/pkg/limiter"
 	"github.com/gin-gonic/gin"
 )
 

@@ -8,8 +8,8 @@ import (
 	"path"
 	"strings"
 
-	"go-toy/global"
-	"go-toy/pkg/util"
+	"github.com/WuLianN/go-toy/global"
+	"github.com/WuLianN/go-toy/pkg/util"
 )
 
 

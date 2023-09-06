@@ -4,16 +4,16 @@ import (
 	"net/http"
 	"time"
 
-	"go-toy/global"
-	"go-toy/internal/middleware"
-	"go-toy/api"
-	test "go-toy/api/test"
-	auth "go-toy/api/auth"
-	"go-toy/pkg/limiter"
+	"github.com/WuLianN/go-toy/global"
+	"github.com/WuLianN/go-toy/internal/middleware"
+	"github.com/WuLianN/go-toy/api"
+	test "github.com/WuLianN/go-toy/api/test"
+	auth "github.com/WuLianN/go-toy/api/auth"
+	"github.com/WuLianN/go-toy/pkg/limiter"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	docs "go-toy/docs"
+	docs "github.com/WuLianN/go-toy/docs"
 )
 
 var methodLimiters = limiter.NewMethodLimiter().AddBuckets(

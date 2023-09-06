@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"time"
 
-	"go-toy/global"
-	"go-toy/pkg/logger"
+	"github.com/WuLianN/go-toy/global"
+	"github.com/WuLianN/go-toy/pkg/logger"
 	"github.com/gin-gonic/gin"
 )
 

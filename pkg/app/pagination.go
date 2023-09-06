@@ -1,8 +1,8 @@
 package app
 
 import (
-	"go-toy/global"
-	"go-toy/pkg/convert"
+	"github.com/WuLianN/go-toy/global"
+	"github.com/WuLianN/go-toy/pkg/convert"
 	"github.com/gin-gonic/gin"
 )
 

@@ -11,12 +11,12 @@ import (
 	"syscall"
 	"time"
 
-	"go-toy/pkg/setting"
-	"go-toy/pkg/logger"
-	"go-toy/pkg/db"
-	"go-toy/pkg/tracer"
-	"go-toy/global"
-	"go-toy/internal/routers"
+	"github.com/WuLianN/go-toy/pkg/setting"
+	"github.com/WuLianN/go-toy/pkg/logger"
+	"github.com/WuLianN/go-toy/pkg/db"
+	"github.com/WuLianN/go-toy/pkg/tracer"
+	"github.com/WuLianN/go-toy/global"
+	"github.com/WuLianN/go-toy/internal/routers"
 
 	"gopkg.in/natefinch/lumberjack.v2"
 	"github.com/gin-gonic/gin"
@@ -56,7 +56,7 @@ func init() {
 	}
 }
 
-// @title go-toy
+// @title github.com/WuLianN/go-toy
 // @version 1.0
 // @description 玩起来！！！
 func main() {

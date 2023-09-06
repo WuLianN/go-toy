@@ -4,7 +4,7 @@ import "C"
 import (
 	"context"
 
-	"go-toy/global"
+	"github.com/WuLianN/go-toy/global"
 	"github.com/gin-gonic/gin"
 
 	"github.com/opentracing/opentracing-go/ext"

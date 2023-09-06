@@ -3,10 +3,10 @@ package service
 import (
 	"context"
 
-	otgorm "go-toy/pkg/opentracing-gorm"
+	otgorm "github.com/WuLianN/go-toy/pkg/opentracing-gorm"
 
-	"go-toy/global"
-	"go-toy/internal/dao"
+	"github.com/WuLianN/go-toy/global"
+	"github.com/WuLianN/go-toy/internal/dao"
 )
 
 type Service struct {

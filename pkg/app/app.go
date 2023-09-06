@@ -3,7 +3,7 @@ package app
 import (
 	"net/http"
 
-	"go-toy/pkg/errcode"
+	"github.com/WuLianN/go-toy/pkg/errcode"
 	"github.com/gin-gonic/gin"
 )
 
