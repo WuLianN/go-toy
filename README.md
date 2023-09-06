@@ -76,9 +76,10 @@ https://pkg.go.dev/github.com/swaggo/gin-swagger
 >
 > go build -> swag.exe -> 丢到go的 bin目录下
 
+### 生成文档
 ```bash
 swag init --help
 
-swag init -d ./cmd,./internal/routers -o ./docs
+swag init -d ./cmd,./api -o ./docs
 ```
 http:127.0.0.1:8000/swagger/index.html

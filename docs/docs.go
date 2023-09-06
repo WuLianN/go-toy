@@ -40,7 +40,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "go-toy",
+	Title:            "github.com/WuLianN/go-toy",
 	Description:      "玩起来！！！",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
