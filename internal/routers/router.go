@@ -6,9 +6,9 @@ import (
 
 	"go-toy/global"
 	"go-toy/internal/middleware"
-	"go-toy/internal/routers/api"
-	test "go-toy/internal/routers/api/test"
-	auth "go-toy/internal/routers/api/auth"
+	"go-toy/api"
+	test "go-toy/api/test"
+	auth "go-toy/api/auth"
 	"go-toy/pkg/limiter"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
