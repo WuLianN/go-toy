@@ -80,6 +80,6 @@ https://pkg.go.dev/github.com/swaggo/gin-swagger
 ```bash
 swag init --help
 
-swag init -d ./cmd,./api -o ./docs
+swag init -d ./api -o ./docs
 ```
 http:127.0.0.1:8000/swagger/index.html

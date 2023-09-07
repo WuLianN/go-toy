@@ -66,7 +66,7 @@ func main() {
 func setupFlag() error {
 	flag.StringVar(&port, "port", "", "启动端口")
 	flag.StringVar(&runMode, "mode", "", "启动模式")
-	flag.StringVar(&config, "config", "../configs/", "指定要使用的配置文件路径")
+	flag.StringVar(&config, "config", "./configs/", "指定要使用的配置文件路径")
 	flag.BoolVar(&isVersion, "version", false, "编译信息")
 	flag.Parse()
 
