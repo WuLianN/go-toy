@@ -7,13 +7,12 @@ import (
 	"github.com/WuLianN/go-toy/global"
 	"github.com/WuLianN/go-toy/internal/middleware"
 	"github.com/WuLianN/go-toy/api"
-	test "github.com/WuLianN/go-toy/api/test"
-	auth "github.com/WuLianN/go-toy/api/auth"
 	"github.com/WuLianN/go-toy/pkg/limiter"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	docs "github.com/WuLianN/go-toy/docs"
+	system "github.com/WuLianN/go-toy/internal/routers/system"
 )
 
 var methodLimiters = limiter.NewMethodLimiter().AddBuckets(
@@ -51,18 +50,24 @@ func SetupRouter() *gin.Engine {
 	// 上传文件
 	upload := api.NewUpload()
   r.POST("/upload/file", upload.UploadFile)
-  
-	// 测试组
-	apiTest := r.Group("api/test")
-	{
-		apiTest.GET("/ping", test.Ping)
+
+	type RouterGroup struct {
+		System  system.RouterGroup
+	}
+	
+	var RouterGroupApp = new(RouterGroup)
+
+	// 系统基础组
+	systemBaseGroup := r.Group("/api")
+	{	
+		RouterGroupApp.System.InitBaseRouter(systemBaseGroup)
 	}
 
-	// 权限组
-	apiAuth := r.Group("api/auth") 
-	apiAuth.Use(middleware.JWT())
+	// 系统权限组
+	systemAuthGroup := r.Group("/api") 
+	systemAuthGroup.Use(middleware.JWT())
 	{	
-		apiAuth.GET("/checkAuth", auth.CheckAuth)
+		RouterGroupApp.System.InitAuthRouter(systemAuthGroup)
 	}
 	
   return r
