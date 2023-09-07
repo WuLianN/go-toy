@@ -17,58 +17,34 @@
 
 <br>
 
-### Jaeger报错, 不运行链路追踪启动项目, 需要注释相关代码
-
-`cmd/main.go 初始化Jaeger`
+`internal/routers/router.go 中间件 注入X-Trace-ID、X-Span-ID`
 ```go
-// err = setupTracer()
-// if err != nil {
-// 	log.Fatalf("init.setupTracer err: %v", err)
-// }
+// 链路追踪
+r.Use(middleware.Tracing())
 ```
 
 `pkg/logger/logger.go 日志追踪`
 ```go
-import (
-	// "github.com/gin-gonic/gin"
-)
-
 func (l *Logger) WithTrace() *Logger {
-	// ginCtx, ok := l.ctx.(*gin.Context)
-	// if ok {
-	// 	return l.WithFields(Fields{
-	// 		"trace_id": ginCtx.MustGet("X-Trace-ID"),
-	// 		"span_id":  ginCtx.MustGet("X-Span-ID"),
-	// 	})
-	// }
+	ginCtx, ok := l.ctx.(*gin.Context)
+	if ok {
+		return l.WithFields(Fields{
+			"trace_id": ginCtx.MustGet("X-Trace-ID"),
+			"span_id":  ginCtx.MustGet("X-Span-ID"),
+		})
+	}
 	return l
 }
 ```
 
-`internal/routers/router.go 中间件 注入X-Trace-ID、X-Span-ID`
+`internal/service/service.go sql追踪`
 ```go
-// 链路追踪
-// r.Use(middleware.Tracing())
+// svc.dao = dao.New(global.DBEngine)
+svc.dao = dao.New(otgorm.WithContext(svc.ctx, global.DBEngine))
 ```
-
-`pkg/db/db.go sql追踪`
-```go
-// otgorm.AddGormCallbacks(db)
-```
-
-`internal/service/service.go`
-```go
-import (
-	// otgorm "go-toy/pkg/opentracing-gorm"
-)
-
-// svc.dao = dao.New(otgorm.WithContext(svc.ctx, global.DBEngine))
-svc.dao = dao.New(global.DBEngine)
-```
-
 
 ## Swagger
-https://pkg.go.dev/github.com/swaggo/gin-swagger
+Swagger文档 https://pkg.go.dev/github.com/swaggo/gin-swagger
 
 > 配置cmd swag命令
 >
@@ -82,4 +58,4 @@ swag init --help
 
 swag init
 ```
-http:127.0.0.1:8000/swagger/index.html
+api文档 http://localhost:8000/swagger/index.html
