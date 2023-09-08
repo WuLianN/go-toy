@@ -9,6 +9,6 @@ func InitBaseRouter(Router *gin.RouterGroup) {
 	baseApi := api.ApiGroupApp.BaseApi
 	{
 		Router.GET("/ping", baseApi.Ping)
-		Router.GET("/login", baseApi.Login)
+		Router.POST("/login", baseApi.Login)
 	}
 }
