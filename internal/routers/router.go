@@ -12,7 +12,7 @@ import (
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	docs "github.com/WuLianN/go-toy/docs"
-	system "github.com/WuLianN/go-toy/internal/routers/system"
+	// system "github.com/WuLianN/go-toy/internal/routers/system"
 )
 
 var methodLimiters = limiter.NewMethodLimiter().AddBuckets(
@@ -30,7 +30,6 @@ func SetupRouter() *gin.Engine {
 
 	// 跨域
 	r.Use(middleware.Cors())
-
 	// 访问日志
 	r.Use(middleware.AccessLog())
 	// 链路追踪
@@ -51,23 +50,17 @@ func SetupRouter() *gin.Engine {
 	upload := api.NewUpload()
   r.POST("/upload/file", upload.UploadFile)
 
-	type RouterGroup struct {
-		System  system.RouterGroup
-	}
-	
-	var RouterGroupApp = new(RouterGroup)
-
 	// 系统基础组
 	systemBaseGroup := r.Group("/api")
 	{	
-		RouterGroupApp.System.InitBaseRouter(systemBaseGroup)
+		InitBaseRouter(systemBaseGroup)
 	}
 
 	// 系统权限组
 	systemAuthGroup := r.Group("/api") 
 	systemAuthGroup.Use(middleware.JWT())
 	{	
-		RouterGroupApp.System.InitAuthRouter(systemAuthGroup)
+		InitAuthRouter(systemAuthGroup)
 	}
 	
   return r
