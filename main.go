@@ -8,7 +8,7 @@ func init() {
 	initialize.SetupInit()
 }
 
-// @title github.com/WuLianN/go-toy
+// @title go-toy
 // @version 1.0
 // @description 玩起来！！！
 func main() {

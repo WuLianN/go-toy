@@ -1,15 +1,44 @@
 info:
   contact: {}
   description: 玩起来！！！
-  title: github.com/WuLianN/go-toy
+  title: go-toy
   version: "1.0"
 paths:
-  /api/test/ping:
+  /api/login:
+    post:
+      parameters:
+      - description: 用户名
+        in: body
+        name: user_name
+        required: true
+        schema:
+          type: string
+      - description: 密码
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: 失败
+          schema:
+            type: string
+        "1":
+          description: 成功
+          schema:
+            type: string
+      summary: 登录
+      tags:
+      - user
+  /api/ping:
     get:
       produces:
       - application/json
       responses:
-        "200":
+        "1":
           description: 成功
           schema:
             type: string

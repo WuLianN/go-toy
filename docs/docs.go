@@ -15,14 +15,59 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/test/ping": {
+        "/api/login": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "登录",
+                "parameters": [
+                    {
+                        "description": "用户名",
+                        "name": "user_name",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "密码",
+                        "name": "password",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "失败",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "1": {
+                        "description": "成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/ping": {
             "get": {
                 "produces": [
                     "application/json"
                 ],
                 "summary": "测试Ping",
                 "responses": {
-                    "200": {
+                    "1": {
                         "description": "成功",
                         "schema": {
                             "type": "string"
@@ -40,7 +85,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "github.com/WuLianN/go-toy",
+	Title:            "go-toy",
 	Description:      "玩起来！！！",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
