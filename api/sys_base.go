@@ -63,3 +63,35 @@ func (b *BaseApi) Login(c *gin.Context) {
 		"data": gin.H{ "token": token },
 	})
 }
+
+// 注册
+func (b *BaseApi) Register(c *gin.Context) {
+	param := service.UserRequest{}
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &param)
+	if !valid {
+		global.Logger.Errorf(c, "app.BindAndValid errs: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	svc := service.New(c.Request.Context())
+	bool, err := svc.CheckRegister(&param)
+
+	if bool == true {
+		response.ToResponse(gin.H{
+			"code": errcode.Success.Code(),
+			"msg": "注册成功",
+		})
+	} else if bool == false && err == nil {
+		response.ToResponse(gin.H{
+			"code": errcode.Fail.Code(),
+			"msg": "用户已注册",
+		})
+	} else {
+		response.ToResponse(gin.H{
+			"code": errcode.Fail.Code(),
+			"msg": "注册失败",
+		})
+	}
+}
