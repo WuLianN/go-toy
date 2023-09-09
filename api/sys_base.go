@@ -21,6 +21,7 @@ func (b *BaseApi) Ping(c *gin.Context) {
 }
 
 // @Summary 登录
+// @Accept x-www-form-urlencoded
 // @Produce json
 // @Tags user
 // @Param user_name body string true "用户名" 
@@ -64,7 +65,15 @@ func (b *BaseApi) Login(c *gin.Context) {
 	})
 }
 
-// 注册
+// @Summary 注册
+// @Accept x-www-form-urlencoded
+// @Produce json
+// @Tags user
+// @Param user_name body string true "用户名" 
+// @Param password body string true "密码" 
+// @Success 1 {string} string "成功"
+// @Failure 0 {string} string "失败"
+// @Router /api/register [post]
 func (b *BaseApi) Register(c *gin.Context) {
 	param := service.UserRequest{}
 	response := app.NewResponse(c)

@@ -17,6 +17,9 @@ const docTemplate = `{
     "paths": {
         "/api/login": {
             "post": {
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -67,6 +70,54 @@ const docTemplate = `{
                 ],
                 "summary": "测试Ping",
                 "responses": {
+                    "1": {
+                        "description": "成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/register": {
+            "post": {
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "注册",
+                "parameters": [
+                    {
+                        "description": "用户名",
+                        "name": "user_name",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "密码",
+                        "name": "password",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "失败",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     "1": {
                         "description": "成功",
                         "schema": {
