@@ -1,8 +1,8 @@
 package errcode
 
 var (
-	Success                   = NewError(1, "成功")
-	Fail                   		= NewError(0, "失败")
+	Success                   = NewError(0, "ok")
+	Fail                   		= NewError(-1, "fail")
 	ServerError               = NewError(10000000, "服务内部错误")
 	InvalidParams             = NewError(10000001, "入参错误")
 	NotFound                  = NewError(10000002, "找不到")

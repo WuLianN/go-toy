@@ -5,8 +5,8 @@ import (
 )
 
 type UserRequest struct {
-	UserName string `form:"user_name" binding:"required"`
-	Password string `form:"password" binding:"required"`
+	UserName string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
 // 检查登录

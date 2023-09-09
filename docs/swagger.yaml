@@ -7,7 +7,7 @@ paths:
   /api/login:
     post:
       consumes:
-      - application/x-www-form-urlencoded
+      - application/json
       parameters:
       - description: 用户名
         in: body
@@ -25,11 +25,11 @@ paths:
       - application/json
       responses:
         "0":
-          description: 失败
+          description: ok
           schema:
             type: string
         "1":
-          description: 成功
+          description: fail
           schema:
             type: string
       summary: 登录
@@ -40,15 +40,15 @@ paths:
       produces:
       - application/json
       responses:
-        "1":
-          description: 成功
+        "0":
+          description: ok
           schema:
             type: string
       summary: 测试Ping
   /api/register:
     post:
       consumes:
-      - application/x-www-form-urlencoded
+      - application/json
       parameters:
       - description: 用户名
         in: body
@@ -66,11 +66,11 @@ paths:
       - application/json
       responses:
         "0":
-          description: 失败
+          description: ok
           schema:
             type: string
         "1":
-          description: 成功
+          description: fail
           schema:
             type: string
       summary: 注册

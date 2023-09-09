@@ -18,7 +18,7 @@ const docTemplate = `{
         "/api/login": {
             "post": {
                 "consumes": [
-                    "application/x-www-form-urlencoded"
+                    "application/json"
                 ],
                 "produces": [
                     "application/json"
@@ -49,13 +49,13 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "0": {
-                        "description": "失败",
+                        "description": "ok",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "1": {
-                        "description": "成功",
+                        "description": "fail",
                         "schema": {
                             "type": "string"
                         }
@@ -70,8 +70,8 @@ const docTemplate = `{
                 ],
                 "summary": "测试Ping",
                 "responses": {
-                    "1": {
-                        "description": "成功",
+                    "0": {
+                        "description": "ok",
                         "schema": {
                             "type": "string"
                         }
@@ -82,7 +82,7 @@ const docTemplate = `{
         "/api/register": {
             "post": {
                 "consumes": [
-                    "application/x-www-form-urlencoded"
+                    "application/json"
                 ],
                 "produces": [
                     "application/json"
@@ -113,13 +113,13 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "0": {
-                        "description": "失败",
+                        "description": "ok",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "1": {
-                        "description": "成功",
+                        "description": "fail",
                         "schema": {
                             "type": "string"
                         }

@@ -6,13 +6,19 @@ import (
 	"github.com/WuLianN/go-toy/pkg/app"
 	"github.com/WuLianN/go-toy/global"
 	"github.com/WuLianN/go-toy/pkg/errcode"
+	"encoding/json"
 )
 
 type BaseApi struct {}
 
+type Roles struct {
+	RoleName string `json:"roleName"`
+	Value string `json:"value"`
+}
+
 // @Summary 测试Ping
 // @Produce json
-// @Success 1 {string} string "成功"
+// @Success 0 {string} string "ok"
 // @Router /api/ping [get]
 func (b *BaseApi) Ping(c *gin.Context) {
 	c.JSON(200, gin.H{
@@ -21,13 +27,13 @@ func (b *BaseApi) Ping(c *gin.Context) {
 }
 
 // @Summary 登录
-// @Accept x-www-form-urlencoded
+// @Accept json
 // @Produce json
 // @Tags user
 // @Param user_name body string true "用户名" 
 // @Param password body string true "密码" 
-// @Success 1 {string} string "成功"
-// @Failure 0 {string} string "失败"
+// @Success 0 {string} string "ok"
+// @Failure 1 {string} string "fail"
 // @Router /api/login [post]
 func (b *BaseApi) Login(c *gin.Context) {
 	param := service.UserRequest{}
@@ -58,21 +64,35 @@ func (b *BaseApi) Login(c *gin.Context) {
 		return
 	}
 
+	// todo 获取用户信息
+
+	// 注意: 结构体的成员必须大写, 才会被JSON处理
+	roles := []Roles {Roles{RoleName: "Super Admin", Value: "super"}}
+	rolesJSON, _ := json.Marshal(roles)
+	
 	response.ToResponse(gin.H{
 		"code": errcode.Success.Code(),
-		"msg": errcode.Success.Msg(),
-		"data": gin.H{ "token": token },
+		"message": errcode.Success.Msg(),
+		"type": "success",
+		"result": gin.H {
+			"desc": "manager",
+			"token": token,
+			"roles": string(rolesJSON),
+			"username": "vben",
+			"realName": "Vben Admin",
+			"userId": 1,
+		},
 	})
 }
 
 // @Summary 注册
-// @Accept x-www-form-urlencoded
+// @Accept json
 // @Produce json
 // @Tags user
 // @Param user_name body string true "用户名" 
 // @Param password body string true "密码" 
-// @Success 1 {string} string "成功"
-// @Failure 0 {string} string "失败"
+// @Success 0 {string} string "ok"
+// @Failure 1 {string} string "fail"
 // @Router /api/register [post]
 func (b *BaseApi) Register(c *gin.Context) {
 	param := service.UserRequest{}

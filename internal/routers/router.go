@@ -12,7 +12,6 @@ import (
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	docs "github.com/WuLianN/go-toy/docs"
-	// system "github.com/WuLianN/go-toy/internal/routers/system"
 )
 
 var methodLimiters = limiter.NewMethodLimiter().AddBuckets(
@@ -51,13 +50,13 @@ func SetupRouter() *gin.Engine {
   r.POST("/upload/file", upload.UploadFile)
 
 	// 系统基础组
-	systemBaseGroup := r.Group("/api")
+	systemBaseGroup := r.Group("/")
 	{	
 		InitBaseRouter(systemBaseGroup)
 	}
 
 	// 系统权限组
-	systemAuthGroup := r.Group("/api") 
+	systemAuthGroup := r.Group("/") 
 	systemAuthGroup.Use(middleware.JWT())
 	{	
 		InitAuthRouter(systemAuthGroup)
