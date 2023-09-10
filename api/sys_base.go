@@ -6,7 +6,6 @@ import (
 	"github.com/WuLianN/go-toy/pkg/app"
 	"github.com/WuLianN/go-toy/global"
 	"github.com/WuLianN/go-toy/pkg/errcode"
-	"encoding/json"
 )
 
 type BaseApi struct {}
@@ -66,9 +65,7 @@ func (b *BaseApi) Login(c *gin.Context) {
 
 	// todo 获取用户信息
 
-	// 注意: 结构体的成员必须大写, 才会被JSON处理
 	roles := []Roles {Roles{RoleName: "Super Admin", Value: "super"}}
-	rolesJSON, _ := json.Marshal(roles)
 	
 	response.ToResponse(gin.H{
 		"code": errcode.Success.Code(),
@@ -77,7 +74,7 @@ func (b *BaseApi) Login(c *gin.Context) {
 		"result": gin.H {
 			"desc": "manager",
 			"token": token,
-			"roles": string(rolesJSON),
+			"roles": roles,
 			"username": "vben",
 			"realName": "Vben Admin",
 			"userId": 1,
