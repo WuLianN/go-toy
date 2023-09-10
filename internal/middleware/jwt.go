@@ -18,7 +18,8 @@ func JWT() gin.HandlerFunc {
 		if s, exist := c.GetQuery("token"); exist {
 			token = s
 		} else {
-			token = c.GetHeader("token")
+			// token = c.GetHeader("token") // 也可以使用自定义header
+			token = c.GetHeader("Authorization") 
 		}
 
 		if token == "" {
