@@ -2,7 +2,7 @@ package api
 
 type ApiGroup struct {
 	BaseApi
-	AuthApi
+	UserApi
 }
 
 var ApiGroupApp = new(ApiGroup)

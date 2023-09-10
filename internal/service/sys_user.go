@@ -2,6 +2,7 @@ package service
 
 import (
 	"golang.org/x/crypto/bcrypt"
+	"github.com/WuLianN/go-toy/internal/model"
 )
 
 type UserRequest struct {
@@ -10,14 +11,14 @@ type UserRequest struct {
 }
 
 // 检查登录
-func (svc *Service) CheckLogin(param *UserRequest) bool {
-	_, hash := svc.dao.IsSystemUser(param.UserName)
-	if hash != "" {
-		bool := ComparePassword(param.Password, hash)
-		return bool
+func (svc *Service) CheckLogin(param *UserRequest) (bool, *model.User) {
+	_, userInfo := svc.dao.IsSystemUser(param.UserName)
+	if userInfo != nil && userInfo.Password != "" {
+		bool := ComparePassword(param.Password, userInfo.Password)
+		return bool, userInfo
 	}
 
-	return false
+	return false, nil
 }
 
 // 检查注册
@@ -43,6 +44,15 @@ func (svc *Service) CheckRegister(param *UserRequest) (bool, error) {
 	} else {
 		return false, nil // 失败 - 用户已注册
 	}
+}
+
+// 获取角色权限列表
+func (svc *Service) GetRoleList(userId any) any{
+	list := svc.dao.GetRoles(userId)
+	if list != nil {
+		return list
+	}
+	return make([]any, 0)
 }
 
 // 生成密码

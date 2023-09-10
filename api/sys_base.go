@@ -29,7 +29,7 @@ func (b *BaseApi) Ping(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Tags user
-// @Param user_name body string true "用户名" 
+// @Param username body string true "用户名" 
 // @Param password body string true "密码" 
 // @Success 0 {string} string "ok"
 // @Failure 1 {string} string "fail"
@@ -45,7 +45,7 @@ func (b *BaseApi) Login(c *gin.Context) {
 	}
 
 	svc := service.New(c.Request.Context())
-	loginStatus := svc.CheckLogin(&param)
+	loginStatus, userInfo := svc.CheckLogin(&param)
 
 	// 登录失败 - 账号/密码错误
 	if loginStatus != true {
@@ -63,9 +63,11 @@ func (b *BaseApi) Login(c *gin.Context) {
 		return
 	}
 
-	// todo 获取用户信息
-
-	roles := []Roles {Roles{RoleName: "Super Admin", Value: "super"}}
+	// 获取角色权限
+	var roles any
+	if userInfo.Id != 0 {
+		roles = svc.GetRoleList(userInfo.Id)
+	}
 	
 	response.ToResponse(gin.H{
 		"code": errcode.Success.Code(),
@@ -86,7 +88,7 @@ func (b *BaseApi) Login(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Tags user
-// @Param user_name body string true "用户名" 
+// @Param username body string true "用户名" 
 // @Param password body string true "密码" 
 // @Success 0 {string} string "ok"
 // @Failure 1 {string} string "fail"

@@ -59,7 +59,7 @@ func SetupRouter() *gin.Engine {
 	systemAuthGroup := r.Group("/") 
 	systemAuthGroup.Use(middleware.JWT())
 	{	
-		InitAuthRouter(systemAuthGroup)
+		InitUserRouter(systemAuthGroup)
 	}
 	
   return r
