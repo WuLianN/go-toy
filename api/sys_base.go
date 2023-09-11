@@ -52,7 +52,7 @@ func (b *BaseApi) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := app.GenerateToken(param.UserName, "")
+	token, err := app.GenerateToken(userInfo.Id, userInfo.UserName)
 	if err != nil {
 		global.Logger.Errorf(c, "app.GenerateToken err: %v", err)
 		response.ToErrorResponse(errcode.UnauthorizedTokenGenerate)

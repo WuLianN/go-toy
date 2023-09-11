@@ -4,10 +4,18 @@ import (
 	"github.com/WuLianN/go-toy/internal/model"
 )
 
-// 用户是否已存在
-func (d *Dao) IsSystemUser (UserName string) (bool, *model.User) {
-	user := model.User{ UserName: UserName }
-	err := d.engine.Table("user").Where("user_name = ?", UserName).First(&user).Error
+// @description 用户是否为系统用户
+// @param userName 用户名
+// @param id 用户ID
+func (d *Dao) IsSystemUser (userName string, id uint) (bool, *model.User) {
+	user := model.User{ UserName: userName, Id: id }
+	var err error
+	if userName != "" {
+		err = d.engine.Table("user").Where("user_name = ?", userName).First(&user).Error
+	} else if id != 0 {
+		err = d.engine.Table("user").Where("id = ?", id).First(&user).Error
+	}
+	
 	if err != nil {
 		// fmt.Println(d.engine.Error) // record not found
 		d.engine.Error = nil // d.engine.Error设置为nil, 不然下一个sql无法运行, 具体看pkg/opentracing-gorm/otgorm.go, sql追踪造成的

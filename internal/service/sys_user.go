@@ -10,9 +10,13 @@ type UserRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
+type UserInfoRequest struct {
+	UserId uint `json:"userId" binding:"required"`
+}
+
 // 检查登录
 func (svc *Service) CheckLogin(param *UserRequest) (bool, *model.User) {
-	_, userInfo := svc.dao.IsSystemUser(param.UserName)
+	_, userInfo := svc.dao.IsSystemUser(param.UserName, 0)
 	if userInfo != nil && userInfo.Password != "" {
 		bool := ComparePassword(param.Password, userInfo.Password)
 		return bool, userInfo
@@ -24,7 +28,7 @@ func (svc *Service) CheckLogin(param *UserRequest) (bool, *model.User) {
 // 检查注册
 // @return true 注册成功 false 注册失败
 func (svc *Service) CheckRegister(param *UserRequest) (bool, error) {
-	isExsited, _ := svc.dao.IsSystemUser(param.UserName)
+	isExsited, _ := svc.dao.IsSystemUser(param.UserName, 0)
 	if (isExsited == false) {
 		// hash密码
 		hash, err := GeneratePassword(param.Password)

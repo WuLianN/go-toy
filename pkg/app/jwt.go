@@ -4,13 +4,12 @@ import (
 	"time"
 
 	"github.com/WuLianN/go-toy/global"
-	"github.com/WuLianN/go-toy/pkg/util"
 	"github.com/golang-jwt/jwt/v5"
 )
 
 type Claims struct {
-	AppKey string `json:"app_key"`
-	AppSecret string `json:"app_secret"`
+	UserId uint `json:"id"`
+	UserName string `json:"user_name"`
 	jwt.RegisteredClaims
 }
 
@@ -18,12 +17,12 @@ func GetJWTSecret() string {
 	return global.JWTSetting.Secret
 }
 
-func GenerateToken(appKey, appSecret string) (string, error) {
+func GenerateToken(UserId uint, UserName string) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(global.JWTSetting.Expire)
 	claims := Claims{
-		AppKey:    util.EncodeMD5(appKey),
-		AppSecret: util.EncodeMD5(appSecret),
+		UserId:    UserId,
+		UserName:  UserName,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expireTime),
 			IssuedAt: jwt.NewNumericDate(nowTime),
