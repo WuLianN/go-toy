@@ -7,7 +7,9 @@ type User struct {
 }
 
 type Role struct {
-	UserId uint `json:"user_id"`
+	// UserId uint `json:"user_id"`
+	Name string `json:"name"`
+	Value string `json:"value"`
 }
 
 func (u User) TableName() string {

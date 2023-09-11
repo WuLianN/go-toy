@@ -6,14 +6,10 @@ import (
 	"github.com/WuLianN/go-toy/pkg/app"
 	"github.com/WuLianN/go-toy/global"
 	"github.com/WuLianN/go-toy/pkg/errcode"
+	"github.com/WuLianN/go-toy/internal/model"
 )
 
 type BaseApi struct {}
-
-type Roles struct {
-	RoleName string `json:"roleName"`
-	Value string `json:"value"`
-}
 
 // @Summary 测试Ping
 // @Produce json
@@ -64,7 +60,7 @@ func (b *BaseApi) Login(c *gin.Context) {
 	}
 
 	// 获取角色权限
-	var roles any
+	var roles []model.Role
 	if userInfo.Id != 0 {
 		roles = svc.GetRoleList(userInfo.Id)
 	}
@@ -77,9 +73,9 @@ func (b *BaseApi) Login(c *gin.Context) {
 			"desc": "manager",
 			"token": token,
 			"roles": roles,
-			"username": "vben",
+			"username": userInfo.UserName,
 			"realName": "Vben Admin",
-			"userId": 1,
+			"userId": userInfo.Id,
 		},
 	})
 }

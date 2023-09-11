@@ -47,12 +47,12 @@ func (svc *Service) CheckRegister(param *UserRequest) (bool, error) {
 }
 
 // 获取角色权限列表
-func (svc *Service) GetRoleList(userId any) any{
+func (svc *Service) GetRoleList(userId uint) []model.Role{
 	list := svc.dao.GetRoles(userId)
 	if list != nil {
 		return list
 	}
-	return make([]any, 0)
+	return make([]model.Role, 0)
 }
 
 // 生成密码

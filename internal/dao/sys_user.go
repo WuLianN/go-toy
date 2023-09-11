@@ -26,8 +26,8 @@ func (d *Dao) Register(UserName string, Password string) (error) {
 	return nil
 }
 
-func (d *Dao) GetRoles(userId any) []*model.Role {
-	var roles []*model.Role
+func (d *Dao) GetRoles(userId any) []model.Role {
+	var roles []model.Role
 	result := d.engine.Table("user_role").Where("user_id = ?", userId).Find(&roles)
 
 	if (result.RowsAffected == 0 || result.Error != nil) {
