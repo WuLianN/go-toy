@@ -5,6 +5,28 @@
 
 项目api接口对接 `vue-vben-admin` https://github.com/vbenjs/vue-vben-admin
 
+### 目录结构
+```
+├─api                 接口
+├─cmd                 命令行
+├─configs             配置文件
+├─docs                文档集合
+├─global              全局变量
+├─initialize          初始化
+├─internal            内部模块
+│  ├─dao              数据访问层
+│  ├─middleware       中间件
+│  ├─model            模型层
+│  ├─routers          路由层
+│  └─service          服务层 - 项目核心业务逻辑
+├─pkg                 模块包
+└─storage             项目生成的临时文件
+    ├─logs            日志
+    └─uploads         上传文件
+
+main.go               程序入口				
+```
+
 ## 链路追踪
 
 > 需要安装 Jaeger
