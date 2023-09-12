@@ -1,5 +1,9 @@
-项目架构借鉴 https://github.com/golang-standards/project-layout/blob/master/README_zh.md
+## 项目简介
+项目基础代码学习于 `《Go 语言编程之旅》` https://github.com/go-programming-tour-book/
 
+项目架构学习于 `project-layout` https://github.com/golang-standards/project-layout/blob/master/README_zh.md
+
+项目api接口对接 `vue-vben-admin` https://github.com/vbenjs/vue-vben-admin
 
 ## 链路追踪
 
