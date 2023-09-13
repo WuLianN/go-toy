@@ -8,6 +8,6 @@ import (
 func InitMenuRouter(Router *gin.RouterGroup) {
 	menuApi := api.ApiGroupApp.MenuApi
 	{
-		Router.GET("/getRoleMenu", menuApi.GetRoleMenu)
+		Router.GET("/getMenuList", menuApi.GetRoleMenu)
 	}
 }

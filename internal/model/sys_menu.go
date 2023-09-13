@@ -15,8 +15,8 @@ type Menu struct {
 	ParentId       int32   `json:"parent_id"`
 	// meta id
 	MetaId int32   `json:"meta_id"`
-	// 1 使用 2不使用
-	IsUse  int32   `json:"is_use"`
+
+	Title string `json:"title"`
 }
 
 func (model Menu) TableName() string {

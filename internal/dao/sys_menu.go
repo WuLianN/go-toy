@@ -6,11 +6,8 @@ import (
 
 func (d *Dao) GetMenu() []model.Menu {
 	var menu []model.Menu
-	result := d.engine.Where("is_use = ?", 1).Find(&menu)
 
-	if (result.RowsAffected == 0 || result.Error != nil) {
-		return nil
-	}
+	d.engine.Table("menu").Joins("left join menu_meta on menu_meta.id = menu.meta_id").Scan(&menu)
 
 	return menu
 }
