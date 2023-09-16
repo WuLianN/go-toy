@@ -44,3 +44,14 @@ func (d *Dao) GetRoles(userId any) []model.Role {
 
 	return roles
 }
+
+// 更换密码
+func (d *Dao) ChangePassword(userId uint, passwordHash []byte) bool {
+	result := d.engine.Table("user").Where("id = ?", userId).Update("password", passwordHash)
+
+	if (result.RowsAffected == 0 || result.Error != nil) {
+		return false
+	}
+
+	return true
+}

@@ -4,6 +4,7 @@ import (
 	"github.com/WuLianN/go-toy/pkg/app"
 	"github.com/WuLianN/go-toy/pkg/errcode"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/gin-gonic/gin"
 	"errors"
 )
 
@@ -30,4 +31,15 @@ func GetTokenInfo(token string) (*errcode.Error, *TokenInfo) {
 		tokenInfo := TokenInfo{ UserId: claims.UserId, UserName: claims.UserName }
 
 		return nil, &tokenInfo
+}
+
+func GetToken(c *gin.Context) string {
+	var token string
+	if s, exist := c.GetQuery("token"); exist {
+		token = s
+	} else {
+		token = c.GetHeader("Authorization") 
+	}
+	
+	return token
 }

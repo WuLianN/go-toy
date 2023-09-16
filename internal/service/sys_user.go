@@ -14,6 +14,11 @@ type UserInfoRequest struct {
 	UserId uint `json:"userId" binding:"required"`
 }
 
+type ChangePasswordRequest struct {
+	NewPassword string `json:"newPassword" binding:"required"`
+	OldPassword string `json:"oldPassword" binding:"required"`
+}
+
 // 检查登录
 func (svc *Service) CheckLogin(param *UserRequest) (bool, *model.User) {
 	_, userInfo := svc.dao.IsSystemUser(param.UserName, 0)
@@ -73,4 +78,14 @@ func ComparePassword(password string, hash string) (bool) {
 	} else {
 		return true
 	}
+}
+
+// 更换密码
+func (svc *Service) ChangePassword(userId uint, newPassword string) bool {
+	newPasswordHash, _ := GeneratePassword(newPassword)
+	if len(newPasswordHash) > 0 {
+		isSuccessful := svc.dao.ChangePassword(userId, newPasswordHash)
+		return isSuccessful
+	}
+	return false
 }

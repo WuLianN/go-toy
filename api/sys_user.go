@@ -75,3 +75,58 @@ func (u *UserApi) GetUserInfo(c *gin.Context) {
 		},
 	})
 }
+
+// @Summary 修改密码
+func (u *UserApi) ChangePassword(c *gin.Context) {
+	param := service.ChangePasswordRequest{}
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &param)
+	if !valid {
+		global.Logger.Errorf(c, "app.BindAndValid errs: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	token := GetToken(c)
+
+	err, tokenInfo := GetTokenInfo(token)
+	if err != nil {
+		response.ToErrorResponse(err)
+		return
+	}
+
+	isSystemUser, userInfo := dao.New(global.DBEngine).IsSystemUser("", tokenInfo.UserId)
+
+	if isSystemUser == false {
+		response.ToErrorResponse(errcode.Fail)
+		return 
+	}
+
+	// 验证旧密码是否正确
+	isRightOldPasword := service.ComparePassword(param.OldPassword, userInfo.Password)
+
+	if isRightOldPasword == false {
+		response.ToResponse(gin.H{
+			"code": errcode.Fail.Code(),
+			"message": "当前密码错误",
+		})
+		return 
+	}
+
+	svc := service.New(c.Request.Context())
+	isSuccessful := svc.ChangePassword(userInfo.Id, param.NewPassword)
+
+	if isSuccessful {
+		response.ToResponse(gin.H{
+			"code": errcode.Success.Code(),
+			"message": "密码已更换",
+		})
+		return 
+	} else {
+		response.ToResponse(gin.H{
+			"code": errcode.Fail.Code(),
+			"message": "密码更换失败!",
+		})
+		return 
+	}
+}
