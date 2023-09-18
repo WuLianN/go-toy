@@ -30,6 +30,7 @@ func (svc *Service) GetMenuList() []TreeList {
 		// 分组
 		systemManagement := make([]model.Menu, 0) // 系统管理
 		about := make([]model.Menu, 0) // 关于
+		authManagement := make([]model.Menu, 0) // 权限管理
 
 		for _, menu := range menus {
 			switch menu.Group {
@@ -37,13 +38,17 @@ func (svc *Service) GetMenuList() []TreeList {
 					systemManagement = append(systemManagement, menu)
 				case "about":
 					about = append(about, menu)
+				case "authManagement":
+					authManagement = append(authManagement, menu)
 			}
 		}
 
 		systemManagementMenu := GetTreeMenu(systemManagement, 0)
 		aboutMenu := GetTreeMenu(about, 0)
+		authManagementMenu := GetTreeMenu(authManagement, 0)
 
-		menuList := append(systemManagementMenu, aboutMenu...)
+		menuList := append(systemManagementMenu, authManagementMenu...)
+		menuList = append(menuList, aboutMenu...)
 
 		return menuList
 	}
@@ -80,6 +85,9 @@ func GetMeta(menu model.Menu) map[string]any {
 	}
 	if menu.Icon != "" {
 		meta["icon"] = menu.Icon
+	}
+	if menu.HideChildrenInMenu == 1 {
+		meta["hideChildrenInMenu"] = true
 	}
 
 	return meta

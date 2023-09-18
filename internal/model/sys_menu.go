@@ -19,6 +19,7 @@ type Menu struct {
 	Title string `json:"title"`
 	HideMenu int32 `json:"hide_menu"`
 	Icon string `json:"icon"`
+	HideChildrenInMenu int32 `json:"hideChildrenInMenu"`
 
 	Group string `json:"group"`
 }
