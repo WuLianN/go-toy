@@ -17,6 +17,10 @@ type Menu struct {
 	MetaId int32   `json:"meta_id"`
 
 	Title string `json:"title"`
+	HideMenu int32 `json:"hide_menu"`
+	Icon string `json:"icon"`
+
+	Group string `json:"group"`
 }
 
 func (model Menu) TableName() string {

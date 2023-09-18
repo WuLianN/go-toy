@@ -20,14 +20,30 @@ type TreeList struct {
 	// children
 	Children []TreeList `json:"children"`
 	// meta
-	Meta map[string]string `json:"meta"`
+	Meta map[string]any `json:"meta"`
 }
 
 func (svc *Service) GetMenuList() []TreeList {
 	menus := svc.dao.GetMenu()
 
 	if menus != nil {
-		menuList := GetTreeMenu(menus, 0)
+		// 分组
+		systemManagement := make([]model.Menu, 0) // 系统管理
+		about := make([]model.Menu, 0) // 关于
+
+		for _, menu := range menus {
+			switch menu.Group {
+				case "systemManagement":
+					systemManagement = append(systemManagement, menu)
+				case "about":
+					about = append(about, menu)
+			}
+		}
+
+		systemManagementMenu := GetTreeMenu(systemManagement, 0)
+		aboutMenu := GetTreeMenu(about, 0)
+
+		menuList := append(systemManagementMenu, aboutMenu...)
 
 		return menuList
 	}
@@ -55,9 +71,16 @@ func GetTreeMenu(menuList []model.Menu, pid int32) []TreeList {
 	return treeList
 }
 
-func GetMeta(menu model.Menu) map[string]string {
-	meta := make(map[string]string)
+func GetMeta(menu model.Menu) map[string]any {
+	meta := make(map[string]any)
 	meta["title"] = menu.Title
+
+	if menu.HideMenu == 1 {
+		meta["hideMenu"] = true
+	}
+	if menu.Icon != "" {
+		meta["icon"] = menu.Icon
+	}
 
 	return meta
 }
