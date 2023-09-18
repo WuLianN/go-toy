@@ -4,9 +4,9 @@ import (
 	"github.com/WuLianN/go-toy/internal/model"
 )
 
-// @description 用户是否为系统用户
-// @param userName 用户名
-// @param id 用户ID
+// 用户是否为系统用户
+// userName 用户名
+// id 用户ID
 func (d *Dao) IsSystemUser (userName string, id uint) (bool, *model.User) {
 	user := model.User{ UserName: userName, Id: id }
 	var err error

@@ -11,7 +11,7 @@ paths:
       parameters:
       - description: 用户名
         in: body
-        name: user_name
+        name: username
         required: true
         schema:
           type: string
@@ -52,7 +52,7 @@ paths:
       parameters:
       - description: 用户名
         in: body
-        name: user_name
+        name: username
         required: true
         schema:
           type: string
@@ -74,6 +74,73 @@ paths:
           schema:
             type: string
       summary: 注册
+      tags:
+      - user
+  /changePassword:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 旧密码
+        in: body
+        name: oldPassword
+        required: true
+        schema:
+          type: string
+      - description: 新密码
+        in: body
+        name: newPassword
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: ok
+          schema:
+            type: string
+        "1":
+          description: fail
+          schema:
+            type: string
+      summary: 修改密码
+      tags:
+      - user
+  /getMenuList:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: ok
+          schema:
+            type: string
+        "1":
+          description: fail
+          schema:
+            type: string
+      summary: 获取角色菜单
+      tags:
+      - menu
+  /getUserInfo:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: ok
+          schema:
+            type: string
+        "1":
+          description: fail
+          schema:
+            type: string
+      summary: 获取用户信息
       tags:
       - user
 swagger: "2.0"

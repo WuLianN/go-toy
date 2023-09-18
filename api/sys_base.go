@@ -29,7 +29,7 @@ func (b *BaseApi) Ping(c *gin.Context) {
 // @Param password body string true "密码" 
 // @Success 0 {string} string "ok"
 // @Failure 1 {string} string "fail"
-// @Router /api/login [post]
+// @Router /login [post]
 func (b *BaseApi) Login(c *gin.Context) {
 	param := service.UserRequest{}
 	response := app.NewResponse(c)
@@ -88,7 +88,7 @@ func (b *BaseApi) Login(c *gin.Context) {
 // @Param password body string true "密码" 
 // @Success 0 {string} string "ok"
 // @Failure 1 {string} string "fail"
-// @Router /api/register [post]
+// @Router /register [post]
 func (b *BaseApi) Register(c *gin.Context) {
 	param := service.UserRequest{}
 	response := app.NewResponse(c)

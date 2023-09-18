@@ -9,6 +9,13 @@ import (
 
 type MenuApi struct {}
 
+// @Summary 获取角色菜单
+// @Accept json
+// @Produce json
+// @Tags menu
+// @Success 0 {string} string "ok"
+// @Failure 1 {string} string "fail"
+// @Router /getMenuList [get] 
 func (m *MenuApi) GetRoleMenu(c *gin.Context) {
 	response := app.NewResponse(c)
 	svc := service.New(c.Request.Context())

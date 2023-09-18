@@ -13,7 +13,6 @@ import (
 type UserApi struct {}
 
 // @Summary 获取用户信息
-// @Param token param unit true "用户token"
 // @Accept json
 // @Produce json
 // @Tags user
@@ -77,6 +76,14 @@ func (u *UserApi) GetUserInfo(c *gin.Context) {
 }
 
 // @Summary 修改密码
+// @Param oldPassword body string true "旧密码"
+// @Param newPassword body string true "新密码"
+// @Accept json
+// @Produce json
+// @Tags user
+// @Success 0 {string} string "ok"
+// @Failure 1 {string} string "fail"
+// @Router /changePassword [post]
 func (u *UserApi) ChangePassword(c *gin.Context) {
 	param := service.ChangePasswordRequest{}
 	response := app.NewResponse(c)
