@@ -1,9 +1,11 @@
 ## 项目简介
-项目基础代码学习于 `《Go 语言编程之旅》` https://github.com/go-programming-tour-book/
+:dart: 练习go，web项目，快速练习，前端使用开源后台管理 [vue-vben-admin](https://github.com/vbenjs/vue-vben-admin)
 
-项目架构学习于 `project-layout` https://github.com/golang-standards/project-layout/blob/master/README_zh.md
+项目基础代码学习于 [《Go 语言编程之旅》](https://github.com/go-programming-tour-book/)
 
-项目api接口对接 `vue-vben-admin` https://github.com/vbenjs/vue-vben-admin
+项目架构学习于 [project-layout](https://github.com/golang-standards/project-layout/blob/master/README_zh.md)
+
+项目api接口对接 [vue-vben-admin](https://github.com/vbenjs/vue-vben-admin)
 
 ### 目录结构
 ```
@@ -85,3 +87,58 @@ swag init --help
 swag init
 ```
 api文档 http://localhost:8000/swagger/index.html
+
+
+## `vue-vben-admin` 相关
+
+### 前后端，端口需要一致
+> vue-vben-admin -> `vite.config.ts`
+>
+> go-toy -> `configs/config.yaml`
+>
+```js
+server: {
+  proxy: {
+    '/basic-api': {
+        target: 'http://localhost:8000',
+    }
+  }
+}
+```
+```yaml
+Server:
+  HttpPort: 8000
+```
+
+### 注释前端mock请求
+在`vue-vben-admin`的`mock`目录下
+
+`mock/user.ts` 登录
+```ts
+export default [
+  // mock user login
+  {
+    url: '/basic-api/login',
+    timeout: 200,
+    method: 'post',
+    response: ({ body }) => {
+      const { username, password } = body;
+      const checkUser = createFakeUserList().find(
+        (item) => item.username === username && password === item.password,
+      );
+      if (!checkUser) {
+        return resultError('Incorrect account or password！');
+      }
+      const { userId, username: _username, token, realName, desc, roles } = checkUser;
+      return resultSuccess({
+        roles,
+        userId,
+        username: _username,
+        token,
+        realName,
+        desc,
+      });
+    },
+  },
+] as MockMethod[];
+```
