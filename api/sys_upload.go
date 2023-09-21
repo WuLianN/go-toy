@@ -16,6 +16,13 @@ func NewUpload() Upload {
 	return Upload{}
 }
 
+// @Summary 上传文件
+// @Accept application/form-data
+// @Produce json
+// @Tags 基建
+// @Param type body string true "类型" 
+// @Param file body string true "文件" 
+// @Router /upload/file [post]
 func (u Upload) UploadFile(c *gin.Context) {
 	response := app.NewResponse(c)
 	file, fileHeader, err := c.Request.FormFile("file")

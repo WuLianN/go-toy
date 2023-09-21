@@ -4,37 +4,6 @@ info:
   title: go-toy
   version: "1.0"
 paths:
-  /api/login:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: 用户名
-        in: body
-        name: username
-        required: true
-        schema:
-          type: string
-      - description: 密码
-        in: body
-        name: password
-        required: true
-        schema:
-          type: string
-      produces:
-      - application/json
-      responses:
-        "0":
-          description: ok
-          schema:
-            type: string
-        "1":
-          description: fail
-          schema:
-            type: string
-      summary: 登录
-      tags:
-      - user
   /api/ping:
     get:
       produces:
@@ -45,37 +14,6 @@ paths:
           schema:
             type: string
       summary: 测试Ping
-  /api/register:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: 用户名
-        in: body
-        name: username
-        required: true
-        schema:
-          type: string
-      - description: 密码
-        in: body
-        name: password
-        required: true
-        schema:
-          type: string
-      produces:
-      - application/json
-      responses:
-        "0":
-          description: ok
-          schema:
-            type: string
-        "1":
-          description: fail
-          schema:
-            type: string
-      summary: 注册
-      tags:
-      - user
   /changePassword:
     post:
       consumes:
@@ -143,4 +81,89 @@ paths:
       summary: 获取用户信息
       tags:
       - user
+  /login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户名
+        in: body
+        name: username
+        required: true
+        schema:
+          type: string
+      - description: 密码
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: ok
+          schema:
+            type: string
+        "1":
+          description: fail
+          schema:
+            type: string
+      summary: 登录
+      tags:
+      - user
+  /register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户名
+        in: body
+        name: username
+        required: true
+        schema:
+          type: string
+      - description: 密码
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: ok
+          schema:
+            type: string
+        "1":
+          description: fail
+          schema:
+            type: string
+      summary: 注册
+      tags:
+      - user
+  /upload/file:
+    post:
+      consumes:
+      - application/form-data
+      parameters:
+      - description: 类型
+        in: body
+        name: type
+        required: true
+        schema:
+          type: string
+      - description: 文件
+        in: body
+        name: file
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: 上传文件
+      tags:
+      - 基建
 swagger: "2.0"
