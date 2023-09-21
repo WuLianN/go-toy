@@ -7,9 +7,11 @@ import (
 
 func InitBaseRouter(Router *gin.RouterGroup) {
 	baseApi := api.ApiGroupApp.BaseApi
+	uploadApi := api.NewUpload()
 	{
 		Router.GET("/ping", baseApi.Ping)
 		Router.POST("/login", baseApi.Login)
 		Router.POST("/register", baseApi.Register)
+		Router.POST("/upload/file", uploadApi.UploadFile)
 	}
 }

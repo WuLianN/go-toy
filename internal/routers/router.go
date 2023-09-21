@@ -6,7 +6,6 @@ import (
 
 	"github.com/WuLianN/go-toy/global"
 	"github.com/WuLianN/go-toy/internal/middleware"
-	"github.com/WuLianN/go-toy/api"
 	"github.com/WuLianN/go-toy/pkg/limiter"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
@@ -44,10 +43,6 @@ func SetupRouter() *gin.Engine {
 
 	// 静态资源
 	r.StaticFS("/static", http.Dir(global.AppSetting.UploadSavePath))
-
-	// 上传文件
-	upload := api.NewUpload()
-  r.POST("/upload/file", upload.UploadFile)
 
 	// 系统基础组
 	systemBaseGroup := r.Group("/")
