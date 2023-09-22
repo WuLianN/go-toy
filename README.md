@@ -90,6 +90,9 @@ api文档 http://localhost:8000/swagger/index.html
 
 
 ## `vue-vben-admin` 相关
+> 我自己fork一份源代码，可参考 https://github.com/WuLianN/vue-vben-admin go-toy分支
+
+<br>
 
 ### 前后端，端口需要一致
 > vue-vben-admin -> `vite.config.ts`
