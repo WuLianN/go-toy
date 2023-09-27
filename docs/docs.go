@@ -64,14 +64,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "0": {
+                    "200": {
                         "description": "ok",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "1": {
-                        "description": "fail",
                         "schema": {
                             "type": "string"
                         }
@@ -92,14 +86,8 @@ const docTemplate = `{
                 ],
                 "summary": "获取角色菜单",
                 "responses": {
-                    "0": {
+                    "200": {
                         "description": "ok",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "1": {
-                        "description": "fail",
                         "schema": {
                             "type": "string"
                         }
@@ -120,14 +108,8 @@ const docTemplate = `{
                 ],
                 "summary": "获取用户信息",
                 "responses": {
-                    "0": {
+                    "200": {
                         "description": "ok",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "1": {
-                        "description": "fail",
                         "schema": {
                             "type": "string"
                         }
@@ -168,14 +150,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "0": {
+                    "200": {
                         "description": "ok",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "1": {
-                        "description": "fail",
                         "schema": {
                             "type": "string"
                         }
@@ -216,14 +192,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "0": {
+                    "200": {
                         "description": "ok",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "1": {
-                        "description": "fail",
                         "schema": {
                             "type": "string"
                         }

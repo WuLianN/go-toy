@@ -13,8 +13,7 @@ type MenuApi struct {}
 // @Accept json
 // @Produce json
 // @Tags menu
-// @Success 0 {string} string "ok"
-// @Failure 1 {string} string "fail"
+// @Success 200 {string} string "ok"
 // @Router /getMenuList [get] 
 func (m *MenuApi) GetRoleMenu(c *gin.Context) {
 	response := app.NewResponse(c)

@@ -34,12 +34,8 @@ paths:
       produces:
       - application/json
       responses:
-        "0":
+        "200":
           description: ok
-          schema:
-            type: string
-        "1":
-          description: fail
           schema:
             type: string
       summary: 修改密码
@@ -52,12 +48,8 @@ paths:
       produces:
       - application/json
       responses:
-        "0":
+        "200":
           description: ok
-          schema:
-            type: string
-        "1":
-          description: fail
           schema:
             type: string
       summary: 获取角色菜单
@@ -70,12 +62,8 @@ paths:
       produces:
       - application/json
       responses:
-        "0":
+        "200":
           description: ok
-          schema:
-            type: string
-        "1":
-          description: fail
           schema:
             type: string
       summary: 获取用户信息
@@ -101,12 +89,8 @@ paths:
       produces:
       - application/json
       responses:
-        "0":
+        "200":
           description: ok
-          schema:
-            type: string
-        "1":
-          description: fail
           schema:
             type: string
       summary: 登录
@@ -132,12 +116,8 @@ paths:
       produces:
       - application/json
       responses:
-        "0":
+        "200":
           description: ok
-          schema:
-            type: string
-        "1":
-          description: fail
           schema:
             type: string
       summary: 注册

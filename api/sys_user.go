@@ -16,8 +16,7 @@ type UserApi struct {}
 // @Accept json
 // @Produce json
 // @Tags user
-// @Success 0 {string} string "ok"
-// @Failure 1 {string} string "fail"
+// @Success 200 {string} string "ok"
 // @Router /getUserInfo [get]
 func (u *UserApi) GetUserInfo(c *gin.Context) {
 	var token string
@@ -81,8 +80,7 @@ func (u *UserApi) GetUserInfo(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Tags user
-// @Success 0 {string} string "ok"
-// @Failure 1 {string} string "fail"
+// @Success 200 {string} string "ok"
 // @Router /changePassword [post]
 func (u *UserApi) ChangePassword(c *gin.Context) {
 	param := service.ChangePasswordRequest{}
