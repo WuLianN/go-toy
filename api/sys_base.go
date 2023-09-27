@@ -47,7 +47,7 @@ func (b *BaseApi) Login(c *gin.Context) {
 	if loginStatus != true {
 		response.ToResponse(gin.H{
 			"code": errcode.Fail.Code(),
-			"msg": "用户名不存在或者密码错误",
+			"message": "用户名不存在或者密码错误",
 		})
 		return
 	}
@@ -105,17 +105,17 @@ func (b *BaseApi) Register(c *gin.Context) {
 	if bool == true {
 		response.ToResponse(gin.H{
 			"code": errcode.Success.Code(),
-			"msg": "注册成功",
+			"message": "注册成功",
 		})
 	} else if bool == false && err == nil {
 		response.ToResponse(gin.H{
 			"code": errcode.Fail.Code(),
-			"msg": "用户已注册",
+			"message": "用户已注册",
 		})
 	} else {
 		response.ToResponse(gin.H{
 			"code": errcode.Fail.Code(),
-			"msg": "注册失败",
+			"message": "注册失败",
 		})
 	}
 }

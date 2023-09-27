@@ -2,6 +2,7 @@ package dao
 
 import (
 	"github.com/WuLianN/go-toy/internal/model"
+	"time"
 )
 
 // 用户是否为系统用户
@@ -26,7 +27,8 @@ func (d *Dao) IsSystemUser (userName string, id uint) (bool, *model.User) {
 
 // 注册
 func (d *Dao) Register(UserName string, Password string) (error) {
-	user := model.User{ UserName: UserName, Password: Password }
+	createTime := time.Now().Format(time.DateTime)
+	user := model.User{ UserName: UserName, Password: Password, CreateTime: createTime }
 	err := d.engine.Create(&user).Error
 	if err != nil {
 		return err
