@@ -32,7 +32,7 @@ func (u *UserApi) GetUserInfo(c *gin.Context) {
 	if token == "" {
 		response.ToResponse(gin.H{
 			"code": errcode.Fail.Code(),
-			"msg": "无token",
+			"message": "无token",
 		})
 		return
 	} 
@@ -48,7 +48,7 @@ func (u *UserApi) GetUserInfo(c *gin.Context) {
 	if loginStatus != true {
 		response.ToResponse(gin.H{
 			"code": errcode.Fail.Code(),
-			"msg": "用户ID错误",
+			"message": "用户ID错误",
 		})
 		return
 	}
