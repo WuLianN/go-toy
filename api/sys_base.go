@@ -117,3 +117,24 @@ func (b *BaseApi) Register(c *gin.Context) {
 		})
 	}
 }
+
+// @Summary 访问网页, 埋点上报
+// @Accept json
+// @Produce json
+// @Tags 基建
+// @Success 200 {string} string "ok"
+// @Router /visit [get]
+func (b *BaseApi) Visit(c *gin.Context) {
+	ip := c.Request.Header.Get("X-Real-IP")
+	
+	if ip == "" {
+		ip = c.Request.Header.Get("X-Forwarded-For")
+	}
+
+	if ip == "" {
+		ip = c.Request.RemoteAddr
+	}
+
+	svc := service.New(c.Request.Context())
+	svc.Visit(ip)
+}

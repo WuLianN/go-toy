@@ -13,5 +13,7 @@ func InitBaseRouter(Router *gin.RouterGroup) {
 		Router.POST("/login", baseApi.Login)
 		Router.POST("/register", baseApi.Register)
 		Router.POST("/upload/file", uploadApi.UploadFile)
+		Router.GET("/visit", baseApi.Visit)
+		Router.GET("/getVisitStatistics", api.ApiGroupApp.StatisticsApi.GetVisitStatistics)
 	}
 }
