@@ -22,6 +22,7 @@
 │  ├─routers          路由层
 │  └─service          服务层 - 项目核心业务逻辑
 ├─pkg                 模块包
+├─sql                 项目sql文件
 └─storage             项目生成的临时文件
     ├─logs            日志
     └─uploads         上传文件
