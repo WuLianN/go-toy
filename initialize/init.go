@@ -47,6 +47,8 @@ func SetupInit() {
 	if err != nil {
 		log.Fatalf("init.setupTracer err: %v", err)
 	}
+
+	setupRedisDBEngine()
 }
 
 func setupFlag() error {
@@ -77,6 +79,10 @@ func setupSetting() error {
 		return err
 	}
 	err = s.ReadSection("JWT", &global.JWTSetting)
+	if err != nil {
+		return err
+	}
+	err = s.ReadSection("RedisDB", &global.RedisDBSetting)
 	if err != nil {
 		return err
 	}
@@ -125,4 +131,8 @@ func setupTracer() error {
 	}
 	global.Tracer = jaegerTracer
 	return nil
+}
+
+func setupRedisDBEngine() {
+	global.RedisDBEngine = db.NewRedisDBEngine(global.RedisDBSetting)
 }

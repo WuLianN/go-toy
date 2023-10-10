@@ -10,6 +10,7 @@ var (
 	AppSetting      *setting.AppSettingS
 	JWTSetting      *setting.JWTSettingS
 	DatabaseSetting *setting.DatabaseSettingS
+	RedisDBSetting 	*setting.RedisDBSettingS
 	Logger          *logger.Logger
 )
 

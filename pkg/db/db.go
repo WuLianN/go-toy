@@ -8,6 +8,7 @@ import (
 	otgorm "github.com/WuLianN/go-toy/pkg/opentracing-gorm"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	redis "github.com/redis/go-redis/v9"
 )
 
 func NewDBEngine(databaseSetting *setting.DatabaseSettingS) (*gorm.DB, error) {
@@ -38,3 +39,12 @@ func NewDBEngine(databaseSetting *setting.DatabaseSettingS) (*gorm.DB, error) {
 	return db, nil
 }
 
+func NewRedisDBEngine(redisDBSetting *setting.RedisDBSettingS) (*redis.Client) {
+	rdb := redis.NewClient(&redis.Options{
+		Addr:	  redisDBSetting.Addr,
+		Password: redisDBSetting.Password,
+		DB:		  redisDBSetting.DB,
+	})
+
+	return rdb
+}
