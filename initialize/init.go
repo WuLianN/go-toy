@@ -5,12 +5,15 @@ import (
 	"log"
 	"strings"
 	"time"
+	"context"
 
 	"github.com/WuLianN/go-toy/pkg/setting"
 	"github.com/WuLianN/go-toy/pkg/logger"
 	"github.com/WuLianN/go-toy/pkg/tracer"
 	"github.com/WuLianN/go-toy/pkg/db"
 	"github.com/WuLianN/go-toy/global"
+	"github.com/robfig/cron/v3"
+	"github.com/WuLianN/go-toy/internal/service"
 
 	"gopkg.in/natefinch/lumberjack.v2"
 )
@@ -49,6 +52,8 @@ func SetupInit() {
 	}
 
 	setupRedisDBEngine()
+
+	setUpCron()
 }
 
 func setupFlag() error {
@@ -135,4 +140,12 @@ func setupTracer() error {
 
 func setupRedisDBEngine() {
 	global.RedisDBEngine = db.NewRedisDBEngine(global.RedisDBSetting)
+}
+
+func setUpCron() {
+	global.Cron = cron.New()
+
+	ctx := context.Background()
+	svc := service.New(ctx)
+	svc.CronStart()
 }
