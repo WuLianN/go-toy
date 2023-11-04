@@ -10,7 +10,8 @@ CREATE TABLE `user`  (
   `user_id` int(0) NULL DEFAULT NULL,
   `password` varchar(60) NULL DEFAULT NULL,
   `phone` tinyint(0) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `idx_user_name`(`user_name`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 22 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
