@@ -10,10 +10,6 @@ ENV GOPROXY=https://goproxy.cn \
 
 WORKDIR /app
 
-COPY go.mod .
-COPY go.sum .
-RUN go mod download
-
 COPY . .
 
 # 编译成可执行二进制文件
