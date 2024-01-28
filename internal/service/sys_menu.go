@@ -23,20 +23,20 @@ type TreeList struct {
 	Meta map[string]any `json:"meta"`
 }
 
-func (svc *Service) GetMenuList() []TreeList {
-	menus := svc.dao.GetMenu()
+func (svc *Service) GetMenuList(UserId uint) []TreeList {
+	menus := svc.dao.GetMenu(UserId)
 
 	if menus != nil {
 		// 分组名Map
-		groupNameMap := make(map[string][]model.Menu)
+		categoryNameMap := make(map[string][]model.Menu)
 
 		for _, menu := range menus {
-			groupNameMap[menu.Group] = append(groupNameMap[menu.Group], menu)
+			categoryNameMap[menu.Category] = append(categoryNameMap[menu.Category], menu)
 		}
 
 		menuList := []TreeList{}
-		for _, group := range groupNameMap {
-			menuList = append(menuList, GetTreeMenu(group, 0)...)
+		for _, category := range categoryNameMap {
+			menuList = append(menuList, GetTreeMenu(category, 0)...)
 		}
 
 		return menuList
