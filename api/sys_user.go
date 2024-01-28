@@ -1,16 +1,15 @@
 package api
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/WuLianN/go-toy/internal/service"
 	"github.com/WuLianN/go-toy/global"
+	dao "github.com/WuLianN/go-toy/internal/dao"
+	"github.com/WuLianN/go-toy/internal/service"
 	"github.com/WuLianN/go-toy/pkg/app"
 	"github.com/WuLianN/go-toy/pkg/errcode"
-	dao "github.com/WuLianN/go-toy/internal/dao"
-	"github.com/WuLianN/go-toy/internal/model"
+	"github.com/gin-gonic/gin"
 )
 
-type UserApi struct {}
+type UserApi struct{}
 
 // @Summary 获取用户信息
 // @Accept json
@@ -23,19 +22,19 @@ func (u *UserApi) GetUserInfo(c *gin.Context) {
 	if s, exist := c.GetQuery("token"); exist {
 		token = s
 	} else {
-		token = c.GetHeader("Authorization") 
+		token = c.GetHeader("Authorization")
 	}
 
 	response := app.NewResponse(c)
 
 	if token == "" {
 		response.ToResponse(gin.H{
-			"code": errcode.Fail.Code(),
+			"code":    errcode.Fail.Code(),
 			"message": "无token",
 		})
 		return
-	} 
-	
+	}
+
 	err, tokenInfo := GetTokenInfo(token)
 	if err != nil {
 		response.ToErrorResponse(err)
@@ -46,30 +45,19 @@ func (u *UserApi) GetUserInfo(c *gin.Context) {
 
 	if loginStatus != true {
 		response.ToResponse(gin.H{
-			"code": errcode.Fail.Code(),
+			"code":    errcode.Fail.Code(),
 			"message": "用户ID错误",
 		})
 		return
 	}
 
-	svc := service.New(c.Request.Context())
-
-	// 获取角色权限
-	var roles []model.Role
-	if userInfo.Id != 0 {
-		roles = svc.GetRoleList(userInfo.Id)
-	}
-	
 	response.ToResponse(gin.H{
-		"code": errcode.Success.Code(),
+		"code":    errcode.Success.Code(),
 		"message": errcode.Success.Msg(),
-		"type": "success",
-		"result": gin.H {
-			"desc": "manager",
-			"roles": roles,
+		"type":    "success",
+		"result": gin.H{
 			"username": userInfo.UserName,
-			"realName": "Vben Admin",
-			"userId": userInfo.Id,
+			"userId":   userInfo.Id,
 		},
 	})
 }
@@ -104,7 +92,7 @@ func (u *UserApi) ChangePassword(c *gin.Context) {
 
 	if isSystemUser == false {
 		response.ToErrorResponse(errcode.Fail)
-		return 
+		return
 	}
 
 	// 验证旧密码是否正确
@@ -112,10 +100,10 @@ func (u *UserApi) ChangePassword(c *gin.Context) {
 
 	if isRightOldPasword == false {
 		response.ToResponse(gin.H{
-			"code": errcode.Fail.Code(),
+			"code":    errcode.Fail.Code(),
 			"message": "当前密码错误",
 		})
-		return 
+		return
 	}
 
 	svc := service.New(c.Request.Context())
@@ -123,15 +111,15 @@ func (u *UserApi) ChangePassword(c *gin.Context) {
 
 	if isSuccessful {
 		response.ToResponse(gin.H{
-			"code": errcode.Success.Code(),
+			"code":    errcode.Success.Code(),
 			"message": "密码已更换",
 		})
-		return 
+		return
 	} else {
 		response.ToResponse(gin.H{
-			"code": errcode.Fail.Code(),
+			"code":    errcode.Fail.Code(),
 			"message": "密码更换失败!",
 		})
-		return 
+		return
 	}
 }

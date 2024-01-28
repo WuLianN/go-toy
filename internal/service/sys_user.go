@@ -1,8 +1,8 @@
 package service
 
 import (
-	"golang.org/x/crypto/bcrypt"
 	"github.com/WuLianN/go-toy/internal/model"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserRequest struct {
@@ -34,17 +34,17 @@ func (svc *Service) CheckLogin(param *UserRequest) (bool, *model.User) {
 // @return true 注册成功 false 注册失败
 func (svc *Service) CheckRegister(param *UserRequest) (bool, error) {
 	isExsited, _ := svc.dao.IsSystemUser(param.UserName, 0)
-	if (isExsited == false) {
+	if isExsited == false {
 		// hash密码
 		hash, err := GeneratePassword(param.Password)
-		
+
 		if err != nil {
 			return false, err // 失败 - 生成hash密码错误
 		}
 
 		// 注册写入数据库
 		err = svc.dao.Register(param.UserName, string(hash))
-		
+
 		if err != nil {
 			return false, err // 失败 - 密码入库存储错误
 		}
@@ -55,15 +55,6 @@ func (svc *Service) CheckRegister(param *UserRequest) (bool, error) {
 	}
 }
 
-// 获取角色权限列表
-func (svc *Service) GetRoleList(userId uint) []model.Role{
-	list := svc.dao.GetRoles(userId)
-	if list != nil {
-		return list
-	}
-	return make([]model.Role, 0)
-}
-
 // 生成密码
 func GeneratePassword(password string) ([]byte, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -71,7 +62,7 @@ func GeneratePassword(password string) ([]byte, error) {
 }
 
 // 比较密码
-func ComparePassword(password string, hash string) (bool) {
+func ComparePassword(password string, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	if err != nil {
 		return false

@@ -1,15 +1,14 @@
 package api
 
 import (
-	"github.com/gin-gonic/gin"
+	"github.com/WuLianN/go-toy/global"
 	"github.com/WuLianN/go-toy/internal/service"
 	"github.com/WuLianN/go-toy/pkg/app"
-	"github.com/WuLianN/go-toy/global"
 	"github.com/WuLianN/go-toy/pkg/errcode"
-	"github.com/WuLianN/go-toy/internal/model"
+	"github.com/gin-gonic/gin"
 )
 
-type BaseApi struct {}
+type BaseApi struct{}
 
 // @Summary 测试Ping
 // @Produce json
@@ -25,8 +24,8 @@ func (b *BaseApi) Ping(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Tags user
-// @Param username body string true "用户名" 
-// @Param password body string true "密码" 
+// @Param username body string true "用户名"
+// @Param password body string true "密码"
 // @Success 200 {string} string "ok"
 // @Router /login [post]
 func (b *BaseApi) Login(c *gin.Context) {
@@ -45,7 +44,7 @@ func (b *BaseApi) Login(c *gin.Context) {
 	// 登录失败 - 账号/密码错误
 	if loginStatus != true {
 		response.ToResponse(gin.H{
-			"code": errcode.Fail.Code(),
+			"code":    errcode.Fail.Code(),
 			"message": "用户名不存在或者密码错误",
 		})
 		return
@@ -58,23 +57,14 @@ func (b *BaseApi) Login(c *gin.Context) {
 		return
 	}
 
-	// 获取角色权限
-	var roles []model.Role
-	if userInfo.Id != 0 {
-		roles = svc.GetRoleList(userInfo.Id)
-	}
-	
 	response.ToResponse(gin.H{
-		"code": errcode.Success.Code(),
+		"code":    errcode.Success.Code(),
 		"message": errcode.Success.Msg(),
-		"type": "success",
-		"result": gin.H {
-			"desc": "manager",
-			"token": token,
-			"roles": roles,
+		"type":    "success",
+		"result": gin.H{
+			"token":    token,
 			"username": userInfo.UserName,
-			"realName": "Vben Admin",
-			"userId": userInfo.Id,
+			"userId":   userInfo.Id,
 		},
 	})
 }
@@ -83,8 +73,8 @@ func (b *BaseApi) Login(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Tags user
-// @Param username body string true "用户名" 
-// @Param password body string true "密码" 
+// @Param username body string true "用户名"
+// @Param password body string true "密码"
 // @Success 200 {string} string "ok"
 // @Router /register [post]
 func (b *BaseApi) Register(c *gin.Context) {
@@ -102,17 +92,17 @@ func (b *BaseApi) Register(c *gin.Context) {
 
 	if bool == true {
 		response.ToResponse(gin.H{
-			"code": errcode.Success.Code(),
+			"code":    errcode.Success.Code(),
 			"message": "注册成功",
 		})
 	} else if bool == false && err == nil {
 		response.ToResponse(gin.H{
-			"code": errcode.Fail.Code(),
+			"code":    errcode.Fail.Code(),
 			"message": "用户已注册",
 		})
 	} else {
 		response.ToResponse(gin.H{
-			"code": errcode.Fail.Code(),
+			"code":    errcode.Fail.Code(),
 			"message": "注册失败",
 		})
 	}
@@ -126,7 +116,7 @@ func (b *BaseApi) Register(c *gin.Context) {
 // @Router /visit [get]
 func (b *BaseApi) Visit(c *gin.Context) {
 	ip := c.Request.Header.Get("X-Real-IP")
-	
+
 	if ip == "" {
 		ip = c.Request.Header.Get("X-Forwarded-For")
 	}
