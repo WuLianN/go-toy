@@ -27,7 +27,7 @@ func (svc *Service) GetMenuList(UserId uint) []TreeList {
 	menus := svc.dao.GetMenu(UserId)
 
 	if menus != nil {
-		// 分组名Map
+		// 分类名Map
 		categoryNameMap := make(map[string][]model.Menu)
 
 		for _, menu := range menus {

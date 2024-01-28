@@ -12,7 +12,7 @@ CREATE TABLE `menu`  (
   `parent_id` int(0) UNSIGNED NOT NULL COMMENT '父级id',
   `meta_id` int(0) UNSIGNED NULL DEFAULT NULL COMMENT 'meta id',
   `is_use` int(0) UNSIGNED NULL DEFAULT NULL COMMENT '1 使用 2不使用',
-  `group` varchar(255) NOT NULL COMMENT '分组名称',
+  `category` varchar(255) NOT NULL COMMENT '分类名称',
   `sort` int(0) NULL DEFAULT NULL COMMENT '排序',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
