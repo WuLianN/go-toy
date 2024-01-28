@@ -27,28 +27,17 @@ func (svc *Service) GetMenuList() []TreeList {
 	menus := svc.dao.GetMenu()
 
 	if menus != nil {
-		// 分组
-		systemManagement := make([]model.Menu, 0) // 系统管理
-		about := make([]model.Menu, 0) // 关于
-		authManagement := make([]model.Menu, 0) // 权限管理
+		// 分组名Map
+		groupNameMap := make(map[string][]model.Menu)
 
 		for _, menu := range menus {
-			switch menu.Group {
-				case "systemManagement":
-					systemManagement = append(systemManagement, menu)
-				case "about":
-					about = append(about, menu)
-				case "authManagement":
-					authManagement = append(authManagement, menu)
-			}
+			groupNameMap[menu.Group] = append(groupNameMap[menu.Group], menu)
 		}
 
-		systemManagementMenu := GetTreeMenu(systemManagement, 0)
-		aboutMenu := GetTreeMenu(about, 0)
-		authManagementMenu := GetTreeMenu(authManagement, 0)
-
-		menuList := append(systemManagementMenu, authManagementMenu...)
-		menuList = append(menuList, aboutMenu...)
+		menuList := []TreeList{}
+		for _, group := range groupNameMap {
+			menuList = append(menuList, GetTreeMenu(group, 0)...)
+		}
 
 		return menuList
 	}
