@@ -9,7 +9,7 @@ import (
 // 用户是否为系统用户
 // userName 用户名
 // id 用户ID
-func (d *Dao) IsSystemUser(userName string, id uint) (bool, *model.User) {
+func (d *Dao) IsSystemUser(userName string, id uint32) (bool, *model.User) {
 	user := model.User{UserName: userName, Id: id}
 	var err error
 	if userName != "" {
@@ -38,7 +38,7 @@ func (d *Dao) Register(UserName string, Password string) error {
 }
 
 // 更换密码
-func (d *Dao) ChangePassword(userId uint, passwordHash []byte) bool {
+func (d *Dao) ChangePassword(userId uint32, passwordHash []byte) bool {
 	result := d.engine.Table("user").Where("id = ?", userId).Update("password", passwordHash)
 
 	if result.RowsAffected == 0 || result.Error != nil {

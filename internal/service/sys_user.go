@@ -11,7 +11,7 @@ type UserRequest struct {
 }
 
 type UserInfoRequest struct {
-	UserId uint `json:"userId" binding:"required"`
+	UserId uint32 `json:"userId" binding:"required"`
 }
 
 type ChangePasswordRequest struct {
@@ -72,7 +72,7 @@ func ComparePassword(password string, hash string) bool {
 }
 
 // 更换密码
-func (svc *Service) ChangePassword(userId uint, newPassword string) bool {
+func (svc *Service) ChangePassword(userId uint32, newPassword string) bool {
 	newPasswordHash, _ := GeneratePassword(newPassword)
 	if len(newPasswordHash) > 0 {
 		isSuccessful := svc.dao.ChangePassword(userId, newPasswordHash)

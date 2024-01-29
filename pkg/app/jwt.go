@@ -8,7 +8,7 @@ import (
 )
 
 type Claims struct {
-	UserId uint `json:"id"`
+	UserId   uint32 `json:"id"`
 	UserName string `json:"user_name"`
 	jwt.RegisteredClaims
 }
@@ -17,15 +17,15 @@ func GetJWTSecret() string {
 	return global.JWTSetting.Secret
 }
 
-func GenerateToken(UserId uint, UserName string) (string, error) {
+func GenerateToken(UserId uint32, UserName string) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(global.JWTSetting.Expire)
 	claims := Claims{
-		UserId:    UserId,
-		UserName:  UserName,
+		UserId:   UserId,
+		UserName: UserName,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expireTime),
-			IssuedAt: jwt.NewNumericDate(nowTime),
+			IssuedAt:  jwt.NewNumericDate(nowTime),
 			Issuer:    global.JWTSetting.Issuer,
 		},
 	}

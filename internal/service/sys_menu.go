@@ -23,7 +23,7 @@ type TreeList struct {
 	Meta map[string]any `json:"meta"`
 }
 
-func (svc *Service) GetMenuList(UserId uint) []TreeList {
+func (svc *Service) GetMenuList(UserId uint32) []TreeList {
 	menus := svc.dao.GetMenu(UserId)
 
 	if menus != nil {
