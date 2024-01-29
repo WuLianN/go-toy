@@ -1,6 +1,8 @@
 package api
 
 import (
+	"strconv"
+
 	"github.com/WuLianN/go-toy/internal/service"
 	"github.com/WuLianN/go-toy/pkg/app"
 	"github.com/WuLianN/go-toy/pkg/errcode"
@@ -17,14 +19,24 @@ type MenuApi struct{}
 // @Router /getMenuList [get]
 func (m *MenuApi) GetRoleMenu(c *gin.Context) {
 	response := app.NewResponse(c)
-	token := GetToken(c)
-	err, tokenInfo := GetTokenInfo(token)
-	if err != nil {
-		response.ToErrorResponse(err)
-		return
+	userIdStr := c.Query("user_id")
+	var userId uint32
+
+	if userIdStr != "" {
+		userIdUint64, _ := strconv.ParseUint(userIdStr, 10, 32)
+		userId = uint32(userIdUint64)
+	} else {
+		token := GetToken(c)
+		err, tokenInfo := GetTokenInfo(token)
+		if err != nil {
+			response.ToErrorResponse(err)
+			return
+		}
+		userId = tokenInfo.UserId
 	}
+
 	svc := service.New(c.Request.Context())
-	list := svc.GetMenuList(tokenInfo.UserId)
+	list := svc.GetMenuList(userId)
 	if list != nil {
 		response.ToResponse(gin.H{
 			"code":    errcode.Success.Code(),
