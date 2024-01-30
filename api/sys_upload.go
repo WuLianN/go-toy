@@ -20,17 +20,17 @@ func NewUpload() Upload {
 // @Accept application/form-data
 // @Produce json
 // @Tags 基建
-// @Param type body string true "类型" 
-// @Param file body string true "文件" 
+// @Param type body string true "类型"
+// @Param file body string true "文件"
 // @Router /upload/file [post]
 func (u Upload) UploadFile(c *gin.Context) {
 	response := app.NewResponse(c)
 	file, fileHeader, err := c.Request.FormFile("file")
 	fileType := convert.StrTo(c.PostForm("type")).MustInt()
-	
+
 	if err != nil {
 		response.ToErrorResponse(errcode.InvalidParams.WithDetails(err.Error()))
-		return 
+		return
 	}
 
 	if fileHeader == nil || fileType <= 0 {
@@ -48,6 +48,11 @@ func (u Upload) UploadFile(c *gin.Context) {
 	}
 
 	response.ToResponse(gin.H{
-		"file_access_url": fileInfo.AccessUrl,
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+		"type":    "success",
+		"result": gin.H{
+			"file_access_url": fileInfo.AccessUrl,
+		},
 	})
 }
