@@ -15,22 +15,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/ping": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "测试Ping",
-                "responses": {
-                    "0": {
-                        "description": "ok",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/changePassword": {
             "post": {
                 "consumes": [

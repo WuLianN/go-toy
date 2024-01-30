@@ -10,16 +10,6 @@ import (
 
 type BaseApi struct{}
 
-// @Summary 测试Ping
-// @Produce json
-// @Success 0 {string} string "ok"
-// @Router /api/ping [get]
-func (b *BaseApi) Ping(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"message": "pong",
-	})
-}
-
 // @Summary 登录
 // @Accept json
 // @Produce json

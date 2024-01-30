@@ -21,16 +21,6 @@ info:
   title: go-toy
   version: "1.0"
 paths:
-  /api/ping:
-    get:
-      produces:
-      - application/json
-      responses:
-        "0":
-          description: ok
-          schema:
-            type: string
-      summary: 测试Ping
   /changePassword:
     post:
       consumes:
