@@ -65,6 +65,91 @@
                 }
             }
         },
+        "/createDraft": {
+            "get": {
+                "tags": [
+                    "草稿"
+                ],
+                "summary": "创建草稿",
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/model.ResponseResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/model.CreateDraftResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/deleteDraft": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "草稿"
+                ],
+                "summary": "删除草稿",
+                "parameters": [
+                    {
+                        "description": "草稿id",
+                        "name": "id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/getDraft": {
+            "get": {
+                "tags": [
+                    "草稿"
+                ],
+                "summary": "获取草稿",
+                "parameters": [
+                    {
+                        "description": "草稿id",
+                        "name": "id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/getMenuList": {
             "get": {
                 "consumes": [
@@ -193,6 +278,52 @@
                 }
             }
         },
+        "/saveDraft": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "草稿"
+                ],
+                "summary": "保存草稿",
+                "parameters": [
+                    {
+                        "description": "草稿id",
+                        "name": "id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "标题",
+                        "name": "title",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "内容",
+                        "name": "content",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "$ref": "#/definitions/model.ResponseResult"
+                        }
+                    }
+                }
+            }
+        },
         "/upload/file": {
             "post": {
                 "consumes": [
@@ -226,6 +357,53 @@
                     }
                 ],
                 "responses": {}
+            }
+        },
+        "/visit": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "基建"
+                ],
+                "summary": "访问网页, 埋点上报",
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "model.CreateDraftResponse": {
+            "type": "object",
+            "properties": {
+                "draft_id": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "model.ResponseResult": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 0
+                },
+                "message": {
+                    "type": "string",
+                    "example": "ok"
+                },
+                "result": {}
             }
         }
     }

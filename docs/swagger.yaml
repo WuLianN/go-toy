@@ -1,3 +1,20 @@
+definitions:
+  model.CreateDraftResponse:
+    properties:
+      draft_id:
+        example: 1
+        type: integer
+    type: object
+  model.ResponseResult:
+    properties:
+      code:
+        example: 0
+        type: integer
+      message:
+        example: ok
+        type: string
+      result: {}
+    type: object
 info:
   contact: {}
   description: 玩起来！！！
@@ -41,6 +58,57 @@ paths:
       summary: 修改密码
       tags:
       - user
+  /createDraft:
+    get:
+      responses:
+        "200":
+          description: ok
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.ResponseResult'
+            - properties:
+                result:
+                  $ref: '#/definitions/model.CreateDraftResponse'
+              type: object
+      summary: 创建草稿
+      tags:
+      - 草稿
+  /deleteDraft:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 草稿id
+        in: body
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 删除草稿
+      tags:
+      - 草稿
+  /getDraft:
+    get:
+      parameters:
+      - description: 草稿id
+        in: body
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 获取草稿
+      tags:
+      - 草稿
   /getMenuList:
     get:
       consumes:
@@ -123,6 +191,35 @@ paths:
       summary: 注册
       tags:
       - user
+  /saveDraft:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 草稿id
+        in: body
+        name: id
+        required: true
+        schema:
+          type: integer
+      - description: 标题
+        in: body
+        name: title
+        schema:
+          type: string
+      - description: 内容
+        in: body
+        name: content
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ok
+          schema:
+            $ref: '#/definitions/model.ResponseResult'
+      summary: 保存草稿
+      tags:
+      - 草稿
   /upload/file:
     post:
       consumes:
@@ -144,6 +241,20 @@ paths:
       - application/json
       responses: {}
       summary: 上传文件
+      tags:
+      - 基建
+  /visit:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 访问网页, 埋点上报
       tags:
       - 基建
 swagger: "2.0"

@@ -11,6 +11,11 @@ import (
 
 type DraftApi struct{}
 
+// @Summary 获取草稿
+// @Param id body uint32 true "草稿id"
+// @Tags 草稿
+// @Success 200 {string} string "ok"
+// @Router /getDraft [get]
 func (d *DraftApi) GetDraft(c *gin.Context) {
 	response := app.NewResponse(c)
 	idStr := c.Query("id")
@@ -41,6 +46,10 @@ func (d *DraftApi) GetDraft(c *gin.Context) {
 	})
 }
 
+// @Summary 创建草稿
+// @Tags 草稿
+// @Success 200 {object} model.ResponseResult{result=model.CreateDraftResponse} "ok"
+// @Router /createDraft [get]
 func (d *DraftApi) CreateDraft(c *gin.Context) {
 	response := app.NewResponse(c)
 	var userId uint32
@@ -70,6 +79,14 @@ func (d *DraftApi) CreateDraft(c *gin.Context) {
 	})
 }
 
+// @Summary 保存草稿
+// @Param id body uint32 true "草稿id"
+// @Param title body string false "标题"
+// @Param content body string false "内容"
+// @Tags 草稿
+// @Accept json
+// @Success 200 {object} model.ResponseResult "ok"
+// @Router /saveDraft [post]
 func (d *DraftApi) SaveDraft(c *gin.Context) {
 	param := service.SaveRequest{}
 	response := app.NewResponse(c)
@@ -96,6 +113,12 @@ func (d *DraftApi) SaveDraft(c *gin.Context) {
 	})
 }
 
+// @Summary 删除草稿
+// @Param id body uint32 true "草稿id"
+// @Tags 草稿
+// @Accept json
+// @Success 200 {string} string "ok"
+// @Router /deleteDraft [post]
 func (d *DraftApi) DeleteDraft(c *gin.Context) {
 	param := service.DeleteRequest{}
 	response := app.NewResponse(c)
