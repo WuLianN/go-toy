@@ -21,6 +21,16 @@ type DeleteRequest struct {
 	Id uint32 `json:"id" binding:"required"`
 }
 
+type PublishRequest struct {
+	Id uint32 `json:"id" binding:"required"`
+}
+
+type ListRequest struct {
+	UserId   uint32 `json:"user_id"`
+	Page     int    `json:"page" default:"1"`
+	PageSize int    `json:"page_size" default:"10"`
+}
+
 func (svc *Service) GetDraft(id uint32) (model.Draft, error) {
 	return svc.dao.QueryDraft(id)
 }
@@ -30,6 +40,8 @@ func (svc *Service) CreateDraft(userId uint32) (id uint32) {
 		UserId:     userId,
 		CreateTime: time.Now().Format(time.DateTime),
 		UpdateTime: time.Now().Format(time.DateTime),
+		IsPublish:  0,
+		IsDelete:   0,
 	}
 
 	return svc.dao.CreateDraft(&draft)
@@ -47,4 +59,12 @@ func (svc *Service) UpdateDraft(request SaveRequest) error {
 
 func (svc *Service) DeleteDraft(request DeleteRequest) error {
 	return svc.dao.DeleteDraft(request.Id)
+}
+
+func (svc *Service) PublishDraft(request PublishRequest) error {
+	return svc.dao.PublishDraft(request.Id)
+}
+
+func (svc *Service) GetDraftList(userId uint32, page int, pageSize int) ([]model.Draft, error) {
+	return svc.dao.QueryDraftList(userId, page, pageSize)
 }

@@ -144,3 +144,79 @@ func (d *DraftApi) DeleteDraft(c *gin.Context) {
 		"type":    "success",
 	})
 }
+
+// @Summary 发布
+// @Param id body uint32 true "草稿id"
+// @Tags 草稿
+// @Success 200 {string} string "ok"
+// @Router /publishDraft [post]
+func (d *DraftApi) PublishDarft(c *gin.Context) {
+	param := service.PublishRequest{}
+	response := app.NewResponse(c)
+
+	valid, errs := app.BindAndValid(c, &param)
+	if !valid {
+		global.Logger.Errorf(c, "app.BindAndValid errs: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	svc := service.New(c.Request.Context())
+	err := svc.PublishDraft(param)
+
+	if err != nil {
+		response.ToErrorResponse(errcode.Fail)
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+		"type":    "success",
+	})
+}
+
+// @Summary 获取草稿箱
+// @Param page query uint32 false "页数"
+// @Param page_size query uint32 false "页码"
+// @Tags 草稿
+// @Success 200 {string} string "ok"
+// @Router /getDraftList [get]
+func (d *DraftApi) GetDraftList(c *gin.Context) {
+	param := service.ListRequest{}
+	response := app.NewResponse(c)
+	token := GetToken(c)
+	err, tokenInfo := GetTokenInfo(token)
+	if err != nil {
+		response.ToErrorResponse(err)
+		return
+	}
+	pageStr := c.Query("page")
+	pageSizeStr := c.Query("pageSize")
+	if pageStr == "" {
+		pageStr = "1"
+	}
+	param.Page = convert.StrTo(pageStr).MustInt()
+
+	if pageSizeStr == "" {
+		pageSizeStr = "10"
+	}
+	param.PageSize = convert.StrTo(pageSizeStr).MustInt()
+
+	param.UserId = tokenInfo.UserId
+
+	svc := service.New(c.Request.Context())
+	list, err2 := svc.GetDraftList(param.UserId, param.Page, param.PageSize)
+
+	if err2 != nil {
+		response.ToErrorResponse(errcode.Fail)
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+		"type":    "success",
+		"result":  list,
+	})
+}

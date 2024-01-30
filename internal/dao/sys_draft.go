@@ -1,6 +1,9 @@
 package dao
 
-import "github.com/WuLianN/go-toy/internal/model"
+import (
+	"github.com/WuLianN/go-toy/internal/model"
+	"github.com/WuLianN/go-toy/pkg/app"
+)
 
 func (d *Dao) QueryDraft(id uint32) (model.Draft, error) {
 	var draft model.Draft
@@ -42,4 +45,25 @@ func (d *Dao) DeleteDraft(id uint32) error {
 	}
 
 	return nil
+}
+
+func (d *Dao) PublishDraft(id uint32) error {
+	err := d.engine.Table("draft").Where("id = ?", id).Update("is_publish", 1).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (d *Dao) QueryDraftList(userId uint32, page int, pageSize int) ([]model.Draft, error) {
+	var list []model.Draft
+	offset := app.GetPageOffset(page, pageSize)
+
+	err := d.engine.Table("draft").Where("user_id = ? AND is_publish = ?", userId, 0).Limit(pageSize).Offset(offset).Find(&list).Error
+	if err != nil {
+		return list, err
+	}
+
+	return list, nil
 }

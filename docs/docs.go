@@ -158,6 +158,36 @@ const docTemplate = `{
                 }
             }
         },
+        "/getDraftList": {
+            "get": {
+                "tags": [
+                    "草稿"
+                ],
+                "summary": "获取草稿箱",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "页数",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/getMenuList": {
             "get": {
                 "consumes": [
@@ -231,6 +261,33 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/publishDraft": {
+            "post": {
+                "tags": [
+                    "草稿"
+                ],
+                "summary": "发布",
+                "parameters": [
+                    {
+                        "description": "草稿id",
+                        "name": "id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
                         }
                     }
                 ],

@@ -109,6 +109,25 @@ paths:
       summary: 获取草稿
       tags:
       - 草稿
+  /getDraftList:
+    get:
+      parameters:
+      - description: 页数
+        in: query
+        name: page
+        type: integer
+      - description: 页码
+        in: query
+        name: page_size
+        type: integer
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 获取草稿箱
+      tags:
+      - 草稿
   /getMenuList:
     get:
       consumes:
@@ -164,6 +183,23 @@ paths:
       summary: 登录
       tags:
       - user
+  /publishDraft:
+    post:
+      parameters:
+      - description: 草稿id
+        in: body
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 发布
+      tags:
+      - 草稿
   /register:
     post:
       consumes:
