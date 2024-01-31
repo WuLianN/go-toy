@@ -10,3 +10,12 @@ type ResponseResult struct {
 	Message string `json:"message" example:"ok"`
 	Result  any    `json:"result"`
 }
+
+type RecommendList struct {
+	Id         uint32 `json:"id"`
+	UserId     uint32 `json:"user_id"`
+	Title      string `json:"title"`
+	Content    string `json:"content"`
+	CreateTime string `json:"create_time"`
+	UpdateTime string `json:"update_time"`
+}

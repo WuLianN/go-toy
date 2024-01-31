@@ -4,6 +4,7 @@ import (
 	"github.com/WuLianN/go-toy/global"
 	"github.com/WuLianN/go-toy/internal/service"
 	"github.com/WuLianN/go-toy/pkg/app"
+	"github.com/WuLianN/go-toy/pkg/convert"
 	"github.com/WuLianN/go-toy/pkg/errcode"
 	"github.com/gin-gonic/gin"
 )
@@ -117,4 +118,49 @@ func (b *BaseApi) Visit(c *gin.Context) {
 
 	svc := service.New(c.Request.Context())
 	svc.Visit(ip)
+}
+
+// @Summary 推荐列表
+// @Param user_id query int false "用户id"
+// @Param page query int false "页码"
+// @Param page_size query int false "页大小"
+// @Tags 通用业务
+// @Success 200 {string} string "ok"
+// @Router /getRecommendList [get]
+func (b *BaseApi) GetRecommendList(c *gin.Context) {
+	response := app.NewResponse(c)
+
+	pageStr := c.Query("page")
+	pageSizeStr := c.Query("page_size")
+	userIdStr := c.Query("user_id")
+
+	if pageStr == "" {
+		pageStr = "1"
+	}
+	if pageSizeStr == "" {
+		pageSizeStr = "10"
+	}
+	if userIdStr == "" {
+		response.ToErrorResponse(errcode.Fail)
+		return
+	}
+
+	page := convert.StrTo(pageStr).MustInt()
+	pageSize := convert.StrTo(pageSizeStr).MustInt()
+	userId := convert.StrTo(userIdStr).MustUInt32()
+
+	svc := service.New(c.Request.Context())
+	list, err := svc.GetRecommendList(userId, page, pageSize)
+
+	if err != nil {
+		response.ToErrorResponse(errcode.Fail)
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+		"type":    "success",
+		"result":  list,
+	})
 }
