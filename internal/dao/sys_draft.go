@@ -60,7 +60,7 @@ func (d *Dao) QueryDraftList(userId uint32, page int, pageSize int) ([]model.Dra
 	var list []model.Draft
 	offset := app.GetPageOffset(page, pageSize)
 
-	err := d.engine.Table("draft").Where("user_id = ? AND is_publish = ?", userId, 0).Limit(pageSize).Offset(offset).Find(&list).Error
+	err := d.engine.Table("draft").Where("user_id = ? AND is_publish = ? AND is_delete = ?", userId, 0, 0).Limit(pageSize).Offset(offset).Find(&list).Error
 	if err != nil {
 		return list, err
 	}
