@@ -18,6 +18,6 @@ func (svc *Service) Visit(ip string) {
 	svc.dao.SaveVisitInfo(visitInfo)
 }
 
-func (svc *Service) GetRecommendList(userId uint32, page int, pageSize int) ([]model.RecommendList, error) {
-	return svc.dao.QueryRecommendList(userId, page, pageSize)
+func (svc *Service) GetRecommendList(userId uint32, page int, pageSize int, tagId uint32) ([]model.RecommendList, error) {
+	return svc.dao.QueryRecommendList(userId, page, pageSize, tagId)
 }

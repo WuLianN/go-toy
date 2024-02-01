@@ -133,6 +133,7 @@ func (b *BaseApi) GetRecommendList(c *gin.Context) {
 	pageStr := c.Query("page")
 	pageSizeStr := c.Query("page_size")
 	userIdStr := c.Query("user_id")
+	tagIdStr := c.Query("tag_id")
 
 	if pageStr == "" {
 		pageStr = "1"
@@ -144,13 +145,17 @@ func (b *BaseApi) GetRecommendList(c *gin.Context) {
 		response.ToErrorResponse(errcode.Fail)
 		return
 	}
+	if tagIdStr == "" {
+		tagIdStr = "0"
+	}
 
 	page := convert.StrTo(pageStr).MustInt()
 	pageSize := convert.StrTo(pageSizeStr).MustInt()
 	userId := convert.StrTo(userIdStr).MustUInt32()
+	tagId := convert.StrTo(tagIdStr).MustUInt32()
 
 	svc := service.New(c.Request.Context())
-	list, err := svc.GetRecommendList(userId, page, pageSize)
+	list, err := svc.GetRecommendList(userId, page, pageSize, tagId)
 
 	if err != nil {
 		response.ToErrorResponse(errcode.Fail)
