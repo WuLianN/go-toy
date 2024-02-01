@@ -17,9 +17,10 @@ type Menu struct {
 	MetaId int32 `json:"meta_id"`
 
 	Title              string `json:"title"`
-	HideMenu           int32  `json:"hide_menu"`
+	HideMenu           uint32 `json:"hide_menu"`
 	Icon               string `json:"icon"`
-	HideChildrenInMenu int32  `json:"hideChildrenInMenu"`
+	HideChildrenInMenu uint32 `json:"hideChildrenInMenu"`
+	TagId              uint32 `json:"tag_id"`
 
 	Category string `json:"category"`
 }

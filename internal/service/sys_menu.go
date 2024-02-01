@@ -68,6 +68,7 @@ func GetTreeMenu(menuList []model.Menu, pid int32) []TreeList {
 func GetMeta(menu model.Menu) map[string]any {
 	meta := make(map[string]any)
 	meta["title"] = menu.Title
+	meta["tag_id"] = menu.TagId
 
 	if menu.HideMenu == 1 {
 		meta["hideMenu"] = true
