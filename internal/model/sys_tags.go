@@ -1,8 +1,9 @@
 package model
 
 type Tag struct {
-	Id   uint32 `json:"id"`
-	Name string `json:"name"`
+	Id     uint32 `json:"id"`
+	Name   string `json:"name"`
+	UserId uint32 `json:"user_id"`
 }
 
 type DraftTag struct {

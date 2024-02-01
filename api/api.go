@@ -6,6 +6,7 @@ type ApiGroup struct {
 	MenuApi
 	StatisticsApi
 	DraftApi
+	TagApi
 }
 
 var ApiGroupApp = new(ApiGroup)
