@@ -7,7 +7,7 @@ import (
 
 func (d *Dao) QueryDraft(id uint32) (model.Draft, error) {
 	var draft model.Draft
-	err := d.engine.Table("draft").Where("id = ?", id).First(&draft).Error
+	err := d.engine.Table("drafts").Where("id = ?", id).First(&draft).Error
 	if err != nil {
 		return draft, err
 	}
@@ -15,7 +15,7 @@ func (d *Dao) QueryDraft(id uint32) (model.Draft, error) {
 }
 
 func (d *Dao) CreateDraft(draft *model.Draft) (id uint32) {
-	err := d.engine.Table("draft").Create(draft).Error
+	err := d.engine.Table("drafts").Create(draft).Error
 
 	if err != nil {
 		return 0
@@ -25,7 +25,7 @@ func (d *Dao) CreateDraft(draft *model.Draft) (id uint32) {
 }
 
 func (d *Dao) UpdateDraft(draft *model.Draft) error {
-	err := d.engine.Table("draft").Where("id = ?", draft.Id).Updates(&model.Draft{Title: draft.Title, Content: draft.Content, UpdateTime: draft.UpdateTime}).Error
+	err := d.engine.Table("drafts").Where("id = ?", draft.Id).Updates(&model.Draft{Title: draft.Title, Content: draft.Content, UpdateTime: draft.UpdateTime}).Error
 
 	if err != nil {
 		return err
@@ -39,7 +39,7 @@ func (d *Dao) DeleteDraft(id uint32) error {
 	// err := d.engine.Table("draft").Where("id = ?", id).Delete(&model.Draft{}).Error
 
 	// 假删除 is_delete=1
-	err := d.engine.Table("draft").Where("id = ?", id).Update("is_delete", 1).Error
+	err := d.engine.Table("drafts").Where("id = ?", id).Update("is_delete", 1).Error
 	if err != nil {
 		return err
 	}
@@ -48,7 +48,7 @@ func (d *Dao) DeleteDraft(id uint32) error {
 }
 
 func (d *Dao) PublishDraft(id uint32) error {
-	err := d.engine.Table("draft").Where("id = ?", id).Update("is_publish", 1).Error
+	err := d.engine.Table("drafts").Where("id = ?", id).Update("is_publish", 1).Error
 	if err != nil {
 		return err
 	}
@@ -60,7 +60,7 @@ func (d *Dao) QueryDraftList(userId uint32, page int, pageSize int) ([]model.Dra
 	var list []model.Draft
 	offset := app.GetPageOffset(page, pageSize)
 
-	err := d.engine.Table("draft").Where("user_id = ? AND is_publish = ? AND is_delete = ?", userId, 0, 0).Limit(pageSize).Offset(offset).Find(&list).Error
+	err := d.engine.Table("drafts").Where("user_id = ? AND is_publish = ? AND is_delete = ?", userId, 0, 0).Limit(pageSize).Offset(offset).Find(&list).Error
 	if err != nil {
 		return list, err
 	}
