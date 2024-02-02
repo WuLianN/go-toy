@@ -3,6 +3,8 @@ package api
 import (
 	"strconv"
 
+	"github.com/WuLianN/go-toy/global"
+	"github.com/WuLianN/go-toy/internal/model"
 	"github.com/WuLianN/go-toy/internal/service"
 	"github.com/WuLianN/go-toy/pkg/app"
 	"github.com/WuLianN/go-toy/pkg/errcode"
@@ -50,4 +52,42 @@ func (m *MenuApi) GetRoleMenu(c *gin.Context) {
 			"message": errcode.Fail.Msg(),
 		})
 	}
+}
+
+func (m *MenuApi) AddMenuItem(c *gin.Context) {
+	requestBody := &model.Menu{}
+	response := app.NewResponse(c)
+
+	valid, errs := app.BindAndValid(c, &requestBody)
+	if !valid {
+		global.Logger.Errorf(c, "app.BindAndValid errs: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	token := GetToken(c)
+	err, tokenInfo := GetTokenInfo(token)
+	if err != nil {
+		response.ToErrorResponse(err)
+		return
+	}
+
+	userId := tokenInfo.UserId
+
+	svc := service.New(c.Request.Context())
+
+	menuId, err2 := svc.AddMenuItem(requestBody, userId)
+
+	if err2 != nil {
+		response.ToErrorResponse(errcode.Fail)
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+		"result": gin.H{
+			"id": menuId,
+		},
+	})
 }

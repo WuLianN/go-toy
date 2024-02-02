@@ -1,13 +1,14 @@
 package routers
 
 import (
-	"github.com/gin-gonic/gin"
 	api "github.com/WuLianN/go-toy/api"
+	"github.com/gin-gonic/gin"
 )
 
 func InitMenuRouter(Router *gin.RouterGroup) {
 	menuApi := api.ApiGroupApp.MenuApi
 	{
 		Router.GET("/getMenuList", menuApi.GetRoleMenu)
+		Router.POST("/addMenuItem", menuApi.AddMenuItem)
 	}
 }
