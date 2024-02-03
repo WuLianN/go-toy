@@ -25,7 +25,7 @@ type PublishRequest struct {
 	Id uint32 `json:"id" binding:"required"`
 }
 
-type ListRequest struct {
+type DraftListRequest struct {
 	UserId   uint32 `json:"user_id"`
 	Page     int    `json:"page" default:"1"`
 	PageSize int    `json:"page_size" default:"10"`

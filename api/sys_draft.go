@@ -183,7 +183,7 @@ func (d *DraftApi) PublishDarft(c *gin.Context) {
 // @Success 200 {string} string "ok"
 // @Router /getDraftList [get]
 func (d *DraftApi) GetDraftList(c *gin.Context) {
-	param := service.ListRequest{}
+	param := service.DraftListRequest{}
 	response := app.NewResponse(c)
 	token := GetToken(c)
 	err, tokenInfo := GetTokenInfo(token)
