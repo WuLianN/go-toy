@@ -15,8 +15,6 @@ type Menu struct {
 	ParentId uint32 `json:"parent_id"`
 	// meta id
 	MetaId uint32 `json:"meta_id"`
-	// category
-	Category string `json:"category"`
 	// user id
 	UserId uint32 `json:"user_id"`
 	// 是否使用
@@ -26,16 +24,21 @@ type Menu struct {
 type MenuMeat struct {
 	Menu
 
-	Title              string `json:"title"`
-	HideMenu           uint32 `json:"hide_menu"`
-	Icon               string `json:"icon"`
-	HideChildrenInMenu uint32 `json:"hideChildrenInMenu"`
-	TagId              uint32 `json:"tag_id"`
+	Icon       string `json:"icon"`
+	CategoryId uint32 `json:"category_id"`
 }
 
 type Meta struct {
-	Id   uint32 `json:"id"`
-	Icon string `json:"icon"`
+	Id         uint32 `json:"id"`
+	Icon       string `json:"icon"`
+	CategoryId uint32 `json:"category_id"`
+}
+
+type AddMenuItem struct {
+	Id         uint32 `json:"id"`
+	Name       string `json:"name"`
+	ParentId   uint32 `json:"parent_id"`
+	CategoryId uint32 `json:"category_id"`
 }
 
 func (model Menu) TableName() string {

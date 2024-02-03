@@ -1,8 +1,6 @@
 package dao
 
 import (
-	"strconv"
-
 	"github.com/WuLianN/go-toy/internal/model"
 	"gorm.io/gorm"
 )
@@ -10,15 +8,19 @@ import (
 func (d *Dao) GetMenu(UserId uint32) []model.MenuMeat {
 	var menu []model.MenuMeat
 
-	d.engine.Table("menu").Select("menu.id as id, title, hide_children_in_menu, name, parent_id, meta_id, hide_menu, category, component, icon, path, redirect, tag_id").Joins("left join menu_meta on menu_meta.id = menu.meta_id").Where("user_id = ? AND is_use = ?", UserId, 1).Scan(&menu)
+	d.engine.Table("menu").Select("menu.id as id, name, parent_id, meta_id, category_id, component, icon").Joins("left join menu_meta on menu_meta.id = menu.meta_id").Where("user_id = ? AND is_use = ?", UserId, 1).Scan(&menu)
 
 	return menu
 }
 
-func (d *Dao) AddMenuItem(menu *model.Menu, userId uint32) (uint32, error) {
+func (d *Dao) AddMenuItem(name string, parentId, categoryId, userId uint32) (model.AddMenuItem, error) {
+	var menu model.Menu
+
 	err := d.engine.Transaction(func(tx *gorm.DB) error {
 		var err error
-		meta := model.Meta{}
+		meta := model.Meta{
+			CategoryId: 0,
+		}
 
 		// 事务处理
 		if err = tx.Table("menu_meta").Create(&meta).Error; err != nil {
@@ -26,12 +28,11 @@ func (d *Dao) AddMenuItem(menu *model.Menu, userId uint32) (uint32, error) {
 			return err
 		}
 
-		menu := model.Menu{
+		menu = model.Menu{
 			MetaId:   meta.Id,
-			Name:     menu.Name,
-			ParentId: menu.ParentId,
+			Name:     name,
+			ParentId: parentId,
 			UserId:   userId,
-			Category: strconv.Itoa(int(userId)) + "_" + strconv.Itoa(int(meta.Id)),
 			IsUse:    1,
 		}
 
@@ -43,8 +44,13 @@ func (d *Dao) AddMenuItem(menu *model.Menu, userId uint32) (uint32, error) {
 		return nil
 	})
 
-	if err != nil {
-		return menu.Id, err
+	addMenuItem := model.AddMenuItem{
+		Id:       menu.Id,
+		ParentId: menu.ParentId,
 	}
-	return menu.Id, nil
+
+	if err != nil {
+		return addMenuItem, err
+	}
+	return addMenuItem, nil
 }

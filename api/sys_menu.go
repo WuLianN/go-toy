@@ -55,7 +55,7 @@ func (m *MenuApi) GetRoleMenu(c *gin.Context) {
 }
 
 func (m *MenuApi) AddMenuItem(c *gin.Context) {
-	requestBody := &model.Menu{}
+	requestBody := model.AddMenuItem{}
 	response := app.NewResponse(c)
 
 	valid, errs := app.BindAndValid(c, &requestBody)
@@ -76,7 +76,7 @@ func (m *MenuApi) AddMenuItem(c *gin.Context) {
 
 	svc := service.New(c.Request.Context())
 
-	menuId, err2 := svc.AddMenuItem(requestBody, userId)
+	addMenuItem, err2 := svc.AddMenuItem(requestBody, userId)
 
 	if err2 != nil {
 		response.ToErrorResponse(errcode.Fail)
@@ -86,8 +86,6 @@ func (m *MenuApi) AddMenuItem(c *gin.Context) {
 	response.ToResponse(gin.H{
 		"code":    errcode.Success.Code(),
 		"message": errcode.Success.Msg(),
-		"result": gin.H{
-			"id": menuId,
-		},
+		"result":  addMenuItem,
 	})
 }
