@@ -2,11 +2,26 @@ package dao
 
 import (
 	"github.com/WuLianN/go-toy/internal/model"
+	"gorm.io/gorm"
 )
 
-func (d *Dao) QueryTagList(userId uint32) ([]model.Tag, error) {
+func (d *Dao) QueryTagList(userId uint32, idList []int, menuId uint32) ([]model.Tag, error) {
 	var list []model.Tag
-	err := d.engine.Table("tags").Where("user_id = ?", userId).Find(&list).Error
+	var err error
+
+	if menuId == 0 {
+		// 查询用户标签
+		if len(idList) == 0 {
+			// 所有标签
+			err = d.engine.Table("tags").Where("user_id = ?", userId).Find(&list).Error
+		} else {
+			// 指定标签
+			err = d.engine.Table("tags").Where("user_id = ?", userId).Where("id IN ?", idList).Find(&list).Error
+		}
+	} else {
+		// 查询菜单关联的标签
+		err = d.engine.Table("menu_tags").Select("tags.name as name, tags.id as id, tags.user_id").Where("menu_id = ?", menuId).Joins("left join tags on menu_tags.tag_id = tags.id").Find(&list).Error
+	}
 
 	if err != nil {
 		return list, err
@@ -42,4 +57,44 @@ func (d *Dao) QueryTag(userId uint32, name string) ([]model.Tag, error) {
 		return list, err
 	}
 	return list, nil
+}
+
+func (d *Dao) UpdateTag(tagId uint32, name string) error {
+	return d.engine.Table("tags").Where("id = ?", tagId).Update("name", name).Error
+}
+
+func (d *Dao) BindTag2Menu(menuTags *model.MenuTags, userId uint32) error {
+	var tags []model.Tag
+
+	for _, tag := range menuTags.Tags {
+		tags = append(tags, model.Tag{
+			UserId: userId,
+			Name:   tag.Name,
+		})
+	}
+
+	err := d.engine.Transaction(func(tx *gorm.DB) error {
+		var err error
+		if err = tx.Table("tags").Create(&tags).Error; err != nil {
+			// 返回任何错误都会回滚事务
+			return err
+		}
+
+		for _, tag := range tags {
+			if err = tx.Table("menu_tags").Create(&model.MenuTag{
+				TagId:  tag.Id,
+				MenuId: menuTags.MenuId,
+			}).Error; err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

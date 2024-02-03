@@ -2,8 +2,10 @@ package api
 
 import (
 	"github.com/WuLianN/go-toy/global"
+	"github.com/WuLianN/go-toy/internal/model"
 	"github.com/WuLianN/go-toy/internal/service"
 	"github.com/WuLianN/go-toy/pkg/app"
+	"github.com/WuLianN/go-toy/pkg/convert"
 	"github.com/WuLianN/go-toy/pkg/errcode"
 	"github.com/gin-gonic/gin"
 )
@@ -11,6 +13,11 @@ import (
 type TagApi struct{}
 
 func (t *TagApi) GetTagList(c *gin.Context) {
+	ids := c.Query("ids")
+	menuIdStr := c.Query("menu_id")
+
+	menuId := convert.StrTo(menuIdStr).MustUInt32()
+
 	response := app.NewResponse(c)
 	token := GetToken(c)
 	err, tokenInfo := GetTokenInfo(token)
@@ -21,7 +28,7 @@ func (t *TagApi) GetTagList(c *gin.Context) {
 	userId := tokenInfo.UserId
 
 	svc := service.New(c.Request.Context())
-	tagList, err2 := svc.GetTagList(userId)
+	tagList, err2 := svc.GetTagList(userId, ids, menuId)
 
 	if err2 != nil {
 		response.ToErrorResponse(err)
@@ -104,6 +111,64 @@ func (t *TagApi) DeleteTag(c *gin.Context) {
 	svc := service.New(c.Request.Context())
 
 	err2 := svc.DeleteTag(&requestBody)
+
+	if err2 != nil {
+		response.ToErrorResponse(errcode.Fail)
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+	})
+}
+
+func (t *TagApi) UpdateTag(c *gin.Context) {
+	requestBody := service.UpdateTagRequest{}
+	response := app.NewResponse(c)
+
+	valid, errs := app.BindAndValid(c, &requestBody)
+	if !valid {
+		global.Logger.Errorf(c, "app.BindAndValid errs: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	svc := service.New(c.Request.Context())
+
+	err2 := svc.UpdateTag(&requestBody)
+
+	if err2 != nil {
+		response.ToErrorResponse(errcode.Fail)
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+	})
+}
+
+func (t *TagApi) BindTag2Menu(c *gin.Context) {
+	requestBody := model.MenuTags{}
+	response := app.NewResponse(c)
+
+	valid, errs := app.BindAndValid(c, &requestBody)
+	if !valid {
+		global.Logger.Errorf(c, "app.BindAndValid errs: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	token := GetToken(c)
+	err, tokenInfo := GetTokenInfo(token)
+	if err != nil {
+		response.ToErrorResponse(err)
+		return
+	}
+
+	svc := service.New(c.Request.Context())
+	err2 := svc.BindTag2Menu(&requestBody, tokenInfo.UserId)
 
 	if err2 != nil {
 		response.ToErrorResponse(errcode.Fail)

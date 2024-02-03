@@ -41,6 +41,16 @@ type AddMenuItem struct {
 	CategoryId uint32 `json:"category_id"`
 }
 
+type MenuTags struct {
+	Tags   []Tag  `json:"tags"`
+	MenuId uint32 `json:"menu_id"`
+}
+
+type MenuTag struct {
+	TagId  uint32 `json:"tag_id"`
+	MenuId uint32 `json:"menu_id"`
+}
+
 func (model Menu) TableName() string {
 	return "menu"
 }
