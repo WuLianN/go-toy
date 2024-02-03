@@ -42,8 +42,8 @@ type AddMenuItem struct {
 }
 
 type MenuTags struct {
-	Tags   []Tag  `json:"tags"`
-	MenuId uint32 `json:"menu_id"`
+	Tags   []Tag  `json:"tags" binding:"required"`
+	MenuId uint32 `json:"menu_id" binding:"required"`
 }
 
 type MenuTag struct {

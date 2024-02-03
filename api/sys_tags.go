@@ -167,6 +167,11 @@ func (t *TagApi) BindTag2Menu(c *gin.Context) {
 		return
 	}
 
+	if len(requestBody.Tags) == 0 {
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails("tags", "tags不能为空"))
+		return
+	}
+
 	svc := service.New(c.Request.Context())
 	err2 := svc.BindTag2Menu(&requestBody, tokenInfo.UserId)
 
