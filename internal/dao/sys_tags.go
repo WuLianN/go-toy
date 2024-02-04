@@ -63,16 +63,7 @@ func (d *Dao) UpdateTag(tagId uint32, name string) error {
 	return d.engine.Table("tags").Where("id = ?", tagId).Update("name", name).Error
 }
 
-func (d *Dao) BindTag2Menu(menuTags *model.MenuTags, userId uint32) error {
-	var tags []model.Tag
-
-	for _, tag := range menuTags.Tags {
-		tags = append(tags, model.Tag{
-			UserId: userId,
-			Name:   tag.Name,
-		})
-	}
-
+func (d *Dao) BindTag2Menu(tags []model.Tag, menuId uint32, userId uint32) error {
 	err := d.engine.Transaction(func(tx *gorm.DB) error {
 		var err error
 		if err = tx.Table("tags").Create(&tags).Error; err != nil {
@@ -83,7 +74,7 @@ func (d *Dao) BindTag2Menu(menuTags *model.MenuTags, userId uint32) error {
 		for _, tag := range tags {
 			if err = tx.Table("menu_tags").Create(&model.MenuTag{
 				TagId:  tag.Id,
-				MenuId: menuTags.MenuId,
+				MenuId: menuId,
 			}).Error; err != nil {
 				return err
 			}
@@ -91,6 +82,16 @@ func (d *Dao) BindTag2Menu(menuTags *model.MenuTags, userId uint32) error {
 
 		return nil
 	})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (d *Dao) UnbindTag2Menu(tags []uint32, menuId uint32) error {
+	err := d.engine.Table("menu_tags").Where("menu_id = ? AND tag_id in ?", menuId, tags).Delete(model.MenuTag{}).Error
 
 	if err != nil {
 		return err

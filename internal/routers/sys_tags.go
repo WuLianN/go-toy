@@ -12,5 +12,6 @@ func InitTagRouter(Router *gin.RouterGroup) {
 		Router.POST("/createTag", tagApi.CreateTag)
 		Router.POST("/deleteTag", tagApi.DeleteTag)
 		Router.POST("/bindTag2Menu", tagApi.BindTag2Menu)
+		Router.POST("/unbindTag2Menu", tagApi.UnbindTag2Menu)
 	}
 }

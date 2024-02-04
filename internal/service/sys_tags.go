@@ -53,5 +53,24 @@ func (svc *Service) UpdateTag(req *UpdateTagRequest) error {
 }
 
 func (svc *Service) BindTag2Menu(menuTags *model.MenuTags, userId uint32) error {
-	return svc.dao.BindTag2Menu(menuTags, userId)
+	var tags []model.Tag
+
+	for _, tag := range menuTags.Tags {
+		tags = append(tags, model.Tag{
+			UserId: userId,
+			Name:   tag.Name,
+		})
+	}
+
+	return svc.dao.BindTag2Menu(tags, menuTags.MenuId, userId)
+}
+
+func (svc *Service) UnbindTag2Menu(menuTags *model.MenuTags) error {
+	var tagIds []uint32
+
+	for _, tag := range menuTags.Tags {
+		tagIds = append(tagIds, tag.Id)
+	}
+
+	return svc.dao.UnbindTag2Menu(tagIds, menuTags.MenuId)
 }

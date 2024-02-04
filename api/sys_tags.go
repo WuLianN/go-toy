@@ -185,3 +185,33 @@ func (t *TagApi) BindTag2Menu(c *gin.Context) {
 		"message": errcode.Success.Msg(),
 	})
 }
+
+func (t *TagApi) UnbindTag2Menu(c *gin.Context) {
+	requestBody := model.MenuTags{}
+	response := app.NewResponse(c)
+
+	valid, errs := app.BindAndValid(c, &requestBody)
+	if !valid {
+		global.Logger.Errorf(c, "app.BindAndValid errs: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	if len(requestBody.Tags) == 0 {
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails("tags", "tags不能为空"))
+		return
+	}
+
+	svc := service.New(c.Request.Context())
+	err2 := svc.UnbindTag2Menu(&requestBody)
+
+	if err2 != nil {
+		response.ToErrorResponse(errcode.Fail)
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+	})
+}
