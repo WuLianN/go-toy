@@ -62,7 +62,15 @@ func (svc *Service) BindTag2Menu(menuTags *model.MenuTags, userId uint32) error 
 		})
 	}
 
-	return svc.dao.BindTag2Menu(tags, menuTags.MenuId, userId)
+	var tagNames []string
+	for _, tag := range tags {
+		tagNames = append(tagNames, tag.Name)
+	}
+
+	exsitTags, _ := svc.dao.QueryTags(userId, tagNames) // tags库中存在该user_id的标签 -> 绑定
+	newTags := removeExisting(tags, exsitTags)          // 新标签 -> 创建 + 绑定
+
+	return svc.dao.BindTag2Menu(exsitTags, newTags, menuTags.MenuId, userId)
 }
 
 func (svc *Service) UnbindTag2Menu(menuTags *model.MenuTags) error {
@@ -73,4 +81,22 @@ func (svc *Service) UnbindTag2Menu(menuTags *model.MenuTags) error {
 	}
 
 	return svc.dao.UnbindTag2Menu(tagIds, menuTags.MenuId)
+}
+
+func removeExisting(tags []model.Tag, existTags []model.Tag) []model.Tag {
+	// 使用 map 来加速查找
+	existTagMap := make(map[string]bool)
+	for _, exTag := range existTags {
+		existTagMap[exTag.Name] = true
+	}
+
+	// 创建一个新的切片来存储不重复的 tags
+	newTags := []model.Tag{}
+	for _, tag := range tags {
+		if !existTagMap[tag.Name] {
+			newTags = append(newTags, tag)
+		}
+	}
+
+	return newTags
 }

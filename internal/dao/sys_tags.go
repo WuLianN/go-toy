@@ -59,19 +59,37 @@ func (d *Dao) QueryTag(userId uint32, name string) ([]model.Tag, error) {
 	return list, nil
 }
 
+func (d *Dao) QueryTags(userId uint32, names []string) ([]model.Tag, error) {
+	var list []model.Tag
+	err := d.engine.Table("tags").Where("user_id = ? AND name in ?", userId, names).Find(&list).Error
+
+	if err != nil {
+		return list, err
+	}
+	return list, nil
+}
+
 func (d *Dao) UpdateTag(tagId uint32, name string) error {
 	return d.engine.Table("tags").Where("id = ?", tagId).Update("name", name).Error
 }
 
-func (d *Dao) BindTag2Menu(tags []model.Tag, menuId uint32, userId uint32) error {
+func (d *Dao) BindTag2Menu(exsitTags []model.Tag, newTags []model.Tag, menuId uint32, userId uint32) error {
 	err := d.engine.Transaction(func(tx *gorm.DB) error {
 		var err error
-		if err = tx.Table("tags").Create(&tags).Error; err != nil {
-			// 返回任何错误都会回滚事务
-			return err
+
+		// 创建新标签
+		if len(newTags) > 0 {
+			if err = tx.Table("tags").Create(&newTags).Error; err != nil {
+				// 返回任何错误都会回滚事务
+				return err
+			}
 		}
 
-		for _, tag := range tags {
+		var bindTags []model.Tag
+		bindTags = append(bindTags, exsitTags...)
+		bindTags = append(bindTags, newTags...)
+
+		for _, tag := range bindTags {
 			if err = tx.Table("menu_tags").Create(&model.MenuTag{
 				TagId:  tag.Id,
 				MenuId: menuId,
