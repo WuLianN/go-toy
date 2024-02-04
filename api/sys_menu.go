@@ -39,19 +39,13 @@ func (m *MenuApi) GetRoleMenu(c *gin.Context) {
 
 	svc := service.New(c.Request.Context())
 	list := svc.GetMenuList(userId)
-	if list != nil {
-		response.ToResponse(gin.H{
-			"code":    errcode.Success.Code(),
-			"message": errcode.Success.Msg(),
-			"type":    "success",
-			"result":  list,
-		})
-	} else {
-		response.ToResponse(gin.H{
-			"code":    errcode.Fail.Code(),
-			"message": errcode.Fail.Msg(),
-		})
-	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+		"type":    "success",
+		"result":  list,
+	})
 }
 
 func (m *MenuApi) AddMenuItem(c *gin.Context) {
