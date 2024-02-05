@@ -204,9 +204,10 @@ func (d *DraftApi) GetDraftList(c *gin.Context) {
 	param.PageSize = convert.StrTo(pageSizeStr).MustInt()
 
 	param.UserId = tokenInfo.UserId
+	param.Status = convert.StrTo(c.Query("status")).MustUInt32()
 
 	svc := service.New(c.Request.Context())
-	list, err2 := svc.GetDraftList(param.UserId, param.Page, param.PageSize)
+	list, err2 := svc.GetDraftList(&param)
 
 	if err2 != nil {
 		response.ToErrorResponse(errcode.Fail)

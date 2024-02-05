@@ -29,6 +29,7 @@ type DraftListRequest struct {
 	UserId   uint32 `json:"user_id"`
 	Page     int    `json:"page" default:"1"`
 	PageSize int    `json:"page_size" default:"10"`
+	Status   uint32 `json:"status"`
 }
 
 func (svc *Service) GetDraft(id uint32) (model.Draft, error) {
@@ -65,6 +66,6 @@ func (svc *Service) PublishDraft(request PublishRequest) error {
 	return svc.dao.PublishDraft(request.Id)
 }
 
-func (svc *Service) GetDraftList(userId uint32, page int, pageSize int) ([]model.Draft, error) {
-	return svc.dao.QueryDraftList(userId, page, pageSize)
+func (svc *Service) GetDraftList(request *DraftListRequest) ([]model.Draft, error) {
+	return svc.dao.QueryDraftList(request.UserId, request.Status, request.Page, request.PageSize)
 }

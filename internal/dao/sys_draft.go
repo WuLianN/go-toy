@@ -56,11 +56,24 @@ func (d *Dao) PublishDraft(id uint32) error {
 	return nil
 }
 
-func (d *Dao) QueryDraftList(userId uint32, page int, pageSize int) ([]model.Draft, error) {
+func (d *Dao) QueryDraftList(userId uint32, status uint32, page int, pageSize int) ([]model.Draft, error) {
+	var err error
 	var list []model.Draft
+	var draftStatus uint32 // 0全部 1已发布 2草稿
 	offset := app.GetPageOffset(page, pageSize)
 
-	err := d.engine.Table("drafts").Where("user_id = ? AND is_publish = ? AND is_delete = ?", userId, 0, 0).Limit(pageSize).Offset(offset).Find(&list).Error
+	if status == 1 {
+		draftStatus = 1
+	} else if status == 2 {
+		draftStatus = 0
+	}
+
+	if status > 0 {
+		err = d.engine.Table("drafts").Where("user_id = ? AND is_publish = ? AND is_delete = ?", userId, draftStatus, 0).Limit(pageSize).Offset(offset).Find(&list).Error
+	} else {
+		err = d.engine.Table("drafts").Where("user_id = ? AND is_delete = ?", userId, 0).Limit(pageSize).Offset(offset).Find(&list).Error
+	}
+
 	if err != nil {
 		return list, err
 	}
