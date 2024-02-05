@@ -141,17 +141,26 @@ func (b *BaseApi) GetRecommendList(c *gin.Context) {
 	if pageSizeStr == "" {
 		pageSizeStr = "10"
 	}
-	if userIdStr == "" {
-		response.ToErrorResponse(errcode.Fail)
-		return
-	}
 	if tagIdStr == "" {
 		tagIdStr = "0"
 	}
 
+	var userId uint32
+
+	if userIdStr != "" {
+		userId = convert.StrTo(userIdStr).MustUInt32()
+	} else {
+		token := GetToken(c)
+		err, tokenInfo := GetTokenInfo(token)
+		if err != nil {
+			response.ToErrorResponse(err)
+			return
+		}
+		userId = tokenInfo.UserId
+	}
+
 	page := convert.StrTo(pageStr).MustInt()
 	pageSize := convert.StrTo(pageSizeStr).MustInt()
-	userId := convert.StrTo(userIdStr).MustUInt32()
 	tagId := convert.StrTo(tagIdStr).MustUInt32()
 
 	svc := service.New(c.Request.Context())

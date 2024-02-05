@@ -1,12 +1,11 @@
 package api
 
 import (
-	"strconv"
-
 	"github.com/WuLianN/go-toy/global"
 	"github.com/WuLianN/go-toy/internal/model"
 	"github.com/WuLianN/go-toy/internal/service"
 	"github.com/WuLianN/go-toy/pkg/app"
+	"github.com/WuLianN/go-toy/pkg/convert"
 	"github.com/WuLianN/go-toy/pkg/errcode"
 	"github.com/gin-gonic/gin"
 )
@@ -25,8 +24,7 @@ func (m *MenuApi) GetRoleMenu(c *gin.Context) {
 	var userId uint32
 
 	if userIdStr != "" {
-		userIdUint64, _ := strconv.ParseUint(userIdStr, 10, 32)
-		userId = uint32(userIdUint64)
+		userId = convert.StrTo(userIdStr).MustUInt32()
 	} else {
 		token := GetToken(c)
 		err, tokenInfo := GetTokenInfo(token)
