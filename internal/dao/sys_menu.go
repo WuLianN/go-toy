@@ -54,3 +54,76 @@ func (d *Dao) AddMenuItem(name string, parentId, categoryId, userId uint32) (mod
 	}
 	return addMenuItem, nil
 }
+
+func (d *Dao) DeleteMenuItem(menuId uint32, userId uint32) error {
+	menu, err := d.QueryMenuById(menuId, userId)
+
+	if err != nil {
+		return err
+	}
+
+	menuFamily := d.GetMenuIdFamily(menuId, userId)
+	menuFamily = append(menuFamily, menu) // 添加自身
+
+	err = d.engine.Transaction(func(tx *gorm.DB) error {
+		var err error
+		var menuIds []uint32
+		var metaIds []uint32
+
+		for _, v := range menuFamily {
+			menuIds = append(menuIds, v.Id)
+			metaIds = append(metaIds, v.MetaId)
+		}
+
+		if err = tx.Table("menu").Where("id IN ? AND user_id = ?", menuIds, userId).Delete(&model.Menu{}).Error; err != nil {
+			return err
+		}
+
+		if err = tx.Table("menu_tags").Where("menu_id IN ?", menuIds).Delete(&model.MenuTag{}).Error; err != nil {
+			return err
+		}
+
+		if err = tx.Table("menu_meta").Where("id IN ?", metaIds).Delete(&model.MenuMeat{}).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d *Dao) QueryChildMenu(menuId uint32, userId uint32) []model.Menu {
+	var menu []model.Menu
+
+	d.engine.Table("menu").Select("id, meta_id, parent_id").Where("parent_id = ? AND user_id = ?", menuId, userId).Find(&menu)
+
+	return menu
+}
+
+func (d *Dao) GetMenuIdFamily(menuId uint32, userId uint32) []model.Menu {
+	menu := d.QueryChildMenu(menuId, userId)
+
+	if len(menu) > 0 {
+		for _, v := range menu {
+			list := d.GetMenuIdFamily(v.Id, userId)
+			menu = append(menu, list...)
+		}
+	}
+
+	return menu
+}
+
+func (d *Dao) QueryMenuById(menuId uint32, userId uint32) (model.Menu, error) {
+	var menu model.Menu
+
+	err := d.engine.Table("menu").Select("id, meta_id, parent_id").Where("id = ? AND user_id = ?", menuId, userId).Find(&menu).Limit(1).Error
+
+	if err != nil {
+		return menu, err
+	}
+
+	return menu, nil
+}

@@ -83,3 +83,37 @@ func (m *MenuApi) AddMenuItem(c *gin.Context) {
 		"result":  addMenuItem,
 	})
 }
+
+func (m *MenuApi) DeleteMenuItem(c *gin.Context) {
+	requestBody := model.DeleteMenuItem{}
+	response := app.NewResponse(c)
+
+	valid, errs := app.BindAndValid(c, &requestBody)
+	if !valid {
+		global.Logger.Errorf(c, "app.BindAndValid errs: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	token := GetToken(c)
+	err, tokenInfo := GetTokenInfo(token)
+	if err != nil {
+		response.ToErrorResponse(err)
+		return
+	}
+
+	userId := tokenInfo.UserId
+	svc := service.New(c.Request.Context())
+
+	err2 := svc.DeleteMenuItem(requestBody, userId)
+
+	if err2 != nil {
+		response.ToErrorResponse(errcode.Fail)
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+	})
+}

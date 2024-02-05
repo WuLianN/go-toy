@@ -86,3 +86,7 @@ func GetMeta(menu model.MenuMeat) map[string]any {
 func (svc *Service) AddMenuItem(req model.AddMenuItem, userId uint32) (model.AddMenuItem, error) {
 	return svc.dao.AddMenuItem(req.Name, req.ParentId, req.CategoryId, userId)
 }
+
+func (svc *Service) DeleteMenuItem(req model.DeleteMenuItem, userId uint32) error {
+	return svc.dao.DeleteMenuItem(req.Id, userId)
+}

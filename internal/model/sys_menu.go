@@ -41,6 +41,10 @@ type AddMenuItem struct {
 	CategoryId uint32 `json:"category_id"`
 }
 
+type DeleteMenuItem struct {
+	Id uint32 `json:"id" binding:"required"`
+}
+
 type MenuTags struct {
 	Tags   []Tag  `json:"tags" binding:"required"`
 	MenuId uint32 `json:"menu_id" binding:"required"`
