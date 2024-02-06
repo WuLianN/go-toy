@@ -76,9 +76,9 @@ func (d *Dao) PublishDraft(id uint32) error {
 	return nil
 }
 
-func (d *Dao) QueryDraftList(userId uint32, status uint32, page int, pageSize int) ([]model.Draft, error) {
+func (d *Dao) QueryDraftList(userId uint32, status uint32, page int, pageSize int) ([]model.DraftWithTags, error) {
 	var err error
-	var list []model.Draft
+	var list []model.DraftWithTags
 	var draftStatus uint32 // 0全部 1已发布 2草稿
 	offset := app.GetPageOffset(page, pageSize)
 
@@ -92,6 +92,12 @@ func (d *Dao) QueryDraftList(userId uint32, status uint32, page int, pageSize in
 		err = d.engine.Table("drafts").Where("user_id = ? AND is_publish = ? AND is_delete = ?", userId, draftStatus, 0).Limit(pageSize).Offset(offset).Find(&list).Error
 	} else {
 		err = d.engine.Table("drafts").Where("user_id = ? AND is_delete = ?", userId, 0).Limit(pageSize).Offset(offset).Find(&list).Error
+	}
+
+	for index, item := range list {
+		var tags []model.Tag
+		err = d.engine.Table("draft_tags").Select("tags.name AS name, tags.Id AS id, tags.user_id").Where("draft_tags.draft_id = ?", item.Id).Joins("left join tags on draft_tags.tag_id = tags.Id").Find(&tags).Error
+		list[index].Tags = append(list[index].Tags, tags...)
 	}
 
 	if err != nil {
