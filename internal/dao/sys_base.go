@@ -22,7 +22,7 @@ func (d *Dao) QueryRecommendList(userId uint32, page int, pageSize int, tagId ui
 		return list, err
 	}
 
-	tagList, _ := d.QueryDraftTags(userId, tagId)
+	tagList, _ := d.QueryDraftTagsDT(userId, tagId)
 
 	if tagId > 0 && len(tagList) > 0 {
 		// 获取指定标签的文章
@@ -31,7 +31,7 @@ func (d *Dao) QueryRecommendList(userId uint32, page int, pageSize int, tagId ui
 			for i := range list {
 				if list[i].Id == tag.DraftId {
 					list[i].Tags = append(list[i].Tags, model.Tag{
-						Id:   tag.Id,
+						Id:   tag.TagId,
 						Name: tag.Name,
 					})
 					tempList = append(tempList, list[i])
@@ -45,29 +45,12 @@ func (d *Dao) QueryRecommendList(userId uint32, page int, pageSize int, tagId ui
 			for _, tag := range tagList {
 				if tag.DraftId == list[i].Id {
 					list[i].Tags = append(list[i].Tags, model.Tag{
-						Id:   tag.Id,
+						Id:   tag.TagId,
 						Name: tag.Name,
 					})
 				}
 			}
 		}
-	}
-
-	return list, nil
-}
-
-func (d *Dao) QueryDraftTags(userId uint32, tagId uint32) ([]model.DraftTag, error) {
-	var list []model.DraftTag
-	var err error
-
-	if tagId > 0 {
-		err = d.engine.Table("draft_tags").Select("tags.id as id, draft_tags.draft_id, tags.name").Joins("left join tags on draft_tags.tag_id = tags.id").Where("draft_tags.user_id = ? AND draft_tags.tag_id = ?", userId, tagId).Find(&list).Error
-	} else {
-		err = d.engine.Table("draft_tags").Select("tags.id as id, draft_tags.draft_id, tags.name").Joins("left join tags on draft_tags.tag_id = tags.id").Where("draft_tags.user_id = ?", userId).Find(&list).Error
-	}
-
-	if err != nil {
-		return list, err
 	}
 
 	return list, nil

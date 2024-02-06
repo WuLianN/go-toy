@@ -14,9 +14,6 @@ type TagApi struct{}
 
 func (t *TagApi) GetTagList(c *gin.Context) {
 	ids := c.Query("ids")
-	menuIdStr := c.Query("menu_id")
-
-	menuId := convert.StrTo(menuIdStr).MustUInt32()
 
 	response := app.NewResponse(c)
 	token := GetToken(c)
@@ -28,10 +25,68 @@ func (t *TagApi) GetTagList(c *gin.Context) {
 	userId := tokenInfo.UserId
 
 	svc := service.New(c.Request.Context())
-	tagList, err2 := svc.GetTagList(userId, ids, menuId)
+	tagList, err2 := svc.GetTagList(userId, ids)
 
 	if err2 != nil {
 		response.ToErrorResponse(err)
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+		"result":  tagList,
+	})
+}
+
+func (t *TagApi) GetDraftTagList(c *gin.Context) {
+	draftIdStr := c.Query("draft_id")
+	tagIdStr := c.Query("tag_id")
+
+	draftId := convert.StrTo(draftIdStr).MustUInt32()
+	tagId := convert.StrTo(tagIdStr).MustUInt32()
+
+	response := app.NewResponse(c)
+
+	token := GetToken(c)
+	err, tokenInfo := GetTokenInfo(token)
+	if err != nil {
+		response.ToErrorResponse(err)
+		return
+	}
+	userId := tokenInfo.UserId
+
+	svc := service.New(c.Request.Context())
+	tagList, err2 := svc.GetDraftTagList(userId, tagId, draftId)
+
+	if err2 != nil {
+		response.ToErrorResponse(errcode.Fail)
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+		"result":  tagList,
+	})
+}
+
+func (t *TagApi) GetMenuTagList(c *gin.Context) {
+	menuIdStr := c.Query("menu_id")
+	response := app.NewResponse(c)
+
+	if menuIdStr == "" {
+		response.ToErrorResponse(errcode.Fail)
+		return
+	}
+
+	menuId := convert.StrTo(menuIdStr).MustUInt32()
+
+	svc := service.New(c.Request.Context())
+	tagList, err := svc.GetMenuTagList(menuId)
+
+	if err != nil {
+		response.ToErrorResponse(errcode.Fail)
 		return
 	}
 
@@ -204,6 +259,73 @@ func (t *TagApi) UnbindTag2Menu(c *gin.Context) {
 
 	svc := service.New(c.Request.Context())
 	err2 := svc.UnbindTag2Menu(&requestBody)
+
+	if err2 != nil {
+		response.ToErrorResponse(errcode.Fail)
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+	})
+}
+
+func (t *TagApi) BindTag2Draft(c *gin.Context) {
+	requestBody := model.DraftTags{}
+	response := app.NewResponse(c)
+
+	valid, errs := app.BindAndValid(c, &requestBody)
+	if !valid {
+		global.Logger.Errorf(c, "app.BindAndValid errs: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	token := GetToken(c)
+	err, tokenInfo := GetTokenInfo(token)
+	if err != nil {
+		response.ToErrorResponse(err)
+		return
+	}
+
+	if len(requestBody.Tags) == 0 {
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails("tags", "tags不能为空"))
+		return
+	}
+
+	svc := service.New(c.Request.Context())
+	err2 := svc.BindTag2Draft(&requestBody, tokenInfo.UserId)
+
+	if err2 != nil {
+		response.ToErrorResponse(errcode.Fail)
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+	})
+}
+
+func (t *TagApi) UnbindTag2Draft(c *gin.Context) {
+	requestBody := model.DraftTags{}
+	response := app.NewResponse(c)
+
+	valid, errs := app.BindAndValid(c, &requestBody)
+	if !valid {
+		global.Logger.Errorf(c, "app.BindAndValid errs: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	if len(requestBody.Tags) == 0 {
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails("tags", "tags不能为空"))
+		return
+	}
+
+	svc := service.New(c.Request.Context())
+	err2 := svc.UnbindTag2Draft(&requestBody)
 
 	if err2 != nil {
 		response.ToErrorResponse(errcode.Fail)

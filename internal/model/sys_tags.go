@@ -7,7 +7,12 @@ type Tag struct {
 }
 
 type DraftTag struct {
-	Id      uint32 `json:"id"`
+	TagId   uint32 `json:"tag_id"`
 	Name    string `json:"name"`
+	DraftId uint32 `json:"draft_id"`
+}
+
+type DraftTags struct {
+	Tags    []Tag  `json:"tags"`
 	DraftId uint32 `json:"draft_id"`
 }

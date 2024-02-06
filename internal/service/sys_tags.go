@@ -22,7 +22,7 @@ type UpdateTagRequest struct {
 	Name string `json:"name" binding:"required"`
 }
 
-func (svc *Service) GetTagList(userId uint32, ids string, menuId uint32) ([]model.Tag, error) {
+func (svc *Service) GetTagList(userId uint32, ids string) ([]model.Tag, error) {
 	idList := strings.Split(ids, ",")
 
 	var idListInt []int
@@ -33,7 +33,23 @@ func (svc *Service) GetTagList(userId uint32, ids string, menuId uint32) ([]mode
 		}
 	}
 
-	return svc.dao.QueryTagList(userId, idListInt, menuId)
+	return svc.dao.QueryTagList(userId, idListInt)
+}
+
+func (svc *Service) GetMenuTagList(menuId uint32) ([]model.Tag, error) {
+	return svc.dao.QueryMenuTags(menuId)
+}
+
+func (svc *Service) GetDraftTagList(userId uint32, tagId uint32, draftId uint32) ([]model.Tag, error) {
+	if draftId > 0 {
+		return svc.dao.QueryDraftTagsT(userId, 0, draftId)
+	}
+
+	if tagId > 0 {
+		return svc.dao.QueryDraftTagsT(userId, tagId, 0)
+	}
+
+	return svc.dao.QueryDraftTagsT(userId, 0, 0)
 }
 
 func (svc *Service) CreateTag(req *CreateTagRequest) (uint32, error) {
@@ -81,6 +97,37 @@ func (svc *Service) UnbindTag2Menu(menuTags *model.MenuTags) error {
 	}
 
 	return svc.dao.UnbindTag2Menu(tagIds, menuTags.MenuId)
+}
+
+func (svc *Service) BindTag2Draft(draftTags *model.DraftTags, userId uint32) error {
+	var tags []model.Tag
+
+	for _, tag := range draftTags.Tags {
+		tags = append(tags, model.Tag{
+			UserId: userId,
+			Name:   tag.Name,
+		})
+	}
+
+	var tagNames []string
+	for _, tag := range tags {
+		tagNames = append(tagNames, tag.Name)
+	}
+
+	exsitTags, _ := svc.dao.QueryTags(userId, tagNames) // tags库中存在该user_id的标签 -> 绑定
+	newTags := removeExisting(tags, exsitTags)          // 新标签 -> 创建 + 绑定
+
+	return svc.dao.BindTag2Draft(exsitTags, newTags, draftTags.DraftId, userId)
+}
+
+func (svc *Service) UnbindTag2Draft(draftTags *model.DraftTags) error {
+	var tagIds []uint32
+
+	for _, tag := range draftTags.Tags {
+		tagIds = append(tagIds, tag.Id)
+	}
+
+	return svc.dao.UnbindTag2Draft(tagIds, draftTags.DraftId)
 }
 
 func removeExisting(tags []model.Tag, existTags []model.Tag) []model.Tag {
