@@ -12,9 +12,11 @@ type CreateRequest struct {
 }
 
 type SaveRequest struct {
-	Id      uint32 `json:"id" binding:"required"`
-	Title   string `json:"title"`
-	Content string `json:"content"`
+	Id           uint32 `json:"id" binding:"required"`
+	Title        string `json:"title"`
+	Content      string `json:"content"`
+	IsPublish    uint8  `json:"is_publish"`
+	OperatedType uint8  `json:"operated_type"` // 操作类型  0:新增[默认] 1:修改
 }
 
 type DeleteRequest struct {
@@ -53,9 +55,16 @@ func (svc *Service) UpdateDraft(request SaveRequest) error {
 		Id:         request.Id,
 		Title:      request.Title,
 		Content:    request.Content,
+		IsPublish:  request.IsPublish,
 		UpdateTime: time.Now().Format(time.DateTime),
 	}
-	return svc.dao.UpdateDraft(&draft)
+
+	// 编辑 保存草稿
+	if request.OperatedType == 1 {
+		return svc.dao.EditSaveDraft(&draft)
+	}
+	// 新增 保存草稿
+	return svc.dao.AddSaveDraft(&draft)
 }
 
 func (svc *Service) DeleteDraft(request DeleteRequest) error {

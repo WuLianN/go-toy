@@ -24,8 +24,28 @@ func (d *Dao) CreateDraft(draft *model.Draft) (id uint32) {
 	return draft.Id
 }
 
-func (d *Dao) UpdateDraft(draft *model.Draft) error {
-	err := d.engine.Table("drafts").Where("id = ?", draft.Id).Updates(&model.Draft{Title: draft.Title, Content: draft.Content, UpdateTime: draft.UpdateTime}).Error
+// 新增 保存草稿
+func (d *Dao) AddSaveDraft(draft *model.Draft) error {
+	err := d.engine.Table("drafts").Where("id = ?", draft.Id).Updates(map[string]interface{}{
+		"title":       draft.Title,
+		"update_time": draft.UpdateTime,
+		"content":     draft.Content,
+	}).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// 编辑 保存草稿 不需要更新content
+func (d *Dao) EditSaveDraft(draft *model.Draft) error {
+	err := d.engine.Table("drafts").Where("id = ?", draft.Id).Updates(map[string]interface{}{
+		"title":       draft.Title,
+		"update_time": draft.UpdateTime,
+		"is_publish":  draft.IsPublish,
+	}).Error
 
 	if err != nil {
 		return err
