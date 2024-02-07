@@ -24,7 +24,8 @@ type TreeList struct {
 	// meta
 	Meta map[string]any `json:"meta"`
 
-	Label string `json:"label"`
+	Label string      `json:"label"`
+	Tags  []model.Tag `json:"tags"`
 }
 
 func (svc *Service) GetMenuList(UserId uint32) []TreeList {
@@ -32,9 +33,12 @@ func (svc *Service) GetMenuList(UserId uint32) []TreeList {
 
 	if menus != nil {
 		// 分类名Map
-		categoryNameMap := make(map[string][]model.MenuMeat)
+		categoryNameMap := make(map[string][]model.MenuMeta)
 
 		for _, menu := range menus {
+			tags, _ := svc.dao.QueryMenuTags(menu.Id)
+			menu.Tags = append(menu.Tags, tags...)
+
 			categoryIdStr := strconv.Itoa(int(menu.CategoryId))
 			categoryNameMap[categoryIdStr] = append(categoryNameMap[categoryIdStr], menu)
 		}
@@ -49,7 +53,7 @@ func (svc *Service) GetMenuList(UserId uint32) []TreeList {
 	return nil
 }
 
-func GetTreeMenu(menuList []model.MenuMeat, pid uint32) []TreeList {
+func GetTreeMenu(menuList []model.MenuMeta, pid uint32) []TreeList {
 	treeList := []TreeList{}
 	for _, v := range menuList {
 		if v.ParentId == pid {
@@ -63,6 +67,7 @@ func GetTreeMenu(menuList []model.MenuMeat, pid uint32) []TreeList {
 				Redirect:  v.Redirect,
 				ParentId:  v.ParentId,
 				Meta:      GetMeta(v),
+				Tags:      v.Tags,
 			}
 			node.Children = child
 			treeList = append(treeList, node)
@@ -71,7 +76,7 @@ func GetTreeMenu(menuList []model.MenuMeat, pid uint32) []TreeList {
 	return treeList
 }
 
-func GetMeta(menu model.MenuMeat) map[string]any {
+func GetMeta(menu model.MenuMeta) map[string]any {
 	meta := make(map[string]any)
 	meta["id"] = menu.MetaId
 	meta["category_id"] = menu.CategoryId

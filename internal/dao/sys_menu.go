@@ -5,8 +5,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func (d *Dao) GetMenu(UserId uint32) []model.MenuMeat {
-	var menu []model.MenuMeat
+func (d *Dao) GetMenu(UserId uint32) []model.MenuMeta {
+	var menu []model.MenuMeta
 
 	d.engine.Table("menu").Select("menu.id as id, name, parent_id, meta_id, category_id, component, icon").Joins("left join menu_meta on menu_meta.id = menu.meta_id").Where("user_id = ? AND is_use = ?", UserId, 1).Scan(&menu)
 
@@ -83,7 +83,7 @@ func (d *Dao) DeleteMenuItem(menuId uint32, userId uint32) error {
 			return err
 		}
 
-		if err = tx.Table("menu_meta").Where("id IN ?", metaIds).Delete(&model.MenuMeat{}).Error; err != nil {
+		if err = tx.Table("menu_meta").Where("id IN ?", metaIds).Delete(&model.MenuMeta{}).Error; err != nil {
 			return err
 		}
 

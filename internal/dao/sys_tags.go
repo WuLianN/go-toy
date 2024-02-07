@@ -42,11 +42,15 @@ func (d *Dao) QueryDraftTagsDT(userId uint32, tagId uint32) ([]model.DraftTag, e
 	var err error
 
 	if tagId > 0 {
-		err = d.engine.Table("draft_tags").Select("tags.id as id, draft_tags.draft_id, tags.name").Joins("left join tags on draft_tags.tag_id = tags.id").Where("tags.user_id = ? AND draft_tags.tag_id = ?", userId, tagId).Find(&list).Error
+		d.engine.Table("draft_tags").Select("tags.id as id, draft_tags.draft_id, tags.name").Joins("left join tags on draft_tags.tag_id = tags.id").Where("tags.user_id = ? AND draft_tags.tag_id = ?", userId, tagId).Find(&list)
+
+		return list, nil
 	}
 
 	if userId > 0 {
-		err = d.engine.Table("draft_tags").Select("tags.id as id, draft_tags.draft_id, tags.name").Joins("left join tags on draft_tags.tag_id = tags.id").Where("tags.user_id = ?", userId).Find(&list).Error
+		d.engine.Table("draft_tags").Select("tags.id as id, draft_tags.draft_id, tags.name").Joins("left join tags on draft_tags.tag_id = tags.id").Where("tags.user_id = ?", userId).Find(&list)
+
+		return list, nil
 	}
 
 	if err != nil {

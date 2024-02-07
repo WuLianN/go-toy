@@ -21,9 +21,9 @@ type Menu struct {
 	IsUse uint8 `json:"is_use"`
 }
 
-type MenuMeat struct {
+type MenuMeta struct {
 	Menu
-
+	Tags       []Tag  `json:"tags" gorm:"foreignKey:Id"`
 	Icon       string `json:"icon"`
 	CategoryId uint32 `json:"category_id"`
 }
