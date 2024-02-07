@@ -45,6 +45,10 @@ func (d *Dao) QueryDraftTagsDT(userId uint32, tagId uint32) ([]model.DraftTag, e
 		err = d.engine.Table("draft_tags").Select("tags.id as id, draft_tags.draft_id, tags.name").Joins("left join tags on draft_tags.tag_id = tags.id").Where("tags.user_id = ? AND draft_tags.tag_id = ?", userId, tagId).Find(&list).Error
 	}
 
+	if userId > 0 {
+		err = d.engine.Table("draft_tags").Select("tags.id as id, draft_tags.draft_id, tags.name").Joins("left join tags on draft_tags.tag_id = tags.id").Where("tags.user_id = ?", userId).Find(&list).Error
+	}
+
 	if err != nil {
 		return list, err
 	}
