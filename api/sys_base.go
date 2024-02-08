@@ -79,12 +79,24 @@ func (b *BaseApi) Register(c *gin.Context) {
 	}
 
 	svc := service.New(c.Request.Context())
-	bool, err := svc.CheckRegister(&param)
+	bool, userId, err := svc.CheckRegister(&param)
 
 	if bool == true {
+		token, err := app.GenerateToken(userId, param.UserName)
+		if err != nil {
+			global.Logger.Errorf(c, "app.GenerateToken err: %v", err)
+			response.ToErrorResponse(errcode.UnauthorizedTokenGenerate)
+			return
+		}
+
 		response.ToResponse(gin.H{
 			"code":    errcode.Success.Code(),
 			"message": "注册成功",
+			"result": gin.H{
+				"token":    token,
+				"username": param.UserName,
+				"userId":   userId,
+			},
 		})
 	} else if bool == false && err == nil {
 		response.ToResponse(gin.H{

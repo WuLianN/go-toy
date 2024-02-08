@@ -32,27 +32,27 @@ func (svc *Service) CheckLogin(param *UserRequest) (bool, *model.User) {
 
 // 检查注册
 // @return true 注册成功 false 注册失败
-func (svc *Service) CheckRegister(param *UserRequest) (bool, error) {
+func (svc *Service) CheckRegister(param *UserRequest) (bool, uint32, error) {
 	isExsited, _ := svc.dao.IsSystemUser(param.UserName, 0)
-	if isExsited == false {
+	if !isExsited {
 		// hash密码
 		hash, err := GeneratePassword(param.Password)
 
 		if err != nil {
-			return false, err // 失败 - 生成hash密码错误
+			return false, 0, err // 失败 - 生成hash密码错误
 		}
 
 		// 注册写入数据库
-		err = svc.dao.Register(param.UserName, string(hash))
+		userId, err2 := svc.dao.Register(param.UserName, string(hash))
 
-		if err != nil {
-			return false, err // 失败 - 密码入库存储错误
+		if err2 != nil {
+			return false, 0, err2 // 失败 - 密码入库存储错误
 		}
 
-		return true, nil // 成功 - 注册成功
-	} else {
-		return false, nil // 失败 - 用户已注册
+		return true, userId, nil // 成功 - 注册成功
 	}
+
+	return false, 0, nil // 失败 - 用户已注册
 }
 
 // 生成密码

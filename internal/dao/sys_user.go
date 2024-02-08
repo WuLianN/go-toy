@@ -27,14 +27,14 @@ func (d *Dao) IsSystemUser(userName string, id uint32) (bool, *model.User) {
 }
 
 // 注册
-func (d *Dao) Register(UserName string, Password string) error {
+func (d *Dao) Register(UserName string, Password string) (uint32, error) {
 	createTime := time.Now().Format(time.DateTime)
 	user := model.User{UserName: UserName, Password: Password, CreateTime: createTime}
 	err := d.engine.Create(&user).Error
 	if err != nil {
-		return err
+		return user.Id, err
 	}
-	return nil
+	return user.Id, nil
 }
 
 // 更换密码
