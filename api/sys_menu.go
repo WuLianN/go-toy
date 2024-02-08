@@ -115,3 +115,28 @@ func (m *MenuApi) DeleteMenuItem(c *gin.Context) {
 		"message": errcode.Success.Msg(),
 	})
 }
+
+func (m *MenuApi) UpdateMenuItem(c *gin.Context) {
+	requestBody := model.UpdateMenuItem{}
+	response := app.NewResponse(c)
+
+	valid, errs := app.BindAndValid(c, &requestBody)
+	if !valid {
+		global.Logger.Errorf(c, "app.BindAndValid errs: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	svc := service.New(c.Request.Context())
+	err := svc.UpdateMenuItem(&requestBody)
+
+	if err != nil {
+		response.ToErrorResponse(errcode.Fail)
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+	})
+}

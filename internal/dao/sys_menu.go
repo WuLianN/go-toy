@@ -1,6 +1,8 @@
 package dao
 
 import (
+	"fmt"
+
 	"github.com/WuLianN/go-toy/internal/model"
 	"gorm.io/gorm"
 )
@@ -89,6 +91,32 @@ func (d *Dao) DeleteMenuItem(menuId uint32, userId uint32) error {
 
 		return nil
 	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d *Dao) UpdateMenuItem(menuId uint32, name string, icon string) error {
+	err := d.engine.Transaction(func(tx *gorm.DB) error {
+		var err error
+		var menu model.Menu
+		if err = tx.Table("menu").Model(&menu).Where("id = ?", menuId).Update("name", name).Error; err != nil {
+			return err
+		}
+
+		if err = tx.Table("menu").Where("id = ?", menuId).Find(&menu).Limit(1).Error; err != nil {
+			return err
+		}
+
+		fmt.Println(menu)
+
+		if err = tx.Table("menu_meta").Where("id = ?", menu.MetaId).Update("icon", icon).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+
 	if err != nil {
 		return err
 	}

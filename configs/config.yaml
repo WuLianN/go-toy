@@ -17,6 +17,7 @@ App:
     - .jpg
     - .jpeg
     - .png  
+    - .gif
 JWT:
   Secret: wuliann
   Issuer: go-toy
@@ -26,7 +27,7 @@ Database:
   UserName: root
   Password: 123456
   Host: 127.0.0.1:3306
-  DBName: feature
+  DBName: blog
   TablePrefix: ''
   Charset: utf8
   ParseTime: True

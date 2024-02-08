@@ -95,3 +95,7 @@ func (svc *Service) AddMenuItem(req model.AddMenuItem, userId uint32) (model.Add
 func (svc *Service) DeleteMenuItem(req model.DeleteMenuItem, userId uint32) error {
 	return svc.dao.DeleteMenuItem(req.Id, userId)
 }
+
+func (svc *Service) UpdateMenuItem(req *model.UpdateMenuItem) error {
+	return svc.dao.UpdateMenuItem(req.Id, req.Name, req.Icon)
+}

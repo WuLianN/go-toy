@@ -45,6 +45,12 @@ type DeleteMenuItem struct {
 	Id uint32 `json:"id" binding:"required"`
 }
 
+type UpdateMenuItem struct {
+	Id   uint32 `json:"id" binding:"required"`
+	Name string `json:"name"`
+	Icon string `json:"icon"`
+}
+
 type MenuTags struct {
 	Tags   []Tag  `json:"tags" binding:"required"`
 	MenuId uint32 `json:"menu_id" binding:"required"`
