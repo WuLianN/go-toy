@@ -89,9 +89,9 @@ func (d *Dao) QueryDraftList(userId uint32, status uint32, page int, pageSize in
 	}
 
 	if status > 0 {
-		err = d.engine.Table("drafts").Where("user_id = ? AND is_publish = ? AND is_delete = ?", userId, draftStatus, 0).Limit(pageSize).Offset(offset).Find(&list).Error
+		err = d.engine.Table("drafts").Order("update_time DESC").Where("user_id = ? AND is_publish = ? AND is_delete = ?", userId, draftStatus, 0).Limit(pageSize).Offset(offset).Find(&list).Error
 	} else {
-		err = d.engine.Table("drafts").Where("user_id = ? AND is_delete = ?", userId, 0).Limit(pageSize).Offset(offset).Find(&list).Error
+		err = d.engine.Table("drafts").Order("update_time DESC").Where("user_id = ? AND is_delete = ?", userId, 0).Limit(pageSize).Offset(offset).Find(&list).Error
 	}
 
 	for index, item := range list {

@@ -192,7 +192,7 @@ func (d *DraftApi) GetDraftList(c *gin.Context) {
 		return
 	}
 	pageStr := c.Query("page")
-	pageSizeStr := c.Query("pageSize")
+	pageSizeStr := c.Query("page_size")
 	if pageStr == "" {
 		pageStr = "1"
 	}

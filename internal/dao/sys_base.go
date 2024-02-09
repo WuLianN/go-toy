@@ -16,7 +16,7 @@ func (d *Dao) SaveVisitInfo(visitInfo model.VisitInfo) {
 func (d *Dao) QueryRecommendList(userId uint32, page int, pageSize int, tagId uint32) ([]model.RecommendList, error) {
 	offset := app.GetPageOffset(page, pageSize)
 	var list []model.RecommendList
-	err := d.engine.Table("drafts").Where("drafts.user_id = ? AND is_publish = ? AND is_delete = ?", userId, 1, 0).Limit(pageSize).Offset(offset).Find(&list).Error
+	err := d.engine.Table("drafts").Order("update_time DESC").Where("drafts.user_id = ? AND is_publish = ? AND is_delete = ?", userId, 1, 0).Limit(pageSize).Offset(offset).Find(&list).Error
 
 	if err != nil {
 		return list, err
