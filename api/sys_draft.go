@@ -150,7 +150,7 @@ func (d *DraftApi) DeleteDraft(c *gin.Context) {
 // @Tags 草稿
 // @Success 200 {string} string "ok"
 // @Router /publishDraft [post]
-func (d *DraftApi) PublishDarft(c *gin.Context) {
+func (d *DraftApi) PublishDraft(c *gin.Context) {
 	param := service.PublishRequest{}
 	response := app.NewResponse(c)
 
