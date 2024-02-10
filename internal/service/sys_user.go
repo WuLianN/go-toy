@@ -11,7 +11,9 @@ type UserRequest struct {
 }
 
 type UserInfoRequest struct {
-	UserId uint32 `json:"userId" binding:"required"`
+	Id       uint32 `json:"id"`
+	UserName string `json:"user_name"`
+	Avatar   string `json:"avatar"`
 }
 
 type ChangePasswordRequest struct {
@@ -83,4 +85,8 @@ func (svc *Service) ChangePassword(userId uint32, newPassword string) bool {
 
 func (svc *Service) GetUserInfo(userId uint32) (model.UserInfo, error) {
 	return svc.dao.QueryUser(userId)
+}
+
+func (svc *Service) UpdateUserInfo(req *UserInfoRequest) (model.UserInfo, error) {
+	return svc.dao.UpdateUserInfo(req.Id, req.UserName, req.Avatar)
 }

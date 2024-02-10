@@ -97,7 +97,7 @@ func (u *UserApi) ChangePassword(c *gin.Context) {
 
 	isSystemUser, userInfo := dao.New(global.DBEngine).IsSystemUser("", tokenInfo.UserId)
 
-	if isSystemUser == false {
+	if !isSystemUser {
 		response.ToErrorResponse(errcode.Fail)
 		return
 	}
@@ -105,7 +105,7 @@ func (u *UserApi) ChangePassword(c *gin.Context) {
 	// 验证旧密码是否正确
 	isRightOldPasword := service.ComparePassword(param.OldPassword, userInfo.Password)
 
-	if isRightOldPasword == false {
+	if !isRightOldPasword {
 		response.ToResponse(gin.H{
 			"code":    errcode.Fail.Code(),
 			"message": "当前密码错误",
@@ -129,4 +129,48 @@ func (u *UserApi) ChangePassword(c *gin.Context) {
 		})
 		return
 	}
+}
+
+func (u *UserApi) UpdateUserInfo(c *gin.Context) {
+	requestBody := service.UserInfoRequest{}
+
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &requestBody)
+	if !valid {
+		global.Logger.Errorf(c, "app.BindAndValid errs: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	if requestBody.Id == 0 {
+		token := GetToken(c)
+		err, tokenInfo := GetTokenInfo(token)
+		if err != nil {
+			response.ToErrorResponse(err)
+			return
+		}
+		requestBody.Id = tokenInfo.UserId
+	}
+
+	svc := service.New(c.Request.Context())
+	userInfo, err := svc.UpdateUserInfo(&requestBody)
+
+	if err != nil {
+		response.ToResponse(gin.H{
+			"code":    errcode.Fail.Code(),
+			"message": errcode.Fail.Msg(),
+		})
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+		"type":    "success",
+		"result": gin.H{
+			"id":        requestBody.Id,
+			"user_name": userInfo.UserName,
+			"avatar":    userInfo.Avatar,
+		},
+	})
 }
