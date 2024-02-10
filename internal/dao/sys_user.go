@@ -47,3 +47,13 @@ func (d *Dao) ChangePassword(userId uint32, passwordHash []byte) bool {
 
 	return true
 }
+
+func (d *Dao) QueryUser(userId uint32) (model.UserInfo, error) {
+	var userInfo model.UserInfo
+
+	if err := d.engine.Table("user").Where("id = ?", userId).Find(&userInfo).Limit(1).Error; err != nil {
+		return userInfo, err
+	}
+
+	return userInfo, nil
+}

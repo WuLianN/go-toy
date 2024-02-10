@@ -53,9 +53,9 @@ func (b *BaseApi) Login(c *gin.Context) {
 		"message": errcode.Success.Msg(),
 		"type":    "success",
 		"result": gin.H{
-			"token":    token,
-			"username": userInfo.UserName,
-			"userId":   userInfo.Id,
+			"token":     token,
+			"user_name": userInfo.UserName,
+			"id":        userInfo.Id,
 		},
 	})
 }
@@ -93,9 +93,9 @@ func (b *BaseApi) Register(c *gin.Context) {
 			"code":    errcode.Success.Code(),
 			"message": "注册成功",
 			"result": gin.H{
-				"token":    token,
-				"username": param.UserName,
-				"userId":   userId,
+				"token":     token,
+				"user_name": param.UserName,
+				"id":        userId,
 			},
 		})
 	} else if bool == false && err == nil {

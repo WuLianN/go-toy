@@ -80,3 +80,7 @@ func (svc *Service) ChangePassword(userId uint32, newPassword string) bool {
 	}
 	return false
 }
+
+func (svc *Service) GetUserInfo(userId uint32) (model.UserInfo, error) {
+	return svc.dao.QueryUser(userId)
+}

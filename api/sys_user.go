@@ -5,6 +5,7 @@ import (
 	dao "github.com/WuLianN/go-toy/internal/dao"
 	"github.com/WuLianN/go-toy/internal/service"
 	"github.com/WuLianN/go-toy/pkg/app"
+	"github.com/WuLianN/go-toy/pkg/convert"
 	"github.com/WuLianN/go-toy/pkg/errcode"
 	"github.com/gin-gonic/gin"
 )
@@ -18,32 +19,41 @@ type UserApi struct{}
 // @Success 200 {string} string "ok"
 // @Router /getUserInfo [get]
 func (u *UserApi) GetUserInfo(c *gin.Context) {
-	var token string
-	if s, exist := c.GetQuery("token"); exist {
-		token = s
-	} else {
-		token = c.GetHeader("Authorization")
-	}
-
+	var userId uint32
+	userIdStr := c.Query("id")
 	response := app.NewResponse(c)
 
-	if token == "" {
-		response.ToResponse(gin.H{
-			"code":    errcode.Fail.Code(),
-			"message": "无token",
-		})
-		return
+	if userIdStr == "" {
+		var token string
+		if s, exist := c.GetQuery("token"); exist {
+			token = s
+		} else {
+			token = c.GetHeader("Authorization")
+		}
+
+		if token == "" {
+			response.ToResponse(gin.H{
+				"code":    errcode.Fail.Code(),
+				"message": "无token",
+			})
+			return
+		}
+
+		err, tokenInfo := GetTokenInfo(token)
+		if err != nil {
+			response.ToErrorResponse(err)
+			return
+		}
+		userId = tokenInfo.UserId
+	} else {
+		userId = convert.StrTo(userIdStr).MustUInt32()
 	}
 
-	err, tokenInfo := GetTokenInfo(token)
-	if err != nil {
-		response.ToErrorResponse(err)
-		return
-	}
+	svc := service.New(c.Request.Context())
 
-	loginStatus, userInfo := dao.New(global.DBEngine).IsSystemUser("", tokenInfo.UserId)
+	userInfo, err2 := svc.GetUserInfo(userId)
 
-	if loginStatus != true {
+	if err2 != nil {
 		response.ToResponse(gin.H{
 			"code":    errcode.Fail.Code(),
 			"message": "用户ID错误",
@@ -55,10 +65,7 @@ func (u *UserApi) GetUserInfo(c *gin.Context) {
 		"code":    errcode.Success.Code(),
 		"message": errcode.Success.Msg(),
 		"type":    "success",
-		"result": gin.H{
-			"username": userInfo.UserName,
-			"userId":   userInfo.Id,
-		},
+		"result":  userInfo,
 	})
 }
 
