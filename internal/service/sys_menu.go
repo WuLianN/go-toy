@@ -1,8 +1,6 @@
 package service
 
 import (
-	"strconv"
-
 	"github.com/WuLianN/go-toy/internal/model"
 )
 
@@ -32,21 +30,14 @@ func (svc *Service) GetMenuList(UserId uint32) []TreeList {
 	menus := svc.dao.GetMenu(UserId)
 
 	if menus != nil {
-		// 分类名Map
-		categoryNameMap := make(map[string][]model.MenuMeta)
+		menuList := []TreeList{}
 
 		for _, menu := range menus {
 			tags, _ := svc.dao.QueryMenuTags(menu.Id)
 			menu.Tags = append(menu.Tags, tags...)
-
-			categoryIdStr := strconv.Itoa(int(menu.CategoryId))
-			categoryNameMap[categoryIdStr] = append(categoryNameMap[categoryIdStr], menu)
 		}
 
-		menuList := []TreeList{}
-		for _, category := range categoryNameMap {
-			menuList = append(menuList, GetTreeMenu(category, 0)...)
-		}
+		menuList = append(menuList, GetTreeMenu(menus, 0)...)
 
 		return menuList
 	}
@@ -79,7 +70,6 @@ func GetTreeMenu(menuList []model.MenuMeta, pid uint32) []TreeList {
 func GetMeta(menu model.MenuMeta) map[string]any {
 	meta := make(map[string]any)
 	meta["id"] = menu.MetaId
-	meta["category_id"] = menu.CategoryId
 
 	if menu.Icon != "" {
 		meta["icon"] = menu.Icon
@@ -89,7 +79,7 @@ func GetMeta(menu model.MenuMeta) map[string]any {
 }
 
 func (svc *Service) AddMenuItem(req model.AddMenuItem, userId uint32) (model.AddMenuItem, error) {
-	return svc.dao.AddMenuItem(req.Name, req.ParentId, req.CategoryId, userId)
+	return svc.dao.AddMenuItem(req.Name, req.ParentId, userId)
 }
 
 func (svc *Service) DeleteMenuItem(req model.DeleteMenuItem, userId uint32) error {

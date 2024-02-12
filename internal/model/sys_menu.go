@@ -23,22 +23,19 @@ type Menu struct {
 
 type MenuMeta struct {
 	Menu
-	Tags       []Tag  `json:"tags" gorm:"foreignKey:Id"`
-	Icon       string `json:"icon"`
-	CategoryId uint32 `json:"category_id"`
+	Tags []Tag  `json:"tags" gorm:"foreignKey:Id"`
+	Icon string `json:"icon"`
 }
 
 type Meta struct {
-	Id         uint32 `json:"id"`
-	Icon       string `json:"icon"`
-	CategoryId uint32 `json:"category_id"`
+	Id   uint32 `json:"id"`
+	Icon string `json:"icon"`
 }
 
 type AddMenuItem struct {
-	Id         uint32 `json:"id"`
-	Name       string `json:"name"`
-	ParentId   uint32 `json:"parent_id"`
-	CategoryId uint32 `json:"category_id"`
+	Id       uint32 `json:"id"`
+	Name     string `json:"name"`
+	ParentId uint32 `json:"parent_id"`
 }
 
 type DeleteMenuItem struct {

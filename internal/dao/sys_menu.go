@@ -10,19 +10,17 @@ import (
 func (d *Dao) GetMenu(UserId uint32) []model.MenuMeta {
 	var menu []model.MenuMeta
 
-	d.engine.Table("menu").Select("menu.id as id, name, parent_id, meta_id, category_id, component, icon").Joins("left join menu_meta on menu_meta.id = menu.meta_id").Where("user_id = ? AND is_use = ?", UserId, 1).Scan(&menu)
+	d.engine.Table("menu").Select("menu.id as id, name, parent_id, meta_id, component, icon").Joins("left join menu_meta on menu_meta.id = menu.meta_id").Where("user_id = ? AND is_use = ?", UserId, 1).Scan(&menu)
 
 	return menu
 }
 
-func (d *Dao) AddMenuItem(name string, parentId, categoryId, userId uint32) (model.AddMenuItem, error) {
+func (d *Dao) AddMenuItem(name string, parentId, userId uint32) (model.AddMenuItem, error) {
 	var menu model.Menu
 
 	err := d.engine.Transaction(func(tx *gorm.DB) error {
 		var err error
-		meta := model.Meta{
-			CategoryId: 0,
-		}
+		meta := model.Meta{}
 
 		// 事务处理
 		if err = tx.Table("menu_meta").Create(&meta).Error; err != nil {
