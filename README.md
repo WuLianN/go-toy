@@ -1,11 +1,9 @@
 ## 项目简介
-:dart: 练习go，web项目，快速练习，前端使用开源后台管理 [vue-vben-admin](https://github.com/vbenjs/vue-vben-admin)
+:dart: 练习go，web项目，快速练习
 
 项目基础代码学习于 [《Go 语言编程之旅》](https://github.com/go-programming-tour-book/)
 
 项目架构学习于 [project-layout](https://github.com/golang-standards/project-layout/blob/master/README_zh.md)
-
-项目api接口对接 [vue-vben-admin](https://github.com/vbenjs/vue-vben-admin)
 
 ### 目录结构
 ```
