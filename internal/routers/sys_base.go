@@ -8,6 +8,7 @@ import (
 func InitBaseRouter(Router *gin.RouterGroup) {
 	baseApi := api.ApiGroupApp.BaseApi
 	draftApi := api.ApiGroupApp.DraftApi
+	userApi := api.ApiGroupApp.UserApi
 	uploadApi := api.NewUpload()
 	{
 		Router.POST("/login", baseApi.Login)
@@ -16,5 +17,6 @@ func InitBaseRouter(Router *gin.RouterGroup) {
 		Router.GET("/visit", baseApi.Visit)
 		Router.GET("/getRecommendList", baseApi.GetRecommendList)
 		Router.GET("/getDraft", draftApi.GetDraft)
+		Router.GET("/getUserInfo", userApi.GetUserInfo)
 	}
 }
