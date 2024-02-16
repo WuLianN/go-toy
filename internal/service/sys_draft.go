@@ -79,3 +79,7 @@ func (svc *Service) PublishDraft(request PublishRequest) error {
 func (svc *Service) GetDraftList(request *DraftListRequest) ([]model.DraftWithTags, error) {
 	return svc.dao.QueryDraftList(request.UserId, request.Status, request.Page, request.PageSize)
 }
+
+func (svc *Service) SearchDrafts(userId uint32, keyword string, page int, pageSize int) ([]model.DraftWithTags, error) {
+	return svc.dao.QuerySearchDraftList(userId, keyword, page, pageSize)
+}

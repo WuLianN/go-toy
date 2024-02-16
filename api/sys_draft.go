@@ -221,3 +221,52 @@ func (d *DraftApi) GetDraftList(c *gin.Context) {
 		"result":  list,
 	})
 }
+
+// @Summary 搜索文章
+func (d *DraftApi) SearchDrafts(c *gin.Context) {
+	response := app.NewResponse(c)
+
+	keyword := c.Query("keyword")
+	pageStr := c.Query("page")
+	pageSizeStr := c.Query("page_size")
+	userIdStr := c.Query("user_id")
+
+	if pageStr == "" {
+		pageStr = "1"
+	}
+	if pageSizeStr == "" {
+		pageSizeStr = "10"
+	}
+
+	var userId uint32
+
+	if userIdStr != "" {
+		userId = convert.StrTo(userIdStr).MustUInt32()
+	} else {
+		token := GetToken(c)
+		err, tokenInfo := GetTokenInfo(token)
+		if err != nil {
+			response.ToErrorResponse(err)
+			return
+		}
+		userId = tokenInfo.UserId
+	}
+
+	page := convert.StrTo(pageStr).MustInt()
+	pageSize := convert.StrTo(pageSizeStr).MustInt()
+
+	svc := service.New(c.Request.Context())
+	list, err := svc.SearchDrafts(userId, keyword, page, pageSize)
+
+	if err != nil {
+		response.ToErrorResponse(errcode.Fail)
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+		"type":    "success",
+		"result":  list,
+	})
+}

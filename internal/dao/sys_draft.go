@@ -96,7 +96,27 @@ func (d *Dao) QueryDraftList(userId uint32, status uint32, page int, pageSize in
 
 	for index, item := range list {
 		var tags []model.Tag
-		err = d.engine.Table("draft_tags").Select("tags.name AS name, tags.Id AS id, tags.user_id").Where("draft_tags.draft_id = ?", item.Id).Joins("left join tags on draft_tags.tag_id = tags.Id").Find(&tags).Error
+		err = d.engine.Table("draft_tags").Select("tags.name AS name, tags.Id AS id, tags.user_id").Where("draft_tags.draft_id = ?", item.Id).Joins("left join tags on draft_tags.tag_id = tags.id").Find(&tags).Error
+		list[index].Tags = append(list[index].Tags, tags...)
+	}
+
+	if err != nil {
+		return list, err
+	}
+
+	return list, nil
+}
+
+func (d *Dao) QuerySearchDraftList(userId uint32, keyword string, page int, pageSize int) ([]model.DraftWithTags, error) {
+	offset := app.GetPageOffset(page, pageSize)
+	var list []model.DraftWithTags
+	var err error
+
+	err = d.engine.Table("drafts").Where("user_id = ? AND title LIKE ? AND is_publish = 1 AND is_delete = 0", userId, "%"+keyword+"%").Limit(pageSize).Offset(offset).Find(&list).Error
+
+	for index, item := range list {
+		var tags []model.Tag
+		err = d.engine.Table("draft_tags").Select("tags.name AS name, tags.Id AS id, tags.user_id").Where("draft_tags.draft_id = ?", item.Id).Joins("left join tags on draft_tags.tag_id = tags.id").Find(&tags).Error
 		list[index].Tags = append(list[index].Tags, tags...)
 	}
 
