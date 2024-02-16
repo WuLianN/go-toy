@@ -96,7 +96,7 @@ func (d *Dao) QueryDraftList(userId uint32, status uint32, page int, pageSize in
 
 	for index, item := range list {
 		var tags []model.Tag
-		err = d.engine.Table("draft_tags").Select("tags.name AS name, tags.Id AS id, tags.user_id").Where("draft_tags.draft_id = ?", item.Id).Joins("left join tags on draft_tags.tag_id = tags.id").Find(&tags).Error
+		err = d.engine.Table("draft_tags").Select("tags.name AS name, tags.Id AS id, tags.user_id, tags.bg_color, tags.color").Where("draft_tags.draft_id = ?", item.Id).Joins("left join tags on draft_tags.tag_id = tags.id").Find(&tags).Error
 		list[index].Tags = append(list[index].Tags, tags...)
 	}
 
@@ -116,7 +116,7 @@ func (d *Dao) QuerySearchDraftList(userId uint32, keyword string, page int, page
 
 	for index, item := range list {
 		var tags []model.Tag
-		err = d.engine.Table("draft_tags").Select("tags.name AS name, tags.Id AS id, tags.user_id").Where("draft_tags.draft_id = ?", item.Id).Joins("left join tags on draft_tags.tag_id = tags.id").Find(&tags).Error
+		err = d.engine.Table("draft_tags").Select("tags.name AS name, tags.Id AS id, tags.user_id, tags.bg_color, tags.color").Where("draft_tags.draft_id = ?", item.Id).Joins("left join tags on draft_tags.tag_id = tags.id").Find(&tags).Error
 		list[index].Tags = append(list[index].Tags, tags...)
 	}
 

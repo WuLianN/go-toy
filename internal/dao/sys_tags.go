@@ -28,7 +28,7 @@ func (d *Dao) QueryTagList(userId uint32, idList []int) ([]model.Tag, error) {
 func (d *Dao) QueryMenuTags(menuId uint32) ([]model.Tag, error) {
 	var list []model.Tag
 
-	err := d.engine.Table("menu_tags").Select("tags.name as name, tags.id as id, tags.user_id").Where("menu_id = ?", menuId).Joins("left join tags on menu_tags.tag_id = tags.id").Find(&list).Error
+	err := d.engine.Table("menu_tags").Select("tags.name as name, tags.id as id, tags.user_id, tags.bg_color, tags.color").Where("menu_id = ?", menuId).Joins("left join tags on menu_tags.tag_id = tags.id").Find(&list).Error
 
 	if err != nil {
 		return list, err
@@ -42,13 +42,13 @@ func (d *Dao) QueryDraftTagsDT(userId uint32, tagId uint32) ([]model.DraftTag, e
 	var err error
 
 	if tagId > 0 {
-		d.engine.Table("draft_tags").Select("tags.id as id, draft_tags.draft_id, tags.name").Joins("left join tags on draft_tags.tag_id = tags.id").Where("tags.user_id = ? AND draft_tags.tag_id = ?", userId, tagId).Find(&list)
+		d.engine.Table("draft_tags").Select("tags.id as id, draft_tags.draft_id, tags.name, tags.bg_color, tags.color").Joins("left join tags on draft_tags.tag_id = tags.id").Where("tags.user_id = ? AND draft_tags.tag_id = ?", userId, tagId).Find(&list)
 
 		return list, nil
 	}
 
 	if userId > 0 {
-		d.engine.Table("draft_tags").Select("tags.id as id, draft_tags.draft_id, tags.name").Joins("left join tags on draft_tags.tag_id = tags.id").Where("tags.user_id = ?", userId).Find(&list)
+		d.engine.Table("draft_tags").Select("tags.id as id, draft_tags.draft_id, tags.name, tags.bg_color, tags.color").Joins("left join tags on draft_tags.tag_id = tags.id").Where("tags.user_id = ?", userId).Find(&list)
 
 		return list, nil
 	}
@@ -118,8 +118,15 @@ func (d *Dao) QueryTags(userId uint32, names []string) ([]model.Tag, error) {
 	return list, nil
 }
 
-func (d *Dao) UpdateTag(tagId uint32, name string) error {
-	return d.engine.Table("tags").Where("id = ?", tagId).Update("name", name).Error
+func (d *Dao) UpdateTag(tagId uint32, name string, color string, bgColor string) error {
+	tag := model.Tag{
+		Id:      tagId,
+		Name:    name,
+		Color:   color,
+		BgColor: bgColor,
+	}
+
+	return d.engine.Table("tags").Where("id = ?", tagId).Updates(&tag).Error
 }
 
 func (d *Dao) BindTag2Menu(exsitTags []model.Tag, newTags []model.Tag, menuId uint32, userId uint32) error {

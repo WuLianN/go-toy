@@ -18,8 +18,10 @@ type DeleteTagRequest struct {
 }
 
 type UpdateTagRequest struct {
-	Id   uint32 `json:"id" binding:"required"`
-	Name string `json:"name" binding:"required"`
+	Id      uint32 `json:"id" binding:"required"`
+	Name    string `json:"name" binding:"required"`
+	Color   string `json:"color"`
+	BgColor string `json:"bg_color"`
 }
 
 func (svc *Service) GetTagList(userId uint32, ids string) ([]model.Tag, error) {
@@ -65,7 +67,7 @@ func (svc *Service) QueryTag(req *CreateTagRequest) ([]model.Tag, error) {
 }
 
 func (svc *Service) UpdateTag(req *UpdateTagRequest) error {
-	return svc.dao.UpdateTag(req.Id, req.Name)
+	return svc.dao.UpdateTag(req.Id, req.Name, req.Color, req.BgColor)
 }
 
 func (svc *Service) BindTag2Menu(menuTags *model.MenuTags, userId uint32) error {

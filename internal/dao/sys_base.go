@@ -31,8 +31,10 @@ func (d *Dao) QueryRecommendList(userId uint32, page int, pageSize int, tagId ui
 			for i := range list {
 				if list[i].Id == tag.DraftId {
 					list[i].Tags = append(list[i].Tags, model.Tag{
-						Id:   tag.TagId,
-						Name: tag.Name,
+						Id:      tag.TagId,
+						Name:    tag.Name,
+						BgColor: tag.BgColor,
+						Color:   tag.Color,
 					})
 					tempList = append(tempList, list[i])
 				}
@@ -45,8 +47,10 @@ func (d *Dao) QueryRecommendList(userId uint32, page int, pageSize int, tagId ui
 			for _, tag := range tagList {
 				if tag.DraftId == list[i].Id {
 					list[i].Tags = append(list[i].Tags, model.Tag{
-						Id:   tag.TagId,
-						Name: tag.Name,
+						Id:      tag.TagId,
+						Name:    tag.Name,
+						BgColor: tag.BgColor,
+						Color:   tag.Color,
 					})
 				}
 			}
