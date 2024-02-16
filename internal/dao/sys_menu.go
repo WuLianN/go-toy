@@ -1,8 +1,6 @@
 package dao
 
 import (
-	"fmt"
-
 	"github.com/WuLianN/go-toy/internal/model"
 	"gorm.io/gorm"
 )
@@ -106,8 +104,6 @@ func (d *Dao) UpdateMenuItem(menuId uint32, name string, icon string) error {
 		if err = tx.Table("menu").Where("id = ?", menuId).Find(&menu).Limit(1).Error; err != nil {
 			return err
 		}
-
-		fmt.Println(menu)
 
 		if err = tx.Table("menu_meta").Where("id = ?", menu.MetaId).Update("icon", icon).Error; err != nil {
 			return err
