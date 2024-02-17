@@ -32,9 +32,9 @@ func (svc *Service) GetMenuList(UserId uint32) []TreeList {
 	if menus != nil {
 		menuList := []TreeList{}
 
-		for _, menu := range menus {
+		for index, menu := range menus {
 			tags, _ := svc.dao.QueryMenuTags(menu.Id)
-			menu.Tags = append(menu.Tags, tags...)
+			menus[index].Tags = append(menu.Tags, tags...)
 		}
 
 		menuList = append(menuList, GetTreeMenu(menus, 0)...)
