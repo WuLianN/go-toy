@@ -1,9 +1,11 @@
 package dao
 
 import (
+	"errors"
 	"time"
 
 	"github.com/WuLianN/go-toy/internal/model"
+	"gorm.io/gorm"
 )
 
 // 用户是否为系统用户
@@ -69,4 +71,52 @@ func (d *Dao) UpdateUserInfo(userId uint32, userName, avatar string) (model.User
 	}
 
 	return userInfo, nil
+}
+
+func (d *Dao) IsBindedUser(userId1, userId2 uint32) bool {
+	binding := model.UserBinding{
+		UserId1: userId1,
+		UserId2: userId2,
+	}
+	err := d.engine.Table("user_binding").Where("user_id_1 = ? AND user_id_2 = ?", userId1, userId2).First(&binding).Error
+
+	return !errors.Is(err, gorm.ErrRecordNotFound)
+}
+
+func (d *Dao) BindUser(userId1, userId2 uint32) error {
+	binding := model.UserBinding{
+		UserId1:   userId1,
+		UserId2:   userId2,
+		CreatedAt: time.Now().Format(time.DateTime),
+	}
+	err := d.engine.Table("user_binding").Create(&binding).Error
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d *Dao) UnbindUser(userId1, userId2 uint32) error {
+	binding := model.UserBinding{
+		UserId1: userId1,
+		UserId2: userId2,
+	}
+	err := d.engine.Table("user_binding").Where("user_id_1 = ? AND user_id_2 = ?", userId1, userId2).Delete(&binding).Error
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d *Dao) QueryBindedUserList(userId uint32) ([]model.UserInfo, error) {
+	var list []model.UserInfo
+	err := d.engine.Table("user_binding").Select("user.avatar, user.user_name, user.id").Where("user_id_1 = ?", userId).Joins("left join user on user_binding.user_id_2 = user.id").Find(&list).Error
+
+	if err != nil {
+		return list, err
+	}
+
+	return list, err
 }

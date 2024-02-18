@@ -55,6 +55,7 @@ func (b *BaseApi) Login(c *gin.Context) {
 		"result": gin.H{
 			"token":     token,
 			"user_name": userInfo.UserName,
+			"avatar":    userInfo.Avatar,
 			"id":        userInfo.Id,
 		},
 	})

@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/WuLianN/go-toy/internal/model"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -19,6 +21,10 @@ type UserInfoRequest struct {
 type ChangePasswordRequest struct {
 	NewPassword string `json:"newPassword" binding:"required"`
 	OldPassword string `json:"oldPassword" binding:"required"`
+}
+
+type UnbindUser struct {
+	Id uint32 `json:"id" binding:"required"`
 }
 
 // 检查登录
@@ -89,4 +95,40 @@ func (svc *Service) GetUserInfo(userId uint32) (model.UserInfo, error) {
 
 func (svc *Service) UpdateUserInfo(req *UserInfoRequest) (model.UserInfo, error) {
 	return svc.dao.UpdateUserInfo(req.Id, req.UserName, req.Avatar)
+}
+
+func (svc *Service) BindUser(userId uint32, req *UserRequest) error {
+	var err error
+
+	isExsited, userInfo := svc.dao.IsSystemUser(req.UserName, 0)
+
+	if !isExsited {
+		return errors.New("用户不存在")
+	}
+
+	if isExsited {
+
+		isBinded := svc.dao.IsBindedUser(userId, userInfo.Id)
+
+		if isBinded {
+			return errors.New("用户已绑定")
+		}
+
+		err = svc.dao.BindUser(userId, userInfo.Id)
+	}
+
+	return err
+}
+
+func (svc *Service) UnbindUser(userId, unbindUserId uint32) error {
+	isExsited, _ := svc.dao.IsSystemUser("", unbindUserId)
+
+	if !isExsited {
+		return errors.New("用户不存在")
+	}
+	return svc.dao.UnbindUser(userId, unbindUserId)
+}
+
+func (svc *Service) GetBindedUserList(userId uint32) ([]model.UserInfo, error) {
+	return svc.dao.QueryBindedUserList(userId)
 }

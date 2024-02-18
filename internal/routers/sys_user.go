@@ -10,5 +10,8 @@ func InitUserRouter(Router *gin.RouterGroup) {
 	{
 		Router.POST("/changePassword", userApi.ChangePassword)
 		Router.POST("/updateUserInfo", userApi.UpdateUserInfo)
+		Router.POST("/bingUser", userApi.BingUser)
+		Router.POST("/unbindUser", userApi.UnbindUser)
+		Router.GET("/getBindedUserList", userApi.GetBindedUserList)
 	}
 }

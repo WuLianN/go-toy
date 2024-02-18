@@ -174,3 +174,113 @@ func (u *UserApi) UpdateUserInfo(c *gin.Context) {
 		},
 	})
 }
+
+func (u *UserApi) BingUser(c *gin.Context) {
+	requestBody := service.UserRequest{}
+
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &requestBody)
+	if !valid {
+		global.Logger.Errorf(c, "app.BindAndValid errs: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	var userId uint32
+	token := GetToken(c)
+	err, tokenInfo := GetTokenInfo(token)
+	if err != nil {
+		response.ToErrorResponse(err)
+		return
+	}
+	userId = tokenInfo.UserId
+
+	svc := service.New(c.Request.Context())
+	err2 := svc.BindUser(userId, &requestBody)
+
+	if err2 != nil {
+		response.ToResponse(gin.H{
+			"code":    errcode.Fail.Code(),
+			"message": err2.Error(),
+		})
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+		"type":    "success",
+	})
+}
+
+func (u *UserApi) UnbindUser(c *gin.Context) {
+	requestBody := service.UnbindUser{}
+
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &requestBody)
+	if !valid {
+		global.Logger.Errorf(c, "app.BindAndValid errs: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	var userId uint32
+	token := GetToken(c)
+	err, tokenInfo := GetTokenInfo(token)
+	if err != nil {
+		response.ToErrorResponse(err)
+		return
+	}
+	userId = tokenInfo.UserId
+
+	svc := service.New(c.Request.Context())
+	err2 := svc.UnbindUser(userId, requestBody.Id)
+
+	if err2 != nil {
+		response.ToResponse(gin.H{
+			"code":    errcode.Fail.Code(),
+			"message": err2.Error(),
+		})
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+		"type":    "success",
+	})
+}
+
+func (u *UserApi) GetBindedUserList(c *gin.Context) {
+	userIdStr := c.Query("user_id")
+
+	response := app.NewResponse(c)
+
+	if userIdStr == "" {
+		response.ToResponse(gin.H{
+			"code":    errcode.Fail.Code(),
+			"message": errcode.Fail.Msg(),
+		})
+		return
+	}
+
+	userId := convert.StrTo(userIdStr).MustUInt32()
+
+	svc := service.New(c.Request.Context())
+	list, err := svc.GetBindedUserList(userId)
+
+	if err != nil {
+		response.ToResponse(gin.H{
+			"code":    errcode.Fail.Code(),
+			"message": errcode.Fail.Msg(),
+		})
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+		"type":    "success",
+		"result":  list,
+	})
+}
