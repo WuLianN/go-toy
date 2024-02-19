@@ -214,7 +214,7 @@ func (u *UserApi) BingUser(c *gin.Context) {
 }
 
 func (u *UserApi) UnbindUser(c *gin.Context) {
-	requestBody := service.UnbindUser{}
+	requestBody := service.UserIdRequest{}
 
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &requestBody)
@@ -282,5 +282,69 @@ func (u *UserApi) GetBindedUserList(c *gin.Context) {
 		"message": errcode.Success.Msg(),
 		"type":    "success",
 		"result":  list,
+	})
+}
+
+func (u *UserApi) ChangeAccount(c *gin.Context) {
+	requestBody := service.UserIdRequest{}
+
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &requestBody)
+	if !valid {
+		global.Logger.Errorf(c, "app.BindAndValid errs: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	var userId uint32
+	token := GetToken(c)
+	err, tokenInfo := GetTokenInfo(token)
+	if err != nil {
+		response.ToErrorResponse(err)
+		return
+	}
+	userId = tokenInfo.UserId
+
+	svc := service.New(c.Request.Context())
+	status := svc.CheckBindedUser(userId, requestBody.Id)
+
+	if !status {
+		response.ToResponse(gin.H{
+			"code":    errcode.Fail.Code(),
+			"message": "该用户未绑定",
+		})
+		return
+	}
+
+	changeStatus, userInfo := svc.ChangeAccount(requestBody.Id)
+
+	if !changeStatus {
+		response.ToResponse(gin.H{
+			"code":    errcode.Fail.Code(),
+			"message": "该用户不存在",
+		})
+		return
+	}
+
+	newUserToken, err2 := app.GenerateToken(userInfo.Id, userInfo.UserName)
+
+	if err2 != nil {
+		response.ToResponse(gin.H{
+			"code":    errcode.Fail.Code(),
+			"message": "切换失败",
+		})
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+		"type":    "success",
+		"result": gin.H{
+			"token":     newUserToken,
+			"user_name": userInfo.UserName,
+			"avatar":    userInfo.Avatar,
+			"id":        userInfo.Id,
+		},
 	})
 }

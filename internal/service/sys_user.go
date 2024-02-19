@@ -23,7 +23,7 @@ type ChangePasswordRequest struct {
 	OldPassword string `json:"oldPassword" binding:"required"`
 }
 
-type UnbindUser struct {
+type UserIdRequest struct {
 	Id uint32 `json:"id" binding:"required"`
 }
 
@@ -131,4 +131,12 @@ func (svc *Service) UnbindUser(userId, unbindUserId uint32) error {
 
 func (svc *Service) GetBindedUserList(userId uint32) ([]model.UserInfo, error) {
 	return svc.dao.QueryBindedUserList(userId)
+}
+
+func (svc *Service) CheckBindedUser(userId1, userId2 uint32) bool {
+	return svc.dao.IsBindedUser(userId1, userId2)
+}
+
+func (svc *Service) ChangeAccount(userId uint32) (bool, *model.User) {
+	return svc.dao.IsSystemUser("", userId)
 }
