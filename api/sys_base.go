@@ -33,7 +33,7 @@ func (b *BaseApi) Login(c *gin.Context) {
 	loginStatus, userInfo := svc.CheckLogin(&param)
 
 	// 登录失败 - 账号/密码错误
-	if loginStatus != true {
+	if !loginStatus {
 		response.ToResponse(gin.H{
 			"code":    errcode.Fail.Code(),
 			"message": "用户名不存在或者密码错误",
@@ -82,7 +82,7 @@ func (b *BaseApi) Register(c *gin.Context) {
 	svc := service.New(c.Request.Context())
 	bool, userId, err := svc.CheckRegister(&param)
 
-	if bool == true {
+	if bool {
 		token, err := app.GenerateToken(userId, param.UserName)
 		if err != nil {
 			global.Logger.Errorf(c, "app.GenerateToken err: %v", err)
@@ -99,7 +99,7 @@ func (b *BaseApi) Register(c *gin.Context) {
 				"id":        userId,
 			},
 		})
-	} else if bool == false && err == nil {
+	} else if !bool && err == nil {
 		response.ToResponse(gin.H{
 			"code":    errcode.Fail.Code(),
 			"message": "用户已注册",
