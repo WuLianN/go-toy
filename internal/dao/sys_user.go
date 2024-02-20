@@ -6,6 +6,7 @@ import (
 
 	"github.com/WuLianN/go-toy/internal/model"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 // 用户是否为系统用户
@@ -119,4 +120,39 @@ func (d *Dao) QueryBindedUserList(userId uint32) ([]model.UserInfo, error) {
 	}
 
 	return list, err
+}
+
+func (d *Dao) QueryUserSetting(userId uint32) (model.UserSetting, error) {
+	userSetting := model.UserSetting{}
+
+	err := d.engine.Table("user_setting").Where("user_id = ?", userId).Find(&userSetting).Limit(1).Error
+	if err != nil {
+		return userSetting, err
+	}
+
+	return userSetting, nil
+}
+
+func (d *Dao) UpdateUserSetting(userSetting *model.UserSetting) (model.UserSetting, error) {
+	setting := model.UserSetting{
+		UserId:       userSetting.UserId,
+		PrimaryColor: userSetting.PrimaryColor,
+	}
+
+	var err error
+
+	err = d.engine.Table("user_setting").Where("user_id = ?", userSetting.UserId).First(&userSetting).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		// 没有记录 创建
+		err = d.engine.Table("user_setting").Create(&userSetting).Error
+	} else {
+		// 存在记录 修改
+		err = d.engine.Table("user_setting").Clauses(clause.Returning{}).Where("user_id = ?", userSetting.UserId).Updates(&setting).Error
+	}
+
+	if err != nil {
+		return setting, err
+	}
+	return setting, nil
 }

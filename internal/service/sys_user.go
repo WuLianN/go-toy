@@ -140,3 +140,11 @@ func (svc *Service) CheckBindedUser(userId1, userId2 uint32) bool {
 func (svc *Service) ChangeAccount(userId uint32) (bool, *model.User) {
 	return svc.dao.IsSystemUser("", userId)
 }
+
+func (svc *Service) GetUserSetting(userId uint32) (model.UserSetting, error) {
+	return svc.dao.QueryUserSetting(userId)
+}
+
+func (svc *Service) UpdateUserSetting(req *model.UserSetting) (model.UserSetting, error) {
+	return svc.dao.UpdateUserSetting(req)
+}

@@ -21,6 +21,12 @@ type UserBinding struct {
 	CreatedAt string `json:"created_at"`
 }
 
+type UserSetting struct {
+	Id           uint32 `json:"id"`
+	UserId       uint32 `json:"user_id"`
+	PrimaryColor string `json:"primary_color"`
+}
+
 func (u User) TableName() string {
 	return "user"
 }

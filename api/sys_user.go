@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/WuLianN/go-toy/global"
 	dao "github.com/WuLianN/go-toy/internal/dao"
+	"github.com/WuLianN/go-toy/internal/model"
 	"github.com/WuLianN/go-toy/internal/service"
 	"github.com/WuLianN/go-toy/pkg/app"
 	"github.com/WuLianN/go-toy/pkg/convert"
@@ -345,6 +346,75 @@ func (u *UserApi) ChangeAccount(c *gin.Context) {
 			"user_name": userInfo.UserName,
 			"avatar":    userInfo.Avatar,
 			"id":        userInfo.Id,
+		},
+	})
+}
+
+func (u *UserApi) GetUserSetting(c *gin.Context) {
+	userIdStr := c.Query("user_id")
+	var userId uint32
+	response := app.NewResponse(c)
+
+	if userIdStr == "" {
+		token := GetToken(c)
+		err, tokenInfo := GetTokenInfo(token)
+		if err != nil {
+			response.ToErrorResponse(err)
+			return
+		}
+		userId = tokenInfo.UserId
+	} else {
+		userId = convert.StrTo(userIdStr).MustUInt32()
+	}
+
+	svc := service.New(c.Request.Context())
+	userSetting, _ := svc.GetUserSetting(userId)
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+		"type":    "success",
+		"result": gin.H{
+			"primary_color": userSetting.PrimaryColor,
+		},
+	})
+}
+
+func (u *UserApi) UpdateUserSetting(c *gin.Context) {
+	requestBody := model.UserSetting{}
+
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &requestBody)
+	if !valid {
+		global.Logger.Errorf(c, "app.BindAndValid errs: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	token := GetToken(c)
+	err, tokenInfo := GetTokenInfo(token)
+	if err != nil {
+		response.ToErrorResponse(err)
+		return
+	}
+	requestBody.UserId = tokenInfo.UserId
+
+	svc := service.New(c.Request.Context())
+	userSetting, err2 := svc.UpdateUserSetting(&requestBody)
+
+	if err2 != nil {
+		response.ToResponse(gin.H{
+			"code":    errcode.Fail.Code(),
+			"message": errcode.Fail.Msg(),
+		})
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+		"type":    "success",
+		"result": gin.H{
+			"primary_color": userSetting.PrimaryColor,
 		},
 	})
 }
