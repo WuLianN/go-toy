@@ -4,7 +4,6 @@ type ApiGroup struct {
 	BaseApi
 	UserApi
 	MenuApi
-	StatisticsApi
 	DraftApi
 	TagApi
 }

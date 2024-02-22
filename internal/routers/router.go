@@ -55,7 +55,6 @@ func SetupRouter() *gin.Engine {
 	systemAuthGroup.Use(middleware.JWT())
 	{
 		InitUserRouter(systemAuthGroup)
-		InitStatisticsRouter(systemAuthGroup)
 		InitDraftRouter(systemAuthGroup)
 		InitTagRouter(systemAuthGroup)
 	}
