@@ -1,19 +1,16 @@
 package initialize
 
 import (
-	"context"
 	"flag"
 	"log"
 	"strings"
 	"time"
 
 	"github.com/WuLianN/go-toy/global"
-	"github.com/WuLianN/go-toy/internal/service"
 	"github.com/WuLianN/go-toy/pkg/db"
 	"github.com/WuLianN/go-toy/pkg/logger"
 	"github.com/WuLianN/go-toy/pkg/setting"
 	"github.com/WuLianN/go-toy/pkg/tracer"
-	"github.com/robfig/cron/v3"
 
 	"gopkg.in/natefinch/lumberjack.v2"
 )
@@ -50,10 +47,6 @@ func SetupInit() {
 	if err != nil {
 		log.Fatalf("init.setupTracer err: %v", err)
 	}
-
-	setupRedisDBEngine()
-
-	setupCron()
 }
 
 func setupFlag() error {
@@ -84,10 +77,6 @@ func setupSetting() error {
 		return err
 	}
 	err = s.ReadSection("JWT", &global.JWTSetting)
-	if err != nil {
-		return err
-	}
-	err = s.ReadSection("RedisDB", &global.RedisDBSetting)
 	if err != nil {
 		return err
 	}
@@ -136,16 +125,4 @@ func setupTracer() error {
 	}
 	global.Tracer = jaegerTracer
 	return nil
-}
-
-func setupRedisDBEngine() {
-	global.RedisDBEngine = db.NewRedisDBEngine(global.RedisDBSetting)
-}
-
-func setupCron() {
-	global.Cron = cron.New()
-
-	ctx := context.Background()
-	svc := service.New(ctx)
-	svc.CronStart()
 }

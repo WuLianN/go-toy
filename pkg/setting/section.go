@@ -43,12 +43,6 @@ type DatabaseSettingS struct {
 	MaxOpenConns int
 }
 
-type RedisDBSettingS struct {
-	Addr string
-	Password string
-	DB int
-}
-
 var sections = make(map[string]interface{})
 
 func (s *Setting) ReadSection(k string, v interface{}) error {
