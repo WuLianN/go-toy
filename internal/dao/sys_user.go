@@ -22,8 +22,6 @@ func (d *Dao) IsSystemUser(userName string, id uint32) (bool, *model.User) {
 	}
 
 	if err != nil {
-		// fmt.Println(d.engine.Error) // record not found
-		d.engine.Error = nil // d.engine.Error设置为nil, 不然下一个sql无法运行, 具体看pkg/opentracing-gorm/otgorm.go, sql追踪造成的
 		return false, nil
 	}
 	return true, &user
