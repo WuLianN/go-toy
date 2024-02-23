@@ -35,7 +35,7 @@ func (u *UserApi) GetUserInfo(c *gin.Context) {
 		if token == "" {
 			response.ToResponse(gin.H{
 				"code":    errcode.Fail.Code(),
-				"message": "无token",
+				"message": "无登录信息，请重新登录",
 			})
 			return
 		}
