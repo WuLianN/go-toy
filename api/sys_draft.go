@@ -11,7 +11,7 @@ import (
 
 type DraftApi struct{}
 
-// @Summary 获取草稿
+// @Summary 获取草稿 [已发布]
 // @Param id body uint32 true "草稿id"
 // @Tags 草稿
 // @Success 200 {string} string "ok"
@@ -34,6 +34,49 @@ func (d *DraftApi) GetDraft(c *gin.Context) {
 			"code":    errcode.Fail.Code(),
 			"message": "无这篇文章",
 			"type":    "info",
+		})
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+		"type":    "success",
+		"result":  result,
+	})
+}
+
+// @Summary 获取用户草稿 [token]
+// @Param id body uint32 true "草稿id"
+// @Tags 草稿
+// @Success 200 {string} string "ok"
+// @Router /getUserDraft [get]
+func (d *DraftApi) GetUserDraft(c *gin.Context) {
+	response := app.NewResponse(c)
+	idStr := c.Query("id")
+	if idStr == "" {
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails("id不能为空"))
+		return
+	}
+
+	id := convert.StrTo(idStr).MustUInt32()
+
+	token := GetToken(c)
+	err, tokenInfo := GetTokenInfo(token)
+	if err != nil {
+		response.ToErrorResponse(err)
+		return
+	}
+
+	userId := tokenInfo.UserId
+
+	svc := service.New(c.Request.Context())
+	result, err2 := svc.GetUserDraft(id, userId)
+
+	if err2 != nil {
+		response.ToResponse(gin.H{
+			"code":    errcode.Fail.Code(),
+			"message": "文章不存在",
 		})
 		return
 	}

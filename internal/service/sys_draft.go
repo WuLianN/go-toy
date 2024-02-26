@@ -36,7 +36,11 @@ type DraftListRequest struct {
 }
 
 func (svc *Service) GetDraft(id uint32) (model.Draft, error) {
-	return svc.dao.QueryDraft(id)
+	return svc.dao.QueryPublishDraft(id)
+}
+
+func (svc *Service) GetUserDraft(id uint32, userId uint32) (model.Draft, error) {
+	return svc.dao.QueryUserDraft(id, userId)
 }
 
 func (svc *Service) CreateDraft(userId uint32) (id uint32) {

@@ -5,9 +5,20 @@ import (
 	"github.com/WuLianN/go-toy/pkg/app"
 )
 
-func (d *Dao) QueryDraft(id uint32) (model.Draft, error) {
+// 查询已发布草稿
+func (d *Dao) QueryPublishDraft(id uint32) (model.Draft, error) {
 	var draft model.Draft
-	err := d.engine.Table("drafts").Where("id = ?", id).First(&draft).Error
+	err := d.engine.Table("drafts").Where("id = ? AND is_publish = ? AND is_delete = ?", id, 1, 0).First(&draft).Error
+	if err != nil {
+		return draft, err
+	}
+	return draft, nil
+}
+
+// 查询指定用户的草稿
+func (d *Dao) QueryUserDraft(id uint32, userId uint32) (model.Draft, error) {
+	var draft model.Draft
+	err := d.engine.Table("drafts").Where("id = ? AND user_id = ? AND is_delete = ?", id, userId, 0).First(&draft).Error
 	if err != nil {
 		return draft, err
 	}

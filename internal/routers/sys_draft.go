@@ -13,5 +13,6 @@ func InitDraftRouter(Router *gin.RouterGroup) {
 		Router.POST("/deleteDraft", draftApi.DeleteDraft)
 		Router.POST("/publishDraft", draftApi.PublishDraft)
 		Router.GET("/getDraftList", draftApi.GetDraftList)
+		Router.GET("/getUserDraft", draftApi.GetUserDraft)
 	}
 }
