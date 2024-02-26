@@ -21,7 +21,7 @@ App:
 JWT:
   Secret: wuliann
   Issuer: go-toy
-  Expire: 7200
+  Expire: 1296000
 Database:
   DBType: mysql
   UserName: root
@@ -29,7 +29,8 @@ Database:
   Host: 127.0.0.1:3306
   DBName: blog
   TablePrefix: ''
-  Charset: utf8
+  Charset: utf8mb4
+  Collate: utf8mb4_general_ci
   ParseTime: True
   MaxIdleConns: 10
   MaxOpenConns: 30

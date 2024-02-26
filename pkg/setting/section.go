@@ -38,6 +38,7 @@ type DatabaseSettingS struct {
 	DBName       string
 	TablePrefix  string
 	Charset      string
+	Collation    string
 	ParseTime    bool
 	MaxIdleConns int
 	MaxOpenConns int

@@ -11,12 +11,13 @@ import (
 )
 
 func NewDBEngine(databaseSetting *setting.DatabaseSettingS) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s&parseTime=%t&loc=Local",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s&collation=%s&parseTime=%t&loc=Local",
 		databaseSetting.UserName,
 		databaseSetting.Password,
 		databaseSetting.Host,
 		databaseSetting.DBName,
 		databaseSetting.Charset,
+		databaseSetting.Collation,
 		databaseSetting.ParseTime,
 	)
 
