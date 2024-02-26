@@ -141,10 +141,19 @@ func (d *DraftApi) SaveDraft(c *gin.Context) {
 		return
 	}
 
-	svc := service.New(c.Request.Context())
-	err := svc.UpdateDraft(param)
-
+	token := GetToken(c)
+	err, tokenInfo := GetTokenInfo(token)
 	if err != nil {
+		response.ToErrorResponse(err)
+		return
+	}
+
+	param.UserId = tokenInfo.UserId
+
+	svc := service.New(c.Request.Context())
+	err2 := svc.UpdateDraft(param)
+
+	if err2 != nil {
 		response.ToErrorResponse(errcode.Fail)
 		return
 	}

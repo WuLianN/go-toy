@@ -13,6 +13,7 @@ type CreateRequest struct {
 
 type SaveRequest struct {
 	Id           uint32 `json:"id" binding:"required"`
+	UserId       uint32 `json:"user_id"`
 	Title        string `json:"title"`
 	Content      string `json:"content"`
 	IsPublish    uint8  `json:"is_publish"`
@@ -58,6 +59,7 @@ func (svc *Service) CreateDraft(userId uint32) (id uint32) {
 func (svc *Service) UpdateDraft(request SaveRequest) error {
 	draft := model.Draft{
 		Id:         request.Id,
+		UserId:     request.UserId,
 		Title:      request.Title,
 		Content:    request.Content,
 		IsPublish:  request.IsPublish,
