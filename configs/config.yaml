@@ -30,7 +30,7 @@ Database:
   DBName: blog
   TablePrefix: ''
   Charset: utf8mb4
-  Collate: utf8mb4_general_ci
+  Collation: utf8mb4_general_ci
   ParseTime: True
   MaxIdleConns: 10
   MaxOpenConns: 30
