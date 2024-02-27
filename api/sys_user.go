@@ -143,24 +143,29 @@ func (u *UserApi) UpdateUserInfo(c *gin.Context) {
 		return
 	}
 
-	if requestBody.Id == 0 {
-		token := GetToken(c)
-		err, tokenInfo := GetTokenInfo(token)
-		if err != nil {
-			response.ToErrorResponse(err)
-			return
-		}
-		requestBody.Id = tokenInfo.UserId
+	token := GetToken(c)
+	err, tokenInfo := GetTokenInfo(token)
+	if err != nil {
+		response.ToErrorResponse(err)
+		return
 	}
+	requestBody.Id = tokenInfo.UserId
 
 	svc := service.New(c.Request.Context())
-	userInfo, err := svc.UpdateUserInfo(&requestBody)
+	userInfo, err2 := svc.UpdateUserInfo(&requestBody)
 
-	if err != nil {
+	if err2 != nil {
 		response.ToResponse(gin.H{
 			"code":    errcode.Fail.Code(),
 			"message": errcode.Fail.Msg(),
 		})
+		return
+	}
+
+	newToken, err3 := app.GenerateToken(requestBody.Id, userInfo.UserName)
+	if err3 != nil {
+		global.Logger.Errorf(c, "app.GenerateToken err: %v", err)
+		response.ToErrorResponse(errcode.UnauthorizedTokenGenerate)
 		return
 	}
 
@@ -172,6 +177,7 @@ func (u *UserApi) UpdateUserInfo(c *gin.Context) {
 			"id":        requestBody.Id,
 			"user_name": userInfo.UserName,
 			"avatar":    userInfo.Avatar,
+			"token":     newToken,
 		},
 	})
 }
