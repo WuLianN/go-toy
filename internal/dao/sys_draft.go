@@ -1,6 +1,8 @@
 package dao
 
 import (
+	"errors"
+
 	"github.com/WuLianN/go-toy/internal/model"
 	"github.com/WuLianN/go-toy/pkg/app"
 )
@@ -12,6 +14,13 @@ func (d *Dao) QueryPublishDraft(id uint32) (model.Draft, error) {
 	if err != nil {
 		return draft, err
 	}
+
+	bool, user := d.IsSystemUser("", draft.UserId)
+
+	if bool && user.IsPrivacy == 1 {
+		return draft, errors.New("私密账号")
+	}
+
 	return draft, nil
 }
 

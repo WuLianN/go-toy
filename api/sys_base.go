@@ -137,10 +137,23 @@ func (b *BaseApi) GetRecommendList(c *gin.Context) {
 		tagIdStr = "0"
 	}
 
+	svc := service.New(c.Request.Context())
+
 	var userId uint32
 
 	if userIdStr != "" {
 		userId = convert.StrTo(userIdStr).MustUInt32()
+
+		bool := svc.IsPrivacyUser(userId)
+		if bool {
+			response.ToResponse(gin.H{
+				"code":    errcode.Success.Code(),
+				"message": errcode.Success.Msg(),
+				"type":    "success",
+				"result":  make([]int, 0),
+			})
+			return
+		}
 	} else {
 		token := GetToken(c)
 		err, tokenInfo := GetTokenInfo(token)
@@ -155,7 +168,6 @@ func (b *BaseApi) GetRecommendList(c *gin.Context) {
 	pageSize := convert.StrTo(pageSizeStr).MustInt()
 	tagId := convert.StrTo(tagIdStr).MustUInt32()
 
-	svc := service.New(c.Request.Context())
 	list, err := svc.GetRecommendList(userId, page, pageSize, tagId)
 
 	if err != nil {

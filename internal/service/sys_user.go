@@ -148,3 +148,13 @@ func (svc *Service) GetUserSetting(userId uint32) (model.UserSetting, error) {
 func (svc *Service) UpdateUserSetting(req *model.UserSetting) (model.UserSetting, error) {
 	return svc.dao.UpdateUserSetting(req)
 }
+
+func (svc *Service) IsPrivacyUser(userId uint32) bool {
+	bool, user := svc.dao.IsSystemUser("", userId)
+
+	if bool && user.IsPrivacy == 1 {
+		return true
+	}
+
+	return false
+}

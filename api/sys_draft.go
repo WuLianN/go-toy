@@ -290,10 +290,24 @@ func (d *DraftApi) SearchDrafts(c *gin.Context) {
 		pageSizeStr = "10"
 	}
 
+	svc := service.New(c.Request.Context())
+
 	var userId uint32
 
 	if userIdStr != "" {
 		userId = convert.StrTo(userIdStr).MustUInt32()
+		// 检查是否是私密账号
+		bool := svc.IsPrivacyUser(userId)
+
+		if bool {
+			response.ToResponse(gin.H{
+				"code":    errcode.Success.Code(),
+				"message": errcode.Success.Msg(),
+				"type":    "success",
+				"result":  make([]int, 0),
+			})
+			return
+		}
 	} else {
 		token := GetToken(c)
 		err, tokenInfo := GetTokenInfo(token)
@@ -307,7 +321,6 @@ func (d *DraftApi) SearchDrafts(c *gin.Context) {
 	page := convert.StrTo(pageStr).MustInt()
 	pageSize := convert.StrTo(pageSizeStr).MustInt()
 
-	svc := service.New(c.Request.Context())
 	list, err := svc.SearchDrafts(userId, keyword, page, pageSize)
 
 	if err != nil {

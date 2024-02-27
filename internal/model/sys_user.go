@@ -6,6 +6,7 @@ type User struct {
 	Id         uint32 `json:"id"`
 	CreateTime string `json:"create_time"`
 	Avatar     string `json:"avatar"`
+	IsPrivacy  uint8  `json:"is_privacy"`
 }
 
 type UserInfo struct {

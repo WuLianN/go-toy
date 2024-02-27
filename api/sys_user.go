@@ -23,6 +23,7 @@ func (u *UserApi) GetUserInfo(c *gin.Context) {
 	var userId uint32
 	userIdStr := c.Query("id")
 	response := app.NewResponse(c)
+	svc := service.New(c.Request.Context())
 
 	if userIdStr == "" {
 		var token string
@@ -48,9 +49,17 @@ func (u *UserApi) GetUserInfo(c *gin.Context) {
 		userId = tokenInfo.UserId
 	} else {
 		userId = convert.StrTo(userIdStr).MustUInt32()
-	}
+		bool := svc.IsPrivacyUser(userId)
 
-	svc := service.New(c.Request.Context())
+		if bool {
+			response.ToResponse(gin.H{
+				"code":    errcode.Success.Code(),
+				"message": errcode.Success.Msg(),
+				"result":  model.UserInfo{},
+			})
+			return
+		}
+	}
 
 	userInfo, err2 := svc.GetUserInfo(userId)
 
@@ -361,6 +370,8 @@ func (u *UserApi) GetUserSetting(c *gin.Context) {
 	var userId uint32
 	response := app.NewResponse(c)
 
+	svc := service.New(c.Request.Context())
+
 	if userIdStr == "" {
 		token := GetToken(c)
 		err, tokenInfo := GetTokenInfo(token)
@@ -371,9 +382,18 @@ func (u *UserApi) GetUserSetting(c *gin.Context) {
 		userId = tokenInfo.UserId
 	} else {
 		userId = convert.StrTo(userIdStr).MustUInt32()
+		bool := svc.IsPrivacyUser(userId)
+
+		if bool {
+			response.ToResponse(gin.H{
+				"code":    errcode.Success.Code(),
+				"message": errcode.Success.Msg(),
+				"result":  model.UserSetting{},
+			})
+			return
+		}
 	}
 
-	svc := service.New(c.Request.Context())
 	userSetting, _ := svc.GetUserSetting(userId)
 
 	response.ToResponse(gin.H{
