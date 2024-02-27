@@ -183,10 +183,11 @@ func (u *UserApi) UpdateUserInfo(c *gin.Context) {
 		"message": errcode.Success.Msg(),
 		"type":    "success",
 		"result": gin.H{
-			"id":        requestBody.Id,
-			"user_name": userInfo.UserName,
-			"avatar":    userInfo.Avatar,
-			"token":     newToken,
+			"id":         requestBody.Id,
+			"user_name":  userInfo.UserName,
+			"avatar":     userInfo.Avatar,
+			"token":      newToken,
+			"is_privacy": userInfo.IsPrivacy,
 		},
 	})
 }
