@@ -59,10 +59,11 @@ func (d *Dao) QueryUser(userId uint32) (model.UserInfo, error) {
 	return userInfo, nil
 }
 
-func (d *Dao) UpdateUserInfo(userId uint32, userName, avatar string) (model.UserInfo, error) {
+func (d *Dao) UpdateUserInfo(userId uint32, userName string, avatar string, isPrivacy uint8) (model.UserInfo, error) {
 	userInfo := model.UserInfo{
-		UserName: userName,
-		Avatar:   avatar,
+		UserName:  userName,
+		Avatar:    avatar,
+		IsPrivacy: isPrivacy,
 	}
 
 	if err := d.engine.Table("user").Where("id = ?", userId).Updates(&userInfo).Error; err != nil {
