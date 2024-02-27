@@ -10,9 +10,10 @@ type User struct {
 }
 
 type UserInfo struct {
-	Id       uint32 `json:"id"`
-	UserName string `json:"user_name"`
-	Avatar   string `json:"avatar"`
+	Id        uint32 `json:"id"`
+	UserName  string `json:"user_name"`
+	Avatar    string `json:"avatar"`
+	IsPrivacy uint8  `json:"is_privacy"`
 }
 
 type UserBinding struct {

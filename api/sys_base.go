@@ -53,10 +53,11 @@ func (b *BaseApi) Login(c *gin.Context) {
 		"message": errcode.Success.Msg(),
 		"type":    "success",
 		"result": gin.H{
-			"token":     token,
-			"user_name": userInfo.UserName,
-			"avatar":    userInfo.Avatar,
-			"id":        userInfo.Id,
+			"token":      token,
+			"user_name":  userInfo.UserName,
+			"avatar":     userInfo.Avatar,
+			"id":         userInfo.Id,
+			"is_privacy": userInfo.IsPrivacy,
 		},
 	})
 }
