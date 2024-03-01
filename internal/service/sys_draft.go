@@ -36,8 +36,8 @@ type DraftListRequest struct {
 	Tags     []model.Tag `json:"tags"`
 }
 
-func (svc *Service) GetDraft(id uint32) (model.Draft, error) {
-	return svc.dao.QueryPublishDraft(id)
+func (svc *Service) GetDraft(id uint32, userId uint32) (model.Draft, error) {
+	return svc.dao.QueryPublishDraft(id, userId)
 }
 
 func (svc *Service) GetUserDraft(id uint32, userId uint32) (model.Draft, error) {

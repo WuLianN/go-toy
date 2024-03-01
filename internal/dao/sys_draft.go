@@ -8,11 +8,16 @@ import (
 )
 
 // 查询已发布草稿
-func (d *Dao) QueryPublishDraft(id uint32) (model.Draft, error) {
+func (d *Dao) QueryPublishDraft(id uint32, userId uint32) (model.Draft, error) {
 	var draft model.Draft
 	err := d.engine.Table("drafts").Where("id = ? AND is_publish = ? AND is_delete = ?", id, 1, 0).First(&draft).Error
 	if err != nil {
 		return draft, err
+	}
+
+	// 是用户自己的草稿，不去判断是否私密账号
+	if userId == draft.UserId {
+		return draft, nil
 	}
 
 	bool, user := d.IsSystemUser("", draft.UserId)

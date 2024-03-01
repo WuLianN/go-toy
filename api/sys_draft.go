@@ -26,14 +26,22 @@ func (d *DraftApi) GetDraft(c *gin.Context) {
 
 	id := convert.StrTo(idStr).MustUInt32()
 
+	var userId uint32
+	token := GetToken(c)
+
+	_, tokenInfo := GetTokenInfo(token)
+
+	if tokenInfo != nil {
+		userId = tokenInfo.UserId
+	}
+
 	svc := service.New(c.Request.Context())
-	result, err := svc.GetDraft(id)
+	result, err := svc.GetDraft(id, userId)
 
 	if err != nil {
 		response.ToResponse(gin.H{
 			"code":    errcode.Fail.Code(),
 			"message": "无这篇文章",
-			"type":    "info",
 		})
 		return
 	}
