@@ -18,6 +18,7 @@ App:
     - .jpeg
     - .png  
     - .gif
+    - .webp
 JWT:
   Secret: wuliann
   Issuer: go-toy
@@ -32,6 +33,6 @@ Database:
   Charset: utf8mb4
   Collation: utf8mb4_general_ci
   ParseTime: True
-  Loc: Asia/Shanghai
+  Loc: Local
   MaxIdleConns: 10
   MaxOpenConns: 30
