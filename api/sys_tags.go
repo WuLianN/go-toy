@@ -12,6 +12,13 @@ import (
 
 type TagApi struct{}
 
+// @Summary 获取标签
+// @Param ids body number true "用户id"
+// @Accept json
+// @Produce json
+// @Tags 标签
+// @Success 200 {string} string "ok"
+// @Router /getTagList [get]
 func (t *TagApi) GetTagList(c *gin.Context) {
 	ids := c.Query("ids")
 
@@ -39,6 +46,14 @@ func (t *TagApi) GetTagList(c *gin.Context) {
 	})
 }
 
+// @Summary 获取草稿关联的标签
+// @Param draft_id body number true "草稿id"
+// @Param tag_id body number true "标签id"
+// @Accept json
+// @Produce json
+// @Tags 标签
+// @Success 200 {string} string "ok"
+// @Router /getTagList [get]
 func (t *TagApi) GetDraftTagList(c *gin.Context) {
 	draftIdStr := c.Query("draft_id")
 	tagIdStr := c.Query("tag_id")
@@ -71,6 +86,13 @@ func (t *TagApi) GetDraftTagList(c *gin.Context) {
 	})
 }
 
+// @Summary 获取菜单关联的标签
+// @Param menu_id body number true "菜单id"
+// @Accept json
+// @Produce json
+// @Tags 标签
+// @Success 200 {string} string "ok"
+// @Router /getMenuTagList [get]
 func (t *TagApi) GetMenuTagList(c *gin.Context) {
 	menuIdStr := c.Query("menu_id")
 	response := app.NewResponse(c)
@@ -97,6 +119,13 @@ func (t *TagApi) GetMenuTagList(c *gin.Context) {
 	})
 }
 
+// @Summary 创建标签
+// @Param name body string true "标签名称"
+// @Accept json
+// @Produce json
+// @Tags 标签
+// @Success 200 {string} string "ok"
+// @Router /createTag [post]
 func (t *TagApi) CreateTag(c *gin.Context) {
 	requestBody := service.CreateTagRequest{}
 	response := app.NewResponse(c)
@@ -144,6 +173,13 @@ func (t *TagApi) CreateTag(c *gin.Context) {
 	})
 }
 
+// @Summary 删除标签
+// @Param id body number true "标签id"
+// @Accept json
+// @Produce json
+// @Tags 标签
+// @Success 200 {string} string "ok"
+// @Router /deleteTag [post]
 func (t *TagApi) DeleteTag(c *gin.Context) {
 	requestBody := service.DeleteTagRequest{}
 	response := app.NewResponse(c)
@@ -178,6 +214,16 @@ func (t *TagApi) DeleteTag(c *gin.Context) {
 	})
 }
 
+// @Summary 更新标签
+// @Param id body number true "标签id"
+// @Param name body string true "标签名称"
+// @Param color body string false "字体颜色"
+// @Param bg_color body string false "背景颜色"
+// @Accept json
+// @Produce json
+// @Tags 标签
+// @Success 200 {string} string "ok"
+// @Router /updateTag [post]
 func (t *TagApi) UpdateTag(c *gin.Context) {
 	requestBody := service.UpdateTagRequest{}
 	response := app.NewResponse(c)
@@ -204,6 +250,14 @@ func (t *TagApi) UpdateTag(c *gin.Context) {
 	})
 }
 
+// @Summary 绑定菜单-标签
+// @Param menu_id body number true "菜单id"
+// @Param tags body array true "标签数组"
+// @Accept json
+// @Produce json
+// @Tags 标签
+// @Success 200 {string} string "ok"
+// @Router /bindTag2Menu [post]
 func (t *TagApi) BindTag2Menu(c *gin.Context) {
 	requestBody := model.MenuTags{}
 	response := app.NewResponse(c)
@@ -241,6 +295,14 @@ func (t *TagApi) BindTag2Menu(c *gin.Context) {
 	})
 }
 
+// @Summary 解绑菜单-标签
+// @Param draft_id body number true "草稿id"
+// @Param tags body array true "标签数组"
+// @Accept json
+// @Produce json
+// @Tags 标签
+// @Success 200 {string} string "ok"
+// @Router /unbindTag2Menu [post]
 func (t *TagApi) UnbindTag2Menu(c *gin.Context) {
 	requestBody := model.MenuTags{}
 	response := app.NewResponse(c)
@@ -271,6 +333,14 @@ func (t *TagApi) UnbindTag2Menu(c *gin.Context) {
 	})
 }
 
+// @Summary 绑定草稿-标签
+// @Param draft_id body number true "草稿id"
+// @Param tags body array true "标签数组"
+// @Accept json
+// @Produce json
+// @Tags 标签
+// @Success 200 {string} string "ok"
+// @Router /bindTag2Draft [post]
 func (t *TagApi) BindTag2Draft(c *gin.Context) {
 	requestBody := model.DraftTags{}
 	response := app.NewResponse(c)
@@ -308,6 +378,14 @@ func (t *TagApi) BindTag2Draft(c *gin.Context) {
 	})
 }
 
+// @Summary 解绑草稿-标签
+// @Param draft_id body number true "草稿id"
+// @Param tags body array true "标签数组"
+// @Accept json
+// @Produce json
+// @Tags 标签
+// @Success 200 {string} string "ok"
+// @Router /unbindTag2Draft [post]
 func (t *TagApi) UnbindTag2Draft(c *gin.Context) {
 	requestBody := model.DraftTags{}
 	response := app.NewResponse(c)

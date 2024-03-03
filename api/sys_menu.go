@@ -15,7 +15,7 @@ type MenuApi struct{}
 // @Summary 获取角色菜单
 // @Accept json
 // @Produce json
-// @Tags menu
+// @Tags 菜单
 // @Success 200 {string} string "ok"
 // @Router /getMenuList [get]
 func (m *MenuApi) GetRoleMenu(c *gin.Context) {
@@ -46,6 +46,14 @@ func (m *MenuApi) GetRoleMenu(c *gin.Context) {
 	})
 }
 
+// @Summary 添加子菜单
+// @Param parent_id body number true "父级菜单id"
+// @Param name body string true "名称"
+// @Accept json
+// @Produce json
+// @Tags 菜单
+// @Success 200 {string} string "ok"
+// @Router /addMenuItem [post]
 func (m *MenuApi) AddMenuItem(c *gin.Context) {
 	requestBody := model.AddMenuItem{}
 	response := app.NewResponse(c)
@@ -82,6 +90,13 @@ func (m *MenuApi) AddMenuItem(c *gin.Context) {
 	})
 }
 
+// @Summary 删除菜单
+// @Param id body number true "菜单id"
+// @Accept json
+// @Produce json
+// @Tags 菜单
+// @Success 200 {string} string "ok"
+// @Router /deleteMenuItem [post]
 func (m *MenuApi) DeleteMenuItem(c *gin.Context) {
 	requestBody := model.DeleteMenuItem{}
 	response := app.NewResponse(c)
@@ -116,6 +131,15 @@ func (m *MenuApi) DeleteMenuItem(c *gin.Context) {
 	})
 }
 
+// @Summary 更新菜单
+// @Param id body number true "菜单id"
+// @Param name body string false "菜单名称"
+// @Param icon body string false "图标"
+// @Accept json
+// @Produce json
+// @Tags 菜单
+// @Success 200 {string} string "ok"
+// @Router /updateMenuItem [post]
 func (m *MenuApi) UpdateMenuItem(c *gin.Context) {
 	requestBody := model.UpdateMenuItem{}
 	response := app.NewResponse(c)

@@ -21,6 +21,135 @@ info:
   title: go-toy
   version: "1.0"
 paths:
+  /addMenuItem:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 父级菜单id
+        in: body
+        name: parent_id
+        required: true
+        schema:
+          type: number
+      - description: 名称
+        in: body
+        name: name
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 添加子菜单
+      tags:
+      - 菜单
+  /bindTag2Draft:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 草稿id
+        in: body
+        name: draft_id
+        required: true
+        schema:
+          type: number
+      - description: 标签数组
+        in: body
+        name: tags
+        required: true
+        schema:
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 绑定草稿-标签
+      tags:
+      - 标签
+  /bindTag2Menu:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 菜单id
+        in: body
+        name: menu_id
+        required: true
+        schema:
+          type: number
+      - description: 标签数组
+        in: body
+        name: tags
+        required: true
+        schema:
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 绑定菜单-标签
+      tags:
+      - 标签
+  /bingUser:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 账户
+        in: body
+        name: user_name
+        required: true
+        schema:
+          type: string
+      - description: 密码
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 绑定用户
+      tags:
+      - user
+  /changeAccount:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户id
+        in: body
+        name: id
+        required: true
+        schema:
+          type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 切换账号
+      tags:
+      - user
   /changePassword:
     post:
       consumes:
@@ -63,6 +192,27 @@ paths:
       summary: 创建草稿
       tags:
       - 草稿
+  /createTag:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 标签名称
+        in: body
+        name: name
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 创建标签
+      tags:
+      - 标签
   /deleteDraft:
     post:
       consumes:
@@ -82,6 +232,69 @@ paths:
       summary: 删除草稿
       tags:
       - 草稿
+  /deleteMenuItem:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 菜单id
+        in: body
+        name: id
+        required: true
+        schema:
+          type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 删除菜单
+      tags:
+      - 菜单
+  /deleteTag:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 标签id
+        in: body
+        name: id
+        required: true
+        schema:
+          type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 删除标签
+      tags:
+      - 标签
+  /getBindedUserList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户id
+        in: body
+        name: user_id
+        required: true
+        schema:
+          type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 获取绑定用户列表
+      tags:
+      - user
   /getDraft:
     get:
       parameters:
@@ -96,7 +309,7 @@ paths:
           description: ok
           schema:
             type: string
-      summary: 获取草稿
+      summary: 获取草稿 [已发布]
       tags:
       - 草稿
   /getDraftList:
@@ -131,7 +344,95 @@ paths:
             type: string
       summary: 获取角色菜单
       tags:
-      - menu
+      - 菜单
+  /getMenuTagList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 菜单id
+        in: body
+        name: menu_id
+        required: true
+        schema:
+          type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 获取菜单关联的标签
+      tags:
+      - 标签
+  /getRecommendList:
+    get:
+      parameters:
+      - description: 用户id
+        in: query
+        name: user_id
+        type: integer
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 页大小
+        in: query
+        name: page_size
+        type: integer
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 推荐列表
+      tags:
+      - 通用业务
+  /getTagList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 草稿id
+        in: body
+        name: draft_id
+        required: true
+        schema:
+          type: number
+      - description: 标签id
+        in: body
+        name: tag_id
+        required: true
+        schema:
+          type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 获取草稿关联的标签
+      tags:
+      - 标签
+  /getUserDraft:
+    get:
+      parameters:
+      - description: 草稿id
+        in: body
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 获取用户草稿 [token]
+      tags:
+      - 草稿
   /getUserInfo:
     get:
       consumes:
@@ -144,6 +445,27 @@ paths:
           schema:
             type: string
       summary: 获取用户信息
+      tags:
+      - user
+  /getUserSetting:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户id
+        in: body
+        name: user_id
+        required: true
+        schema:
+          type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 获取用户设置
       tags:
       - user
   /login:
@@ -246,6 +568,211 @@ paths:
       summary: 保存草稿
       tags:
       - 草稿
+  /unbindTag2Draft:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 草稿id
+        in: body
+        name: draft_id
+        required: true
+        schema:
+          type: number
+      - description: 标签数组
+        in: body
+        name: tags
+        required: true
+        schema:
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 解绑草稿-标签
+      tags:
+      - 标签
+  /unbindTag2Menu:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 草稿id
+        in: body
+        name: draft_id
+        required: true
+        schema:
+          type: number
+      - description: 标签数组
+        in: body
+        name: tags
+        required: true
+        schema:
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 解绑菜单-标签
+      tags:
+      - 标签
+  /unbindUser:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户id
+        in: body
+        name: id
+        required: true
+        schema:
+          type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 解绑用户
+      tags:
+      - user
+  /updateMenuItem:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 菜单id
+        in: body
+        name: id
+        required: true
+        schema:
+          type: number
+      - description: 菜单名称
+        in: body
+        name: name
+        schema:
+          type: string
+      - description: 图标
+        in: body
+        name: icon
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 更新菜单
+      tags:
+      - 菜单
+  /updateTag:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 标签id
+        in: body
+        name: id
+        required: true
+        schema:
+          type: number
+      - description: 标签名称
+        in: body
+        name: name
+        required: true
+        schema:
+          type: string
+      - description: 字体颜色
+        in: body
+        name: color
+        schema:
+          type: string
+      - description: 背景颜色
+        in: body
+        name: bg_color
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 更新标签
+      tags:
+      - 标签
+  /updateUserInfo:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户id
+        in: body
+        name: id
+        required: true
+        schema:
+          type: number
+      - description: 用户名
+        in: body
+        name: user_name
+        schema:
+          type: string
+      - description: 头像
+        in: body
+        name: avatar
+        schema:
+          type: string
+      - description: 私密账号
+        in: body
+        name: is_privacy
+        schema:
+          type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 更新用户信息
+      tags:
+      - user
+  /updateUserSetting:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户id
+        in: body
+        name: user_id
+        required: true
+        schema:
+          type: number
+      - description: 主题色
+        in: body
+        name: primary_color
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 更新用户设置
+      tags:
+      - user
   /upload/file:
     post:
       consumes:
@@ -267,20 +794,6 @@ paths:
       - application/json
       responses: {}
       summary: 上传文件
-      tags:
-      - 基建
-  /visit:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: ok
-          schema:
-            type: string
-      summary: 访问网页, 埋点上报
       tags:
       - 基建
 swagger: "2.0"

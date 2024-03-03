@@ -141,6 +141,16 @@ func (u *UserApi) ChangePassword(c *gin.Context) {
 	}
 }
 
+// @Summary 更新用户信息
+// @Param id body number true "用户id"
+// @Param user_name body string false "用户名"
+// @Param avatar body string false "头像"
+// @Param is_privacy body number false "私密账号"
+// @Accept json
+// @Produce json
+// @Tags user
+// @Success 200 {string} string "ok"
+// @Router /updateUserInfo [post]
 func (u *UserApi) UpdateUserInfo(c *gin.Context) {
 	requestBody := service.UserInfoRequest{}
 
@@ -192,6 +202,14 @@ func (u *UserApi) UpdateUserInfo(c *gin.Context) {
 	})
 }
 
+// @Summary 绑定用户
+// @Param user_name body string true "账户"
+// @Param password body string true "密码"
+// @Accept json
+// @Produce json
+// @Tags user
+// @Success 200 {string} string "ok"
+// @Router /bingUser [post]
 func (u *UserApi) BingUser(c *gin.Context) {
 	requestBody := service.UserRequest{}
 
@@ -230,6 +248,13 @@ func (u *UserApi) BingUser(c *gin.Context) {
 	})
 }
 
+// @Summary 解绑用户
+// @Param id body number true "用户id"
+// @Accept json
+// @Produce json
+// @Tags user
+// @Success 200 {string} string "ok"
+// @Router /unbindUser [post]
 func (u *UserApi) UnbindUser(c *gin.Context) {
 	requestBody := service.UserIdRequest{}
 
@@ -268,6 +293,13 @@ func (u *UserApi) UnbindUser(c *gin.Context) {
 	})
 }
 
+// @Summary 获取绑定用户列表
+// @Param user_id body number true "用户id"
+// @Accept json
+// @Produce json
+// @Tags user
+// @Success 200 {string} string "ok"
+// @Router /getBindedUserList [get]
 func (u *UserApi) GetBindedUserList(c *gin.Context) {
 	userIdStr := c.Query("user_id")
 
@@ -302,6 +334,13 @@ func (u *UserApi) GetBindedUserList(c *gin.Context) {
 	})
 }
 
+// @Summary 切换账号
+// @Param id body number true "用户id"
+// @Accept json
+// @Produce json
+// @Tags user
+// @Success 200 {string} string "ok"
+// @Router /changeAccount [post]
 func (u *UserApi) ChangeAccount(c *gin.Context) {
 	requestBody := service.UserIdRequest{}
 
@@ -367,6 +406,13 @@ func (u *UserApi) ChangeAccount(c *gin.Context) {
 	})
 }
 
+// @Summary 获取用户设置
+// @Param user_id body number true "用户id"
+// @Accept json
+// @Produce json
+// @Tags user
+// @Success 200 {string} string "ok"
+// @Router /getUserSetting [get]
 func (u *UserApi) GetUserSetting(c *gin.Context) {
 	userIdStr := c.Query("user_id")
 	var userId uint32
@@ -408,6 +454,14 @@ func (u *UserApi) GetUserSetting(c *gin.Context) {
 	})
 }
 
+// @Summary 更新用户设置
+// @Param user_id body number true "用户id"
+// @Param primary_color body string false "主题色"
+// @Accept json
+// @Produce json
+// @Tags user
+// @Success 200 {string} string "ok"
+// @Router /updateUserSetting [post]
 func (u *UserApi) UpdateUserSetting(c *gin.Context) {
 	requestBody := model.UserSetting{}
 
