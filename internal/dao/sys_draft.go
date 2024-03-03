@@ -10,28 +10,25 @@ import (
 // 查询已发布草稿
 func (d *Dao) QueryPublishDraft(id uint32, userId uint32) (model.Draft, error) {
 	var draft model.Draft
-	isSelf := false
-
-	if userId == draft.UserId {
-		isSelf = true
-	}
 
 	err := d.engine.Table("drafts").Where("id = ? AND is_publish = ? AND is_delete = ?", id, 1, 0).First(&draft).Error
 	if err != nil {
 		return draft, err
 	}
 
-	// 是用户自己的草稿，不去判断是否私密账号
-	if isSelf {
+	// 是用户自己的草稿，直接返回结果
+	if userId == draft.UserId {
 		return draft, nil
 	}
 
+	// 非用户自己的草稿，并且是私密文章，抛错
 	if draft.IsPrivacy == 1 {
 		return draft, errors.New("私密文章")
 	}
 
 	bool, user := d.IsSystemUser("", draft.UserId)
 
+	// 私密账号 抛错
 	if bool && user.IsPrivacy == 1 {
 		return draft, errors.New("私密账号")
 	}
