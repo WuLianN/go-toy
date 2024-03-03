@@ -301,6 +301,7 @@ func (d *DraftApi) SearchDrafts(c *gin.Context) {
 	svc := service.New(c.Request.Context())
 
 	var userId uint32
+	var isSelf uint8
 
 	if userIdStr != "" {
 		userId = convert.StrTo(userIdStr).MustUInt32()
@@ -324,12 +325,13 @@ func (d *DraftApi) SearchDrafts(c *gin.Context) {
 			return
 		}
 		userId = tokenInfo.UserId
+		isSelf = 1
 	}
 
 	page := convert.StrTo(pageStr).MustInt()
 	pageSize := convert.StrTo(pageSizeStr).MustInt()
 
-	list, err := svc.SearchDrafts(userId, keyword, page, pageSize)
+	list, err := svc.SearchDrafts(userId, keyword, page, pageSize, isSelf)
 
 	if err != nil {
 		response.ToErrorResponse(errcode.Fail)

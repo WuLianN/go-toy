@@ -11,5 +11,6 @@ CREATE TABLE `drafts`  (
   `update_time` datetime(0) NULL DEFAULT NULL,
   `is_publish` int(0) NULL DEFAULT NULL COMMENT '是否发布',
   `is_delete` int(0) NULL DEFAULT NULL COMMENT '是否删除',
+  `is_privacy` int(0) NULL DEFAULT NULL COMMENT '是否私密',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;

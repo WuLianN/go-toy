@@ -10,13 +10,21 @@ import (
 // 查询已发布草稿
 func (d *Dao) QueryPublishDraft(id uint32, userId uint32) (model.Draft, error) {
 	var draft model.Draft
-	err := d.engine.Table("drafts").Where("id = ? AND is_publish = ? AND is_delete = ?", id, 1, 0).First(&draft).Error
+	isSelf := false
+	isPrivacy := 0
+
+	if userId == draft.UserId {
+		isSelf = true
+		isPrivacy = 1
+	}
+
+	err := d.engine.Table("drafts").Where("id = ? AND is_publish = ? AND is_delete = ? AND is_privacy = ?", id, 1, 0, isPrivacy).First(&draft).Error
 	if err != nil {
 		return draft, err
 	}
 
 	// 是用户自己的草稿，不去判断是否私密账号
-	if userId == draft.UserId {
+	if isSelf {
 		return draft, nil
 	}
 
@@ -70,6 +78,7 @@ func (d *Dao) EditSaveDraft(draft *model.Draft) error {
 		"title":       draft.Title,
 		"update_time": draft.UpdateTime,
 		"is_publish":  draft.IsPublish,
+		"is_privacy":  draft.IsPrivacy,
 	}).Error
 
 	if err != nil {
@@ -132,12 +141,16 @@ func (d *Dao) QueryDraftList(userId uint32, status uint32, page int, pageSize in
 	return list, nil
 }
 
-func (d *Dao) QuerySearchDraftList(userId uint32, keyword string, page int, pageSize int) ([]model.DraftWithTags, error) {
+func (d *Dao) QuerySearchDraftList(userId uint32, keyword string, page int, pageSize int, isSelf uint8) ([]model.DraftWithTags, error) {
 	offset := app.GetPageOffset(page, pageSize)
 	var list []model.DraftWithTags
 	var err error
 
-	err = d.engine.Table("drafts").Where("user_id = ? AND title LIKE ? AND is_publish = 1 AND is_delete = 0", userId, "%"+keyword+"%").Limit(pageSize).Offset(offset).Find(&list).Error
+	if isSelf == 1 {
+		err = d.engine.Table("drafts").Where("user_id = ? AND title LIKE ? AND is_publish = 1 AND is_delete = 0", userId, "%"+keyword+"%").Limit(pageSize).Offset(offset).Find(&list).Error
+	} else {
+		err = d.engine.Table("drafts").Where("user_id = ? AND title LIKE ? AND is_publish = 1 AND is_delete = 0 AND is_privacy = ?", userId, "%"+keyword+"%", 0).Limit(pageSize).Offset(offset).Find(&list).Error
+	}
 
 	for index, item := range list {
 		var tags []model.Tag

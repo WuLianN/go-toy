@@ -9,6 +9,7 @@ type Draft struct {
 	UpdateTime string `json:"update_time"`
 	IsPublish  uint8  `json:"is_publish"`
 	IsDelete   uint8  `json:"is_delete"`
+	IsPrivacy  uint8  `json:"is_privacy"`
 }
 
 type CreateDraftResponse struct {

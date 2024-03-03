@@ -141,6 +141,7 @@ func (b *BaseApi) GetRecommendList(c *gin.Context) {
 	svc := service.New(c.Request.Context())
 
 	var userId uint32
+	var isSelf uint8
 
 	if userIdStr != "" {
 		userId = convert.StrTo(userIdStr).MustUInt32()
@@ -163,13 +164,14 @@ func (b *BaseApi) GetRecommendList(c *gin.Context) {
 			return
 		}
 		userId = tokenInfo.UserId
+		isSelf = 1
 	}
 
 	page := convert.StrTo(pageStr).MustInt()
 	pageSize := convert.StrTo(pageSizeStr).MustInt()
 	tagId := convert.StrTo(tagIdStr).MustUInt32()
 
-	list, err := svc.GetRecommendList(userId, page, pageSize, tagId)
+	list, err := svc.GetRecommendList(userId, page, pageSize, tagId, isSelf)
 
 	if err != nil {
 		response.ToErrorResponse(errcode.Fail)

@@ -17,6 +17,7 @@ type SaveRequest struct {
 	Title        string `json:"title"`
 	Content      string `json:"content"`
 	IsPublish    uint8  `json:"is_publish"`
+	IsPrivacy    uint8  `json:"is_privacy"`
 	OperatedType uint8  `json:"operated_type"` // 操作类型  0:新增[默认] 1:修改
 }
 
@@ -51,6 +52,7 @@ func (svc *Service) CreateDraft(userId uint32) (id uint32) {
 		UpdateTime: time.Now().Format(time.DateTime),
 		IsPublish:  0,
 		IsDelete:   0,
+		IsPrivacy:  0,
 	}
 
 	return svc.dao.CreateDraft(&draft)
@@ -63,6 +65,7 @@ func (svc *Service) UpdateDraft(request SaveRequest) error {
 		Title:      request.Title,
 		Content:    request.Content,
 		IsPublish:  request.IsPublish,
+		IsPrivacy:  request.IsPrivacy,
 		UpdateTime: time.Now().Format(time.DateTime),
 	}
 
@@ -86,6 +89,6 @@ func (svc *Service) GetDraftList(request *DraftListRequest) ([]model.DraftWithTa
 	return svc.dao.QueryDraftList(request.UserId, request.Status, request.Page, request.PageSize)
 }
 
-func (svc *Service) SearchDrafts(userId uint32, keyword string, page int, pageSize int) ([]model.DraftWithTags, error) {
-	return svc.dao.QuerySearchDraftList(userId, keyword, page, pageSize)
+func (svc *Service) SearchDrafts(userId uint32, keyword string, page int, pageSize int, isSelf uint8) ([]model.DraftWithTags, error) {
+	return svc.dao.QuerySearchDraftList(userId, keyword, page, pageSize, isSelf)
 }

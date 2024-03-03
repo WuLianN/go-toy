@@ -5,18 +5,18 @@ import (
 	"github.com/WuLianN/go-toy/pkg/app"
 )
 
-func (d *Dao) SaveVisitInfo(visitInfo model.VisitInfo) {
-	info := model.VisitInfo{
-		VisitTime: visitInfo.VisitTime,
-		IP:        visitInfo.IP,
-	}
-	d.engine.Table("statistics_visit").Create(&info)
-}
-
-func (d *Dao) QueryRecommendList(userId uint32, page int, pageSize int, tagId uint32) ([]model.RecommendList, error) {
+func (d *Dao) QueryRecommendList(userId uint32, page int, pageSize int, tagId uint32, isSelf uint8) ([]model.RecommendList, error) {
 	offset := app.GetPageOffset(page, pageSize)
 	var list []model.RecommendList
-	err := d.engine.Table("drafts").Order("update_time DESC").Where("drafts.user_id = ? AND is_publish = ? AND is_delete = ?", userId, 1, 0).Limit(pageSize).Offset(offset).Find(&list).Error
+	var err error
+
+	if isSelf == 1 {
+		// 获取自己文章 包括私密
+		err = d.engine.Table("drafts").Order("update_time DESC").Where("drafts.user_id = ? AND is_publish = ? AND is_delete = ?", userId, 1, 0).Limit(pageSize).Offset(offset).Find(&list).Error
+	} else {
+		// 获取用户文章 非私密
+		err = d.engine.Table("drafts").Order("update_time DESC").Where("drafts.user_id = ? AND is_publish = ? AND is_delete = ? AND is_privacy = ?", userId, 1, 0, 0).Limit(pageSize).Offset(offset).Find(&list).Error
+	}
 
 	if err != nil {
 		return list, err
