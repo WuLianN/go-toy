@@ -40,6 +40,7 @@ type DatabaseSettingS struct {
 	Charset      string
 	Collation    string
 	ParseTime    bool
+	Loc          string
 	MaxIdleConns int
 	MaxOpenConns int
 }

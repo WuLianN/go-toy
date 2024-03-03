@@ -32,5 +32,6 @@ Database:
   Charset: utf8mb4
   Collation: utf8mb4_general_ci
   ParseTime: True
+  Loc: Asia/Shanghai
   MaxIdleConns: 10
   MaxOpenConns: 30
