@@ -46,10 +46,16 @@ func (svc *Service) GetUserDraft(id uint32, userId uint32) (model.Draft, error) 
 }
 
 func (svc *Service) CreateDraft(userId uint32) (id uint32) {
+	loc, err := time.LoadLocation("Asia/Shanghai")
+
+	if err != nil {
+		loc = time.FixedZone("CST", 8*3600) // 替换上海时间
+	}
+
 	draft := model.Draft{
 		UserId:     userId,
-		CreateTime: time.Now().Format(time.DateTime),
-		UpdateTime: time.Now().Format(time.DateTime),
+		CreateTime: time.Now().In(loc).Format(time.DateTime),
+		UpdateTime: time.Now().In(loc).Format(time.DateTime),
 		IsPublish:  0,
 		IsDelete:   0,
 		IsPrivacy:  0,

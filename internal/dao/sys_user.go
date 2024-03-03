@@ -29,7 +29,13 @@ func (d *Dao) IsSystemUser(userName string, id uint32) (bool, *model.User) {
 
 // 注册
 func (d *Dao) Register(UserName string, Password string) (uint32, error) {
-	createTime := time.Now().Format(time.DateTime)
+	loc, err1 := time.LoadLocation("Asia/Shanghai")
+
+	if err1 != nil {
+		loc = time.FixedZone("CST", 8*3600) // 替换上海时间
+	}
+
+	createTime := time.Now().In(loc).Format(time.DateTime)
 	user := model.User{UserName: UserName, Password: Password, CreateTime: createTime}
 	err := d.engine.Create(&user).Error
 	if err != nil {

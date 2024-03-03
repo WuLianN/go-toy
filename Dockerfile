@@ -15,9 +15,19 @@ COPY . .
 # 编译成可执行二进制文件
 RUN go build -o main .
 
+# 使用Alpine镜像作为临时环境来设置时区
+FROM alpine:latest as timezone
+
+ENV TZ=Asia/Shanghai
+RUN apk add --no-cache tzdata && \
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
+    echo "$TZ" > /etc/timezone
+
 # 指定新的运行环境，最终的运行会基于这个坏境
 FROM scratch as deploy
 
+COPY --from=timezone /etc/localtime /etc/localtime
+COPY --from=timezone /etc/timezone /etc/timezone
 COPY --from=build /app /
 COPY --from=build /app/configs ./configs
 
