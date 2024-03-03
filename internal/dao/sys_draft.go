@@ -11,14 +11,12 @@ import (
 func (d *Dao) QueryPublishDraft(id uint32, userId uint32) (model.Draft, error) {
 	var draft model.Draft
 	isSelf := false
-	isPrivacy := 0
 
 	if userId == draft.UserId {
 		isSelf = true
-		isPrivacy = 1
 	}
 
-	err := d.engine.Table("drafts").Where("id = ? AND is_publish = ? AND is_delete = ? AND is_privacy = ?", id, 1, 0, isPrivacy).First(&draft).Error
+	err := d.engine.Table("drafts").Where("id = ? AND is_publish = ? AND is_delete = ?", id, 1, 0).First(&draft).Error
 	if err != nil {
 		return draft, err
 	}
@@ -26,6 +24,10 @@ func (d *Dao) QueryPublishDraft(id uint32, userId uint32) (model.Draft, error) {
 	// 是用户自己的草稿，不去判断是否私密账号
 	if isSelf {
 		return draft, nil
+	}
+
+	if draft.IsPrivacy == 1 {
+		return draft, errors.New("私密文章")
 	}
 
 	bool, user := d.IsSystemUser("", draft.UserId)
