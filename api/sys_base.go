@@ -178,10 +178,19 @@ func (b *BaseApi) GetRecommendList(c *gin.Context) {
 		return
 	}
 
-	response.ToResponse(gin.H{
-		"code":    errcode.Success.Code(),
-		"message": errcode.Success.Msg(),
-		"type":    "success",
-		"result":  list,
-	})
+	if len(list) > 0 {
+		response.ToResponse(gin.H{
+			"code":    errcode.Success.Code(),
+			"message": errcode.Success.Msg(),
+			"type":    "success",
+			"result":  list,
+		})
+	} else {
+		response.ToResponse(gin.H{
+			"code":    errcode.Success.Code(),
+			"message": errcode.Success.Msg(),
+			"type":    "success",
+			"result":  make([]int, 0),
+		})
+	}
 }
