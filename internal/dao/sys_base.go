@@ -44,7 +44,6 @@ func (d *Dao) QueryRecommendList(userId uint32, page int, pageSize int, tagId ui
 				}
 			}
 		}
-		list = tempList
 
 		return tempList, err
 	}
