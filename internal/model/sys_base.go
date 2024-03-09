@@ -13,6 +13,7 @@ type RecommendList struct {
 	Content    string `json:"content"`
 	CreateTime string `json:"create_time"`
 	UpdateTime string `json:"update_time"`
+	BgImage    string `json:"bg_image"`
 
 	Tags []Tag `json:"tags" gorm:"foreignKey:Id"`
 }

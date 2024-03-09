@@ -10,6 +10,7 @@ type Draft struct {
 	IsPublish  uint8  `json:"is_publish"`
 	IsDelete   uint8  `json:"is_delete"`
 	IsPrivacy  uint8  `json:"is_privacy"`
+	BgImage    string `json:"bg_image"`
 }
 
 type CreateDraftResponse struct {

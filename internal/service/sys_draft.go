@@ -19,6 +19,7 @@ type SaveRequest struct {
 	IsPublish    uint8  `json:"is_publish"`
 	IsPrivacy    uint8  `json:"is_privacy"`
 	OperatedType uint8  `json:"operated_type"` // 操作类型  0:新增[默认] 1:修改
+	BgImage      string `json:"bg_image"`      // 背景图
 }
 
 type DeleteRequest struct {
@@ -73,6 +74,7 @@ func (svc *Service) UpdateDraft(request SaveRequest) error {
 		IsPublish:  request.IsPublish,
 		IsPrivacy:  request.IsPrivacy,
 		UpdateTime: time.Now().Format(time.DateTime),
+		BgImage:    request.BgImage,
 	}
 
 	// 编辑 保存草稿

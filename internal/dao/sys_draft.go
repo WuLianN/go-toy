@@ -78,6 +78,7 @@ func (d *Dao) EditSaveDraft(draft *model.Draft) error {
 		"update_time": draft.UpdateTime,
 		"is_publish":  draft.IsPublish,
 		"is_privacy":  draft.IsPrivacy,
+		"bg_image":    draft.BgImage,
 	}).Error
 
 	if err != nil {
