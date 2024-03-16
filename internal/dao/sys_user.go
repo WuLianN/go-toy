@@ -161,3 +161,18 @@ func (d *Dao) UpdateUserSetting(userSetting *model.UserSetting) (model.UserSetti
 	}
 	return setting, nil
 }
+
+func (d *Dao) IsAdmin(userId uint32) bool {
+	var user model.User
+	err := d.engine.Table("user_admin").Where("user_id = ?", userId).Limit(1).Find(&user).Error
+
+	if err != nil {
+		return false
+	}
+
+	if user.Id > 0 {
+		return true
+	}
+
+	return false
+}

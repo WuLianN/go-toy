@@ -10,10 +10,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Upload struct{}
+type UploadApi struct{}
 
-func NewUpload() Upload {
-	return Upload{}
+func NewUpload() UploadApi {
+	return UploadApi{}
 }
 
 // @Summary 上传文件
@@ -23,7 +23,7 @@ func NewUpload() Upload {
 // @Param type body string true "类型"
 // @Param file body string true "文件"
 // @Router /upload/file [post]
-func (u Upload) UploadFile(c *gin.Context) {
+func (u UploadApi) UploadFile(c *gin.Context) {
 	response := app.NewResponse(c)
 	file, fileHeader, err := c.Request.FormFile("file")
 	fileType := convert.StrTo(c.PostForm("type")).MustInt()
@@ -54,5 +54,82 @@ func (u Upload) UploadFile(c *gin.Context) {
 		"result": gin.H{
 			"file_access_url": fileInfo.AccessUrl,
 		},
+	})
+}
+
+func (u UploadApi) GetUploadFileList(c *gin.Context) {
+	param := service.FileListRequest{}
+	response := app.NewResponse(c)
+
+	token := GetToken(c)
+	err, tokenInfo := GetTokenInfo(token)
+	if err != nil {
+		response.ToErrorResponse(err)
+		return
+	}
+	pageStr := c.Query("page")
+	pageSizeStr := c.Query("page_size")
+	if pageStr == "" {
+		pageStr = "1"
+	}
+	param.Page = convert.StrTo(pageStr).MustInt()
+
+	if pageSizeStr == "" {
+		pageSizeStr = "10"
+	}
+	param.PageSize = convert.StrTo(pageSizeStr).MustInt()
+
+	param.UserId = tokenInfo.UserId
+	param.Order = c.Query("order")
+	param.Keyword = c.Query("keyword")
+
+	svc := service.New(c.Request.Context())
+
+	list, err2 := svc.GetUploadFileList(&param)
+
+	if err2 != nil {
+		response.ToErrorResponse(errcode.Fail)
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+		"result":  list,
+	})
+}
+
+func (u UploadApi) DeleteUploadFile(c *gin.Context) {
+	param := service.DeleteFileRequest{}
+
+	response := app.NewResponse(c)
+
+	valid, errs := app.BindAndValid(c, &param)
+	if !valid {
+		global.Logger.Errorf(c, "app.BindAndValid errs: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	token := GetToken(c)
+	err, tokenInfo := GetTokenInfo(token)
+	if err != nil {
+		response.ToErrorResponse(err)
+		return
+	}
+
+	param.UserId = tokenInfo.UserId
+
+	svc := service.New(c.Request.Context())
+	err2 := svc.DeleteUploadFile(param.UserId, param.Ids)
+
+	if err2 != nil {
+		response.ToErrorResponse(errcode.Fail)
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
 	})
 }

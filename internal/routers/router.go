@@ -57,6 +57,7 @@ func SetupRouter() *gin.Engine {
 		InitUserRouter(systemAuthGroup)
 		InitDraftRouter(systemAuthGroup)
 		InitTagRouter(systemAuthGroup)
+		InitUploadRouter(systemAuthGroup)
 	}
 
 	return r

@@ -9,7 +9,7 @@ func InitBaseRouter(Router *gin.RouterGroup) {
 	baseApi := api.ApiGroupApp.BaseApi
 	draftApi := api.ApiGroupApp.DraftApi
 	userApi := api.ApiGroupApp.UserApi
-	uploadApi := api.NewUpload()
+	uploadApi := api.ApiGroupApp.UploadApi
 	{
 		Router.POST("/login", baseApi.Login)
 		Router.POST("/register", baseApi.Register)

@@ -6,12 +6,13 @@ import (
 	"mime/multipart"
 	"os"
 	"path"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/WuLianN/go-toy/global"
 	"github.com/WuLianN/go-toy/pkg/util"
 )
-
 
 type FileType int
 
@@ -19,8 +20,9 @@ const TypeImage FileType = iota + 1
 
 func GetFileName(name string) string {
 	ext := GetFileExt(name)
+	timestamp := strconv.FormatInt(time.Now().UnixNano(), 10) // 获取当前时间戳（纳秒级）
 	fileName := strings.TrimSuffix(name, ext)
-	fileName = util.EncodeMD5(fileName)
+	fileName = util.EncodeMD5(fileName + "_" + timestamp) // // 添加时间戳后再哈希
 
 	return fileName + ext
 }
@@ -30,7 +32,7 @@ func GetFileExt(name string) string {
 }
 
 func GetSavePath() string {
-    return global.AppSetting.UploadSavePath   
+	return global.AppSetting.UploadSavePath
 }
 
 func GetServerUrl() string {
