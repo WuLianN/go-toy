@@ -1,6 +1,9 @@
 package api
 
 import (
+	"strconv"
+	"strings"
+
 	"github.com/WuLianN/go-toy/global"
 	"github.com/WuLianN/go-toy/internal/service"
 	"github.com/WuLianN/go-toy/pkg/app"
@@ -126,16 +129,25 @@ func (b *BaseApi) GetRecommendList(c *gin.Context) {
 	pageStr := c.Query("page")
 	pageSizeStr := c.Query("page_size")
 	userIdStr := c.Query("user_id")
-	tagIdStr := c.Query("tag_id")
+	tagIdsStr := c.Query("tag_ids")
+
+	var tagIds []uint32
+	if tagIdsStr != "" {
+		tagIdsSlice := strings.Split(tagIdsStr, ",")
+		for _, str := range tagIdsSlice {
+			num, err := strconv.ParseUint(str, 10, 32)
+			if err != nil {
+				continue
+			}
+			tagIds = append(tagIds, uint32(num))
+		}
+	}
 
 	if pageStr == "" {
 		pageStr = "1"
 	}
 	if pageSizeStr == "" {
 		pageSizeStr = "10"
-	}
-	if tagIdStr == "" {
-		tagIdStr = "0"
 	}
 
 	svc := service.New(c.Request.Context())
@@ -169,9 +181,8 @@ func (b *BaseApi) GetRecommendList(c *gin.Context) {
 
 	page := convert.StrTo(pageStr).MustInt()
 	pageSize := convert.StrTo(pageSizeStr).MustInt()
-	tagId := convert.StrTo(tagIdStr).MustUInt32()
 
-	list, err := svc.GetRecommendList(userId, page, pageSize, tagId, isSelf)
+	list, err := svc.GetRecommendList(userId, page, pageSize, tagIds, isSelf)
 
 	if err != nil {
 		response.ToErrorResponse(errcode.Fail)

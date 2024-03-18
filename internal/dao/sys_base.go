@@ -5,7 +5,7 @@ import (
 	"github.com/WuLianN/go-toy/pkg/app"
 )
 
-func (d *Dao) QueryRecommendList(userId uint32, page int, pageSize int, tagId uint32, isSelf uint8) ([]model.RecommendList, error) {
+func (d *Dao) QueryRecommendList(userId uint32, page int, pageSize int, tagIds []uint32, isSelf uint8) ([]model.RecommendList, error) {
 	offset := app.GetPageOffset(page, pageSize)
 	var list []model.RecommendList
 	var err error
@@ -22,10 +22,10 @@ func (d *Dao) QueryRecommendList(userId uint32, page int, pageSize int, tagId ui
 		return list, err
 	}
 
-	tagList, _ := d.QueryDraftTagsDT(userId, tagId)
+	tagList, _ := d.QueryDraftTagsDT(userId, tagIds)
 
 	// 获取指定标签的文章
-	if tagId > 0 {
+	if len(tagIds) > 0 {
 		var tempList []model.RecommendList
 		if len(tagList) == 0 {
 			return tempList, err
