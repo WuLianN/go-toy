@@ -95,7 +95,34 @@ func (d *Dao) CreateTag(userId uint32, name string) (uint32, error) {
 }
 
 func (d *Dao) DeleteTag(tagId uint32) error {
-	return d.engine.Table("tags").Delete(&model.Tag{}, "id = ?", tagId).Error
+	return d.engine.Transaction(func(tx *gorm.DB) error {
+		var err error
+
+		// 解绑菜单-标签
+		// 查找tagId绑定的菜单id
+		var menuIds []uint32
+		if err = tx.Table("menu_tags").Where("tag_id = ?", tagId).Pluck("menu_id", &menuIds).Error; err != nil {
+			return err
+		}
+		if err = tx.Table("menu_tags").Where("menu_id in (?) AND tag_id = ?", menuIds, tagId).Delete(model.MenuTag{}).Error; err != nil {
+			return err
+		}
+		// 解绑文章-标签
+		// 查找tagId绑定的文章id
+		var draftIds []uint32
+		if err = tx.Table("draft_tags").Where("tag_id = ?", tagId).Pluck("draft_id", &draftIds).Error; err != nil {
+			return err
+		}
+		if err = tx.Table("draft_tags").Where("draft_id in (?) AND tag_id = ?", draftIds, tagId).Delete(model.DraftTag{}).Error; err != nil {
+			return err
+		}
+		// 删除标签
+		if err = tx.Table("tags").Delete(&model.Tag{}, "id = ?", tagId).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
 }
 
 func (d *Dao) QueryTag(userId uint32, name string) ([]model.Tag, error) {
