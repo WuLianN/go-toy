@@ -15,7 +15,9 @@ func (d *Dao) QueryRecommendList(userId uint32, page int, pageSize int, tagIds [
 		err = d.engine.Table("drafts").Order("update_time DESC").Where("drafts.user_id = ? AND is_publish = ? AND is_delete = ?", userId, 1, 0).Limit(pageSize).Offset(offset).Find(&list).Error
 	} else {
 		// 获取用户文章 非私密
-		err = d.engine.Table("drafts").Order("update_time DESC").Where("drafts.user_id = ? AND is_publish = ? AND is_delete = ? AND is_privacy = ?", userId, 1, 0, 0).Limit(pageSize).Offset(offset).Find(&list).Error
+		if len(tagIds) == 0 {
+			err = d.engine.Table("drafts").Order("update_time DESC").Where("drafts.user_id = ? AND is_publish = ? AND is_delete = ? AND is_privacy = ?", userId, 1, 0, 0).Limit(pageSize).Offset(offset).Find(&list).Error
+		}
 	}
 
 	if err != nil {
@@ -31,16 +33,28 @@ func (d *Dao) QueryRecommendList(userId uint32, page int, pageSize int, tagIds [
 			return tempList, err
 		}
 
+		var draftIds []uint32
+		var draftList []model.RecommendList
+
 		for _, tag := range tagList {
-			for i := range list {
-				if list[i].Id == tag.DraftId {
-					list[i].Tags = append(list[i].Tags, model.Tag{
-						Id:      tag.TagId,
-						Name:    tag.Name,
-						BgColor: tag.BgColor,
-						Color:   tag.Color,
-					})
-					tempList = append(tempList, list[i])
+			draftIds = append(draftIds, tag.DraftId)
+		}
+		if len(draftIds) > 0 {
+			err = d.engine.Table("drafts").Where("id IN (?)", draftIds).Limit(pageSize).Offset(offset).Find(&draftList).Error
+		}
+
+		if len(draftList) > 0 {
+			for _, draft := range draftList {
+				for i, tag := range tagList {
+					if draft.Id == tag.DraftId {
+						draftList[i].Tags = append(draftList[i].Tags, model.Tag{
+							Id:      tag.TagId,
+							Name:    tag.Name,
+							BgColor: tag.BgColor,
+							Color:   tag.Color,
+						})
+						tempList = append(tempList, draftList[i])
+					}
 				}
 			}
 		}
