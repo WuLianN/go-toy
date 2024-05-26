@@ -76,6 +76,10 @@ func (d *Dao) UpdateUserInfo(userId uint32, userName string, avatar string, isPr
 		return userInfo, err
 	}
 
+	if err := d.engine.Table("user").Where("id = ?", userId).Updates(map[string]interface{}{"is_privacy": isPrivacy}).Error; err != nil {
+		return userInfo, err
+	}
+
 	return userInfo, nil
 }
 
