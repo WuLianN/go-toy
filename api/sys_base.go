@@ -155,21 +155,21 @@ func (b *BaseApi) GetRecommendList(c *gin.Context) {
 	var userId uint32
 	var isSelf uint8
 
+	token := GetToken(c)
+
 	if userIdStr != "" {
 		userId = convert.StrTo(userIdStr).MustUInt32()
 
 		bool := svc.IsPrivacyUser(userId)
+
 		if bool {
-			response.ToResponse(gin.H{
-				"code":    errcode.Success.Code(),
-				"message": errcode.Success.Msg(),
-				"type":    "success",
-				"result":  make([]int, 0),
-			})
-			return
+			err, tokenInfo := GetTokenInfo(token)
+			if err != nil || tokenInfo.UserId != userId {
+				response.ToErrorResponse(errcode.UnauthorizedAuthNotExist)
+				return
+			}
 		}
 	} else {
-		token := GetToken(c)
 		err, tokenInfo := GetTokenInfo(token)
 		if err != nil {
 			response.ToErrorResponse(err)
