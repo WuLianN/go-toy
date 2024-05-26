@@ -5,6 +5,7 @@ import (
 
 	"github.com/WuLianN/go-toy/internal/model"
 	"github.com/WuLianN/go-toy/pkg/app"
+	"gorm.io/gorm"
 )
 
 // 查询已发布草稿
@@ -91,6 +92,22 @@ func (d *Dao) EditSaveDraft(draft *model.Draft) error {
 func (d *Dao) DeleteDraft(id uint32) error {
 	// 删除记录
 	// err := d.engine.Table("draft").Where("id = ?", id).Delete(&model.Draft{}).Error
+
+	d.engine.Transaction(func(tx *gorm.DB) error {
+		var err error
+		if err = tx.Table("drafts").Where("id = ?", id).Update("is_delete", 1).Error; err != nil {
+			return err
+		}
+
+		draft := model.DraftTag{
+			DraftId: id,
+		}
+		if err = tx.Table("draft_tags").Where("draft_id = ?", id).Delete(&draft).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
 
 	// 假删除 is_delete=1
 	err := d.engine.Table("drafts").Where("id = ?", id).Update("is_delete", 1).Error
