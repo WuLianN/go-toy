@@ -153,18 +153,21 @@ func (b *BaseApi) GetRecommendList(c *gin.Context) {
 	svc := service.New(c.Request.Context())
 
 	var userId uint32
-	var isSelf uint8
+	var isSelf uint8 // 0:非本人 1:本人
 
 	token := GetToken(c)
 
 	if userIdStr != "" {
 		userId = convert.StrTo(userIdStr).MustUInt32()
 
-		bool := svc.IsPrivacyUser(userId)
+		_, tokenInfo := GetTokenInfo(token)
+		if tokenInfo != nil && tokenInfo.UserId == userId {
+			isSelf = 1
+		} else {
+			// 非本人 检测该用户是否为私密账号
+			bool := svc.IsPrivacyUser(userId)
 
-		if bool {
-			err, tokenInfo := GetTokenInfo(token)
-			if err != nil || tokenInfo.UserId != userId {
+			if bool {
 				response.ToErrorResponse(errcode.UnauthorizedAuthNotExist)
 				return
 			}
