@@ -28,38 +28,59 @@ func (d *Dao) QueryRecommendList(userId uint32, page int, pageSize int, tagIds [
 
 	// 获取指定标签的文章
 	if len(tagIds) > 0 {
-		var tempList []model.RecommendList
-		if len(tagList) == 0 {
-			return tempList, err
-		}
-
 		var draftIds []uint32
 		var draftList []model.RecommendList
+
+		if len(tagList) == 0 {
+			return draftList, err
+		}
 
 		for _, tag := range tagList {
 			draftIds = append(draftIds, tag.DraftId)
 		}
+		var joinList []model.DraftAndTag
 		if len(draftIds) > 0 {
-			err = d.engine.Table("drafts").Where("id IN (?)", draftIds).Limit(pageSize).Offset(offset).Find(&draftList).Error
+			err = d.engine.Table("drafts").Select("drafts.id as id, drafts.title as title, drafts.content as content, drafts.bg_image as bg_image, drafts.create_time as create_time, drafts.update_time as update_time, drafts.user_id as user_id, tags.id as tag_id, tags.name as tag_name, tags.bg_color as tag_bg_color, tags.color as tag_color").Joins("left join draft_tags on drafts.id = draft_tags.draft_id").Joins("left join tags on tags.id = draft_tags.tag_id").Where("drafts.id IN (?)", draftIds).Limit(pageSize).Offset(offset).Find(&joinList).Error
 		}
 
-		if len(draftList) > 0 {
-			for _, draft := range draftList {
-				for i, tag := range tagList {
-					if draft.Id == tag.DraftId {
-						draftList[i].Tags = append(draftList[i].Tags, model.Tag{
-							Id:      tag.TagId,
-							Name:    tag.Name,
-							BgColor: tag.BgColor,
-							Color:   tag.Color,
-						})
-						tempList = append(tempList, draftList[i])
+		if len(joinList) > 0 {
+			var keyMap = make(map[uint32]bool)
+			for _, joinListItem := range joinList {
+				if !keyMap[joinListItem.Id] {
+					keyMap[joinListItem.Id] = true
+
+					draftList = append(draftList, model.RecommendList{
+						Id:         joinListItem.Id,
+						Title:      joinListItem.Title,
+						Content:    joinListItem.Content,
+						BgImage:    joinListItem.BgImage,
+						CreateTime: joinListItem.CreateTime,
+						UpdateTime: joinListItem.UpdateTime,
+						UserId:     joinListItem.UserId,
+						Tags: []model.Tag{
+							{
+								Id:      joinListItem.TagId,
+								Name:    joinListItem.TagName,
+								BgColor: joinListItem.TagBgColor,
+								Color:   joinListItem.TagColor,
+							},
+						},
+					})
+				} else {
+					for i := range draftList {
+						if draftList[i].Id == joinListItem.Id {
+							draftList[i].Tags = append(draftList[i].Tags, model.Tag{
+								Id:      joinListItem.TagId,
+								Name:    joinListItem.TagName,
+								BgColor: joinListItem.TagBgColor,
+								Color:   joinListItem.TagColor,
+							})
+						}
 					}
 				}
 			}
 		}
-
-		return tempList, err
+		return draftList, err
 	}
 
 	// 无指定tag_id 获取全部文章

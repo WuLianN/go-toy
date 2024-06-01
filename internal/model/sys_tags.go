@@ -25,3 +25,11 @@ type DraftWithTags struct {
 	Tags []Tag `json:"tags" gorm:"foreignKey:Id"`
 	Draft
 }
+
+type DraftAndTag struct {
+	Draft
+	TagId      uint32 `json:"tag_id"`
+	TagName    string `json:"tag_name"`
+	TagColor   string `json:"tag_color"`
+	TagBgColor string `json:"tag_bg_color"`
+}
