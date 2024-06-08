@@ -20,7 +20,9 @@ type TreeList struct {
 	// children
 	Children []TreeList `json:"children"`
 	// meta
-	Meta map[string]any `json:"meta"`
+	Meta      map[string]any `json:"meta"`
+	IsUse     uint8          `json:"is_use"`
+	IsPrivacy uint8          `json:"is_privacy"`
 
 	Label string      `json:"label"`
 	Tags  []model.Tag `json:"tags"`
@@ -59,6 +61,8 @@ func GetTreeMenu(menuList []model.MenuMeta, pid uint32) []TreeList {
 				ParentId:  v.ParentId,
 				Meta:      GetMeta(v),
 				Tags:      v.Tags,
+				IsUse:     v.IsUse,
+				IsPrivacy: v.IsPrivacy,
 			}
 			node.Children = child
 			treeList = append(treeList, node)
@@ -87,7 +91,7 @@ func (svc *Service) DeleteMenuItem(req model.DeleteMenuItem, userId uint32) erro
 }
 
 func (svc *Service) UpdateMenuItem(req *model.UpdateMenuItem) error {
-	return svc.dao.UpdateMenuItem(req.Id, req.Name, req.Icon)
+	return svc.dao.UpdateMenuItem(req.Id, req.Name, req.Icon, req.IsUse, req.IsPrivacy)
 }
 
 func (svc *Service) SaveMenuSort(req []model.SaveMenuSort) error {

@@ -21,6 +21,8 @@ type Menu struct {
 	IsUse uint8 `json:"is_use"`
 	// 排序
 	Sort uint32 `json:"sort"`
+	// 是否私密
+	IsPrivacy uint8 `json:"is_privacy"`
 }
 
 type MenuMeta struct {
@@ -45,9 +47,11 @@ type DeleteMenuItem struct {
 }
 
 type UpdateMenuItem struct {
-	Id   uint32 `json:"id" binding:"required"`
-	Name string `json:"name"`
-	Icon string `json:"icon"`
+	Id        uint32 `json:"id" binding:"required"`
+	Name      string `json:"name" binding:"required"`
+	Icon      string `json:"icon"`
+	IsUse     uint8  `json:"is_use"`
+	IsPrivacy uint8  `json:"is_privacy"`
 }
 
 type SaveMenuSort struct {

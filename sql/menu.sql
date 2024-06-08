@@ -10,7 +10,8 @@ CREATE TABLE `menu`  (
   `redirect` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '重定向',
   `parent_id` int(0) UNSIGNED NOT NULL COMMENT '父级id',
   `meta_id` int(0) UNSIGNED NOT NULL COMMENT 'meta id',
-  `is_use` int(0) UNSIGNED NULL DEFAULT NULL COMMENT '1 使用 2不使用',
+  `is_use` int(0) UNSIGNED NULL DEFAULT NULL COMMENT '1 使用 0不使用',
+  `is_privacy` int(0) UNSIGNED NULL DEFAULT NULL COMMENT '1 私密 0 公开',
   `sort` int(0) NOT NULL DEFAULT 1 COMMENT '排序',
   `user_id` int(0) NOT NULL COMMENT '用户id',
   PRIMARY KEY (`id`) USING BTREE

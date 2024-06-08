@@ -10,7 +10,7 @@ import (
 func (d *Dao) GetMenu(UserId uint32) []model.MenuMeta {
 	var menu []model.MenuMeta
 
-	d.engine.Table("menu").Select("menu.id as id, name, parent_id, meta_id, component, icon").Joins("left join menu_meta on menu_meta.id = menu.meta_id").Where("user_id = ? AND is_use = ?", UserId, 1).Order("menu.sort asc").Scan(&menu)
+	d.engine.Table("menu").Select("menu.id as id, name, parent_id, meta_id, component, icon, is_use, is_privacy").Joins("left join menu_meta on menu_meta.id = menu.meta_id").Where("user_id = ? AND is_use = ?", UserId, 1).Order("menu.sort asc").Scan(&menu)
 
 	return menu
 }
@@ -29,12 +29,13 @@ func (d *Dao) AddMenuItem(name string, parentId, userId uint32) (model.AddMenuIt
 		}
 
 		menu = model.Menu{
-			MetaId:   meta.Id,
-			Name:     name,
-			ParentId: parentId,
-			UserId:   userId,
-			IsUse:    1,
-			Sort:     1,
+			MetaId:    meta.Id,
+			Name:      name,
+			ParentId:  parentId,
+			UserId:    userId,
+			IsUse:     1,
+			Sort:      1,
+			IsPrivacy: 0,
 		}
 
 		if err = tx.Table("menu").Create(&menu).Error; err != nil {
@@ -96,11 +97,11 @@ func (d *Dao) DeleteMenuItem(menuId uint32, userId uint32) error {
 	return nil
 }
 
-func (d *Dao) UpdateMenuItem(menuId uint32, name string, icon string) error {
+func (d *Dao) UpdateMenuItem(menuId uint32, name string, icon string, isUse, isPrivacy uint8) error {
 	err := d.engine.Transaction(func(tx *gorm.DB) error {
 		var err error
 		var menu model.Menu
-		if err = tx.Table("menu").Model(&menu).Where("id = ?", menuId).Update("name", name).Error; err != nil {
+		if err = tx.Table("menu").Where("id = ?", menuId).Updates(map[string]any{"name": name, "is_use": isUse, "is_privacy": isPrivacy}).Error; err != nil {
 			return err
 		}
 
