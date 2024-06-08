@@ -72,15 +72,8 @@ func (d *Dao) UpdateUserInfo(userId uint32, userName string, avatar string, isPr
 		IsPrivacy: isPrivacy,
 	}
 
-	if err := d.engine.Table("user").Where("id = ?", userId).Updates(&userInfo).Error; err != nil {
+	if err := d.engine.Table("user").Where("id = ?", userId).Select("*").Updates(&userInfo).Error; err != nil {
 		return userInfo, err
-	}
-
-	// updates 不更新零值, isPrivacy有=0的情况, 所以需要单独更新
-	if userInfo.IsPrivacy == 0 {
-		if err := d.engine.Table("user").Where("id = ?", userId).Updates(map[string]interface{}{"is_privacy": isPrivacy}).Error; err != nil {
-			return userInfo, err
-		}
 	}
 
 	return userInfo, nil
