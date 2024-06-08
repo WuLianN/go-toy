@@ -12,5 +12,6 @@ func InitMenuRouter(Router *gin.RouterGroup) {
 		Router.POST("/addMenuItem", menuApi.AddMenuItem)
 		Router.POST("/deleteMenuItem", menuApi.DeleteMenuItem)
 		Router.POST("/updateMenuItem", menuApi.UpdateMenuItem)
+		Router.POST("/saveMenuSort", menuApi.SaveMenuSort)
 	}
 }

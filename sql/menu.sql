@@ -11,7 +11,7 @@ CREATE TABLE `menu`  (
   `parent_id` int(0) UNSIGNED NOT NULL COMMENT '父级id',
   `meta_id` int(0) UNSIGNED NOT NULL COMMENT 'meta id',
   `is_use` int(0) UNSIGNED NULL DEFAULT NULL COMMENT '1 使用 2不使用',
-  `sort` int(0) NULL DEFAULT NULL COMMENT '排序',
+  `sort` int(0) NOT NULL DEFAULT 1 COMMENT '排序',
   `user_id` int(0) NOT NULL COMMENT '用户id',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;

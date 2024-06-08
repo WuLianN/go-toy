@@ -89,3 +89,7 @@ func (svc *Service) DeleteMenuItem(req model.DeleteMenuItem, userId uint32) erro
 func (svc *Service) UpdateMenuItem(req *model.UpdateMenuItem) error {
 	return svc.dao.UpdateMenuItem(req.Id, req.Name, req.Icon)
 }
+
+func (svc *Service) SaveMenuSort(req []model.SaveMenuSort) error {
+	return svc.dao.SaveMenuSort(req)
+}

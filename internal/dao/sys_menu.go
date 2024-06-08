@@ -1,6 +1,8 @@
 package dao
 
 import (
+	"fmt"
+
 	"github.com/WuLianN/go-toy/internal/model"
 	"gorm.io/gorm"
 )
@@ -8,7 +10,7 @@ import (
 func (d *Dao) GetMenu(UserId uint32) []model.MenuMeta {
 	var menu []model.MenuMeta
 
-	d.engine.Table("menu").Select("menu.id as id, name, parent_id, meta_id, component, icon").Joins("left join menu_meta on menu_meta.id = menu.meta_id").Where("user_id = ? AND is_use = ?", UserId, 1).Scan(&menu)
+	d.engine.Table("menu").Select("menu.id as id, name, parent_id, meta_id, component, icon").Joins("left join menu_meta on menu_meta.id = menu.meta_id").Where("user_id = ? AND is_use = ?", UserId, 1).Order("menu.sort asc").Scan(&menu)
 
 	return menu
 }
@@ -32,6 +34,7 @@ func (d *Dao) AddMenuItem(name string, parentId, userId uint32) (model.AddMenuIt
 			ParentId: parentId,
 			UserId:   userId,
 			IsUse:    1,
+			Sort:     1,
 		}
 
 		if err = tx.Table("menu").Create(&menu).Error; err != nil {
@@ -148,4 +151,20 @@ func (d *Dao) QueryMenuById(menuId uint32, userId uint32) (model.Menu, error) {
 	}
 
 	return menu, nil
+}
+
+func (d *Dao) SaveMenuSort(sortList []model.SaveMenuSort) error {
+	var errors []error
+	err := d.engine.Transaction(func(tx *gorm.DB) error {
+		for _, v := range sortList {
+			if err := tx.Table("menu").Where("id = ?", v.Id).Updates(map[string]interface{}{"parent_id": v.ParentId, "sort": v.Sort}).Error; err != nil {
+				errors = append(errors, err)
+			}
+		}
+		if len(errors) > 0 {
+			return fmt.Errorf("部分更新失败: %v", errors)
+		}
+		return nil
+	})
+	return err
 }

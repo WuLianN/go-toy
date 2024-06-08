@@ -164,3 +164,36 @@ func (m *MenuApi) UpdateMenuItem(c *gin.Context) {
 		"message": errcode.Success.Msg(),
 	})
 }
+
+// @Summary 保存菜单排序
+// @Param id body number true "菜单id"
+// @Param parent_id body number true "父菜单id"
+// @Param sort body number true "排序号"
+// @Accept json
+// @Produce json
+// @Tags 菜单
+// @Success 200 {string} string "ok"
+// @Router /updateMenuItem [post]
+func (m *MenuApi) SaveMenuSort(c *gin.Context) {
+	requestBody := []model.SaveMenuSort{}
+
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &requestBody)
+	if !valid {
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	svc := service.New(c.Request.Context())
+	err := svc.SaveMenuSort(requestBody)
+
+	if err != nil {
+		response.ToErrorResponse(errcode.Fail)
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+	})
+}

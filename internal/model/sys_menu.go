@@ -19,6 +19,8 @@ type Menu struct {
 	UserId uint32 `json:"user_id"`
 	// 是否使用
 	IsUse uint8 `json:"is_use"`
+	// 排序
+	Sort uint32 `json:"sort"`
 }
 
 type MenuMeta struct {
@@ -46,6 +48,12 @@ type UpdateMenuItem struct {
 	Id   uint32 `json:"id" binding:"required"`
 	Name string `json:"name"`
 	Icon string `json:"icon"`
+}
+
+type SaveMenuSort struct {
+	ParentId uint32 `json:"parent_id"`
+	Id       uint32 `json:"id" binding:"required"`
+	Sort     uint32 `json:"sort" binding:"required"`
 }
 
 type MenuTags struct {
