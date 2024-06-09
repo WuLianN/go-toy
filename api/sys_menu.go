@@ -1,6 +1,8 @@
 package api
 
 import (
+	"strconv"
+
 	"github.com/WuLianN/go-toy/global"
 	"github.com/WuLianN/go-toy/internal/model"
 	"github.com/WuLianN/go-toy/internal/service"
@@ -21,6 +23,17 @@ type MenuApi struct{}
 func (m *MenuApi) GetRoleMenu(c *gin.Context) {
 	response := app.NewResponse(c)
 	userIdStr := c.Query("user_id")
+	isUseStr := c.Query("is_use")
+	var isUseUint8 uint8
+	var isSelf uint8
+
+	isUseBool, _ := strconv.ParseBool(isUseStr)
+
+	if isUseBool {
+		isUseInt, _ := strconv.Atoi(isUseStr)
+		isUseUint8 = uint8(isUseInt)
+	}
+
 	var userId uint32
 
 	if userIdStr != "" {
@@ -33,10 +46,11 @@ func (m *MenuApi) GetRoleMenu(c *gin.Context) {
 			return
 		}
 		userId = tokenInfo.UserId
+		isSelf = 1
 	}
 
 	svc := service.New(c.Request.Context())
-	list := svc.GetMenuList(userId)
+	list := svc.GetMenuList(userId, isUseUint8, isSelf)
 
 	response.ToResponse(gin.H{
 		"code":    errcode.Success.Code(),

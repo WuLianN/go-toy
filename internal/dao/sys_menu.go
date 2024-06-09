@@ -7,10 +7,24 @@ import (
 	"gorm.io/gorm"
 )
 
-func (d *Dao) GetMenu(UserId uint32) []model.MenuMeta {
+func (d *Dao) GetMenu(UserId uint32, IsUse uint8, isSelf uint8) []model.MenuMeta {
 	var menu []model.MenuMeta
 
-	d.engine.Table("menu").Select("menu.id as id, name, parent_id, meta_id, component, icon, is_use, is_privacy").Joins("left join menu_meta on menu_meta.id = menu.meta_id").Where("user_id = ? AND is_use = ?", UserId, 1).Order("menu.sort asc").Scan(&menu)
+	query := d.engine.Table("menu").
+		Select("menu.id as id, name, parent_id, meta_id, component, icon, is_use, is_privacy").
+		Joins("LEFT JOIN menu_meta ON menu_meta.id = menu.meta_id").
+		Where("user_id = ?", UserId).
+		Order("menu.sort ASC")
+
+	// 动态添加条件
+	if IsUse == 1 {
+		query = query.Where("is_use = ?", IsUse)
+	}
+	if isSelf == 0 {
+		query = query.Where("is_privacy = ?", 0)
+	}
+
+	query.Scan(&menu)
 
 	return menu
 }

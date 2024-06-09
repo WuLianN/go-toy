@@ -28,8 +28,8 @@ type TreeList struct {
 	Tags  []model.Tag `json:"tags"`
 }
 
-func (svc *Service) GetMenuList(UserId uint32) []TreeList {
-	menus := svc.dao.GetMenu(UserId)
+func (svc *Service) GetMenuList(UserId uint32, IsUse uint8, isSelf uint8) []TreeList {
+	menus := svc.dao.GetMenu(UserId, IsUse, isSelf)
 
 	if menus != nil {
 		menuList := []TreeList{}
