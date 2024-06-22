@@ -53,7 +53,7 @@ func (t *TagApi) GetTagList(c *gin.Context) {
 // @Produce json
 // @Tags 标签
 // @Success 200 {string} string "ok"
-// @Router /getTagList [get]
+// @Router /getDraftTagList [get]
 func (t *TagApi) GetDraftTagList(c *gin.Context) {
 	draftIdStr := c.Query("draft_id")
 	tagIdStr := c.Query("tag_id")

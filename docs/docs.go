@@ -505,6 +505,48 @@ const docTemplate = `{
                 }
             }
         },
+        "/getDraftTagList": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "标签"
+                ],
+                "summary": "获取草稿关联的标签",
+                "parameters": [
+                    {
+                        "description": "草稿id",
+                        "name": "draft_id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "description": "标签id",
+                        "name": "tag_id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/getMenuList": {
             "get": {
                 "consumes": [
@@ -607,20 +649,11 @@ const docTemplate = `{
                 "tags": [
                     "标签"
                 ],
-                "summary": "获取草稿关联的标签",
+                "summary": "获取标签",
                 "parameters": [
                     {
-                        "description": "草稿id",
-                        "name": "draft_id",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "number"
-                        }
-                    },
-                    {
-                        "description": "标签id",
-                        "name": "tag_id",
+                        "description": "用户id",
+                        "name": "ids",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -831,6 +864,42 @@ const docTemplate = `{
                 }
             }
         },
+        "/saveBindedUserSort": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "保存关联账户列表排序",
+                "parameters": [
+                    {
+                        "description": "保存绑定用户排序的请求数据",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.SaveBindedUserSort"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/saveDraft": {
             "post": {
                 "consumes": [
@@ -872,6 +941,57 @@ const docTemplate = `{
                         "description": "ok",
                         "schema": {
                             "$ref": "#/definitions/model.ResponseResult"
+                        }
+                    }
+                }
+            }
+        },
+        "/saveMenuSort": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "菜单"
+                ],
+                "summary": "保存菜单排序",
+                "parameters": [
+                    {
+                        "description": "菜单id",
+                        "name": "id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "description": "父菜单id",
+                        "name": "parent_id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "description": "排序号",
+                        "name": "sort",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 }
@@ -1257,6 +1377,21 @@ const docTemplate = `{
                     "example": "ok"
                 },
                 "result": {}
+            }
+        },
+        "model.SaveBindedUserSort": {
+            "type": "object",
+            "required": [
+                "id",
+                "sort"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "sort": {
+                    "type": "integer"
+                }
             }
         }
     }

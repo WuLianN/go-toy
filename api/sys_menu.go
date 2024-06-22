@@ -187,7 +187,7 @@ func (m *MenuApi) UpdateMenuItem(c *gin.Context) {
 // @Produce json
 // @Tags 菜单
 // @Success 200 {string} string "ok"
-// @Router /updateMenuItem [post]
+// @Router /saveMenuSort [post]
 func (m *MenuApi) SaveMenuSort(c *gin.Context) {
 	requestBody := []model.SaveMenuSort{}
 

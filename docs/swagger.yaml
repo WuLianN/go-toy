@@ -15,6 +15,16 @@ definitions:
         type: string
       result: {}
     type: object
+  model.SaveBindedUserSort:
+    properties:
+      id:
+        type: integer
+      sort:
+        type: integer
+    required:
+    - id
+    - sort
+    type: object
 info:
   contact: {}
   description: 玩起来！！！
@@ -331,6 +341,33 @@ paths:
       summary: 获取草稿箱
       tags:
       - 草稿
+  /getDraftTagList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 草稿id
+        in: body
+        name: draft_id
+        required: true
+        schema:
+          type: number
+      - description: 标签id
+        in: body
+        name: tag_id
+        required: true
+        schema:
+          type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 获取草稿关联的标签
+      tags:
+      - 标签
   /getMenuList:
     get:
       consumes:
@@ -394,15 +431,9 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: 草稿id
+      - description: 用户id
         in: body
-        name: draft_id
-        required: true
-        schema:
-          type: number
-      - description: 标签id
-        in: body
-        name: tag_id
+        name: ids
         required: true
         schema:
           type: number
@@ -413,7 +444,7 @@ paths:
           description: ok
           schema:
             type: string
-      summary: 获取草稿关联的标签
+      summary: 获取标签
       tags:
       - 标签
   /getUserDraft:
@@ -539,6 +570,29 @@ paths:
       summary: 注册
       tags:
       - user
+  /saveBindedUserSort:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 保存绑定用户排序的请求数据
+        in: body
+        name: body
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/model.SaveBindedUserSort'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 保存关联账户列表排序
+      tags:
+      - user
   /saveDraft:
     post:
       consumes:
@@ -568,6 +622,39 @@ paths:
       summary: 保存草稿
       tags:
       - 草稿
+  /saveMenuSort:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 菜单id
+        in: body
+        name: id
+        required: true
+        schema:
+          type: number
+      - description: 父菜单id
+        in: body
+        name: parent_id
+        required: true
+        schema:
+          type: number
+      - description: 排序号
+        in: body
+        name: sort
+        required: true
+        schema:
+          type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 保存菜单排序
+      tags:
+      - 菜单
   /unbindTag2Draft:
     post:
       consumes:
