@@ -130,7 +130,7 @@ func (svc *Service) UnbindUser(userId, unbindUserId uint32) error {
 	return svc.dao.UnbindUser(userId, unbindUserId)
 }
 
-func (svc *Service) GetBindedUserList(userId uint32) ([]model.UserInfo, error) {
+func (svc *Service) GetBindedUserList(userId uint32) ([]model.BindedUserInfo, error) {
 	return svc.dao.QueryBindedUserList(userId)
 }
 
@@ -158,4 +158,8 @@ func (svc *Service) IsPrivacyUser(userId uint32) bool {
 	}
 
 	return false
+}
+
+func (svc *Service) SaveBindedUserSort(userId uint32, req []model.SaveBindedUserSort) error {
+	return svc.dao.SaveBindedUserSort(userId, req)
 }

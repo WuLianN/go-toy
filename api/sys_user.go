@@ -500,3 +500,45 @@ func (u *UserApi) UpdateUserSetting(c *gin.Context) {
 		},
 	})
 }
+
+// @Summary 保存关联账户列表排序
+// @Param body body []model.SaveBindedUserSort true "保存绑定用户排序的请求数据"
+// @Accept json
+// @Produce json
+// @Tags user
+// @Success 200 {string} string "ok"
+// @Router /saveBindedUserSort [post]
+func (u *UserApi) SaveBindedUserSort(c *gin.Context) {
+	requestBody := []model.SaveBindedUserSort{}
+
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &requestBody)
+	if !valid {
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	token := GetToken(c)
+	err, tokenInfo := GetTokenInfo(token)
+	if err != nil {
+		response.ToErrorResponse(err)
+		return
+	}
+	userId := tokenInfo.UserId
+
+	svc := service.New(c.Request.Context())
+	err1 := svc.SaveBindedUserSort(userId, requestBody)
+
+	if err1 != nil {
+		response.ToResponse(gin.H{
+			"code":    errcode.Fail.Code(),
+			"message": errcode.Fail.Msg(),
+		})
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+	})
+}

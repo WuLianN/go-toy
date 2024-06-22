@@ -116,9 +116,9 @@ func (d *Dao) UnbindUser(userId1, userId2 uint32) error {
 	return nil
 }
 
-func (d *Dao) QueryBindedUserList(userId uint32) ([]model.UserInfo, error) {
-	var list []model.UserInfo
-	err := d.engine.Table("user_binding").Select("user.avatar, user.user_name, user.id").Where("user_id_1 = ?", userId).Joins("left join user on user_binding.user_id_2 = user.id").Find(&list).Error
+func (d *Dao) QueryBindedUserList(userId uint32) ([]model.BindedUserInfo, error) {
+	var list []model.BindedUserInfo
+	err := d.engine.Table("user_binding").Select("user.avatar, user.user_name, user.id, user_binding.sort").Where("user_id_1 = ?", userId).Joins("left join user on user_binding.user_id_2 = user.id").Order("sort ASC").Find(&list).Error
 
 	if err != nil {
 		return list, err
@@ -175,4 +175,29 @@ func (d *Dao) IsAdmin(userId uint32) bool {
 	}
 
 	return false
+}
+
+func (d *Dao) SaveBindedUserSort(userId uint32, list []model.SaveBindedUserSort) error {
+	// Deduplicate list to avoid unnecessary iterations and potential errors.
+	uniqueList := make(map[uint32]uint8)
+	for _, v := range list {
+		uniqueList[v.Id] = v.Sort
+	}
+
+	return d.engine.Transaction(func(tx *gorm.DB) error {
+		for id, sort := range uniqueList {
+			result := tx.Table("user_binding").
+				Where("user_id_1 = ?", userId).
+				Where("user_id_2 = ?", id).
+				Updates(map[string]interface{}{"sort": sort})
+
+			if result.Error != nil {
+				return result.Error
+			}
+			if result.RowsAffected > 1 {
+				return errors.New("unexpected number of rows affected, data integrity issue?")
+			}
+		}
+		return nil
+	})
 }
