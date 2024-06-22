@@ -7,6 +7,7 @@ CREATE TABLE `user_binding`  (
   `user_id_1` int(0) NOT NULL,
   `user_id_2` int(0) NOT NULL,
   `created_at` datetime(6) NULL DEFAULT NULL,
+  `sort` int(0) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `unique_binding_user1`(`user_id_1`, `user_id_2`) USING BTREE,
   UNIQUE INDEX `unique_binding_user2`(`user_id_2`, `user_id_1`) USING BTREE
