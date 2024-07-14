@@ -13,7 +13,7 @@ import (
 type TagApi struct{}
 
 // @Summary 获取标签
-// @Param ids body number true "用户id"
+// @Param ids body string true "1个或多个标签id"
 // @Accept json
 // @Produce json
 // @Tags 标签
