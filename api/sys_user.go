@@ -449,7 +449,8 @@ func (u *UserApi) GetUserSetting(c *gin.Context) {
 		"message": errcode.Success.Msg(),
 		"type":    "success",
 		"result": gin.H{
-			"primary_color": userSetting.PrimaryColor,
+			"primary_color":  userSetting.PrimaryColor,
+			"login_designer": userSetting.LoginDesigner,
 		},
 	})
 }

@@ -140,8 +140,9 @@ func (d *Dao) QueryUserSetting(userId uint32) (model.UserSetting, error) {
 
 func (d *Dao) UpdateUserSetting(userSetting *model.UserSetting) (model.UserSetting, error) {
 	setting := model.UserSetting{
-		UserId:       userSetting.UserId,
-		PrimaryColor: userSetting.PrimaryColor,
+		UserId:        userSetting.UserId,
+		PrimaryColor:  userSetting.PrimaryColor,
+		LoginDesigner: userSetting.LoginDesigner,
 	}
 
 	var err error

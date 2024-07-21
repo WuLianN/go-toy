@@ -34,9 +34,10 @@ type SaveBindedUserSort struct {
 	Sort uint8  `json:"sort" binding:"required"`
 }
 type UserSetting struct {
-	Id           uint32 `json:"id"`
-	UserId       uint32 `json:"user_id"`
-	PrimaryColor string `json:"primary_color"`
+	Id            uint32 `json:"id"`
+	UserId        uint32 `json:"user_id"`
+	PrimaryColor  string `json:"primary_color"`
+	LoginDesigner string `json:"login_designer"`
 }
 
 func (u User) TableName() string {
