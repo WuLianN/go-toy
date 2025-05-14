@@ -168,7 +168,7 @@ func (b *BaseApi) GetRecommendList(c *gin.Context) {
 			bool := svc.IsPrivacyUser(userId)
 
 			if bool {
-				response.ToErrorResponse(errcode.UnauthorizedAuthNotExist)
+				response.ToErrorResponse(errcode.Unauthorized)
 				return
 			}
 		}
