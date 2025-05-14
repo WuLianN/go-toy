@@ -48,6 +48,7 @@ func SetupRouter() *gin.Engine {
 	{
 		InitBaseRouter(systemBaseGroup)
 		InitMenuRouter(systemBaseGroup)
+		InitBaseTagRouter(systemBaseGroup)
 	}
 
 	// 系统权限组

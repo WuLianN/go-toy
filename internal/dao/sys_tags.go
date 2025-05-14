@@ -145,6 +145,16 @@ func (d *Dao) QueryTags(userId uint32, names []string) ([]model.Tag, error) {
 	return list, nil
 }
 
+func (d *Dao) FuzzyQueryTags(userId uint32, name string) ([]model.Tag, error) {
+	var list []model.Tag
+	err := d.engine.Table("tags").Where("user_id = ? AND name like ?", userId, "%"+name+"%").Find(&list).Error
+
+	if err != nil {
+		return list, err
+	}
+	return list, nil
+}
+
 func (d *Dao) UpdateTag(tagId uint32, name string, color string, bgColor string) error {
 	tag := model.Tag{
 		Id:      tagId,

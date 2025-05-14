@@ -20,3 +20,10 @@ func InitTagRouter(Router *gin.RouterGroup) {
 		Router.POST("/unbindTag2Draft", tagApi.UnbindTag2Draft)
 	}
 }
+
+func InitBaseTagRouter(Router *gin.RouterGroup) {
+	tagApi := api.ApiGroupApp.TagApi
+	{
+		Router.POST("/searchTags", tagApi.SearchTags)
+	}
+}

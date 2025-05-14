@@ -119,6 +119,40 @@ func (t *TagApi) GetMenuTagList(c *gin.Context) {
 	})
 }
 
+// @Summary 模糊搜索标签
+// @Param name body string true "标签名称"
+// @Param user_id body number true "用户id"
+// @Accept json
+// @Produce json
+// @Tags 标签
+// @Success 200 {string} string "ok"
+// @Router /searchTags [post]
+func (t *TagApi) SearchTags(c *gin.Context) {
+	requestBody := service.CreateTagRequest{}
+	response := app.NewResponse(c)
+
+	valid, errs := app.BindAndValid(c, &requestBody)
+	if !valid {
+		global.Logger.Errorf(c, "app.BindAndValid errs: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	svc := service.New(c.Request.Context())
+	tagList, err := svc.FuzzyQueryTags(&requestBody)
+
+	if err != nil {
+		response.ToErrorResponse(errcode.Fail)
+		return
+	}
+
+	response.ToResponse(gin.H{
+		"code":    errcode.Success.Code(),
+		"message": errcode.Success.Msg(),
+		"result":  tagList,
+	})
+}
+
 // @Summary 创建标签
 // @Param name body string true "标签名称"
 // @Accept json

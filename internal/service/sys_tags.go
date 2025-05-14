@@ -66,6 +66,10 @@ func (svc *Service) QueryTag(req *CreateTagRequest) ([]model.Tag, error) {
 	return svc.dao.QueryTag(req.UserId, req.Name)
 }
 
+func (svc *Service) FuzzyQueryTags(req *CreateTagRequest) ([]model.Tag, error) {
+	return svc.dao.FuzzyQueryTags(req.UserId, req.Name)
+}
+
 func (svc *Service) UpdateTag(req *UpdateTagRequest) error {
 	return svc.dao.UpdateTag(req.Id, req.Name, req.Color, req.BgColor)
 }
