@@ -265,6 +265,7 @@ func (d *DraftApi) GetDraftList(c *gin.Context) {
 
 	param.UserId = tokenInfo.UserId
 	param.Status = convert.StrTo(c.Query("status")).MustUInt32()
+	param.Title = c.Query("title")
 
 	svc := service.New(c.Request.Context())
 	list, err2 := svc.GetDraftList(&param)

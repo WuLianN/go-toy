@@ -127,22 +127,20 @@ func (d *Dao) PublishDraft(id uint32) error {
 	return nil
 }
 
-func (d *Dao) QueryDraftList(userId uint32, status uint32, page int, pageSize int) ([]model.DraftWithTags, error) {
+func (d *Dao) QueryDraftList(userId uint32, status uint32, page int, pageSize int, title string) ([]model.DraftWithTags, error) {
 	var err error
 	var list []model.DraftWithTags
-	var draftStatus uint32 // 0全部 1已发布 2草稿
+	// status 0全部 1已发布 2草稿 3私密
 	offset := app.GetPageOffset(page, pageSize)
 
-	if status == 1 {
-		draftStatus = 1
+	if status == 0 {
+		err = d.engine.Table("drafts").Order("update_time DESC").Where("user_id = ? AND is_delete = ? AND title LIKE ?", userId, 0, "%"+title+"%").Limit(pageSize).Offset(offset).Find(&list).Error
+	} else if status == 1 {
+		err = d.engine.Table("drafts").Order("update_time DESC").Where("user_id = ? AND is_publish = ? AND is_delete = ? AND title LIKE ?", userId, 1, 0, "%"+title+"%").Limit(pageSize).Offset(offset).Find(&list).Error
 	} else if status == 2 {
-		draftStatus = 0
-	}
-
-	if status > 0 {
-		err = d.engine.Table("drafts").Order("update_time DESC").Where("user_id = ? AND is_publish = ? AND is_delete = ?", userId, draftStatus, 0).Limit(pageSize).Offset(offset).Find(&list).Error
-	} else {
-		err = d.engine.Table("drafts").Order("update_time DESC").Where("user_id = ? AND is_delete = ?", userId, 0).Limit(pageSize).Offset(offset).Find(&list).Error
+		err = d.engine.Table("drafts").Order("update_time DESC").Where("user_id = ? AND is_publish = ? AND is_delete = ? AND title LIKE ?", userId, 0, 0, "%"+title+"%").Limit(pageSize).Offset(offset).Find(&list).Error
+	} else if status == 3 {
+		err = d.engine.Table("drafts").Order("update_time DESC").Where("user_id = ? AND is_privacy = ? AND is_delete = ? AND title LIKE ?", userId, 1, 0, "%"+title+"%").Limit(pageSize).Offset(offset).Find(&list).Error
 	}
 
 	for index, item := range list {
