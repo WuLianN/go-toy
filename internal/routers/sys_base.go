@@ -18,5 +18,6 @@ func InitBaseRouter(Router *gin.RouterGroup) {
 		Router.GET("/getDraft", draftApi.GetDraft)
 		Router.GET("/getUserInfo", userApi.GetUserInfo)
 		Router.GET("/searchDrafts", draftApi.SearchDrafts)
+		Router.GET("/getUserSetting", userApi.GetUserSetting)
 	}
 }

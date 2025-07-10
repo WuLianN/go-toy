@@ -14,7 +14,6 @@ func InitUserRouter(Router *gin.RouterGroup) {
 		Router.POST("/unbindUser", userApi.UnbindUser)
 		Router.GET("/getBindedUserList", userApi.GetBindedUserList)
 		Router.POST("/changeAccount", userApi.ChangeAccount)
-		Router.GET("/getUserSetting", userApi.GetUserSetting)
 		Router.POST("/updateUserSetting", userApi.UpdateUserSetting)
 		Router.POST("/saveBindedUserSort", userApi.SaveBindedUserSort)
 	}
