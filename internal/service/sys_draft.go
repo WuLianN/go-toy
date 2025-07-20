@@ -31,12 +31,12 @@ type PublishRequest struct {
 }
 
 type DraftListRequest struct {
-	UserId   uint32      `json:"user_id"`
-	Page     int         `json:"page" default:"1"`
-	PageSize int         `json:"page_size" default:"10"`
-	Status   uint32      `json:"status"`
-	Title    string      `json:"title"`
-	Tags     []model.Tag `json:"tags"`
+	UserId   uint32 `json:"user_id"`
+	Page     int    `json:"page" default:"1"`
+	PageSize int    `json:"page_size" default:"10"`
+	Status   uint32 `json:"status"`
+	Title    string `json:"title"`
+	TagIds   string `json:"tag_ids"`
 }
 
 func (svc *Service) GetDraft(id uint32, userId uint32) (model.Draft, error) {
@@ -95,7 +95,7 @@ func (svc *Service) PublishDraft(request PublishRequest) error {
 }
 
 func (svc *Service) GetDraftList(request *DraftListRequest) ([]model.DraftWithTags, error) {
-	return svc.dao.QueryDraftList(request.UserId, request.Status, request.Page, request.PageSize, request.Title)
+	return svc.dao.QueryDraftList(request.UserId, request.Status, request.Page, request.PageSize, request.Title, request.TagIds)
 }
 
 func (svc *Service) SearchDrafts(userId uint32, keyword string, page int, pageSize int, isSelf uint8) ([]model.DraftWithTags, error) {

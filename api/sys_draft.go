@@ -236,9 +236,11 @@ func (d *DraftApi) PublishDraft(c *gin.Context) {
 	})
 }
 
-// @Summary 获取草稿箱
+// @Summary 获取草稿
 // @Param page query uint32 false "页数"
 // @Param page_size query uint32 false "页码"
+// @Param status query uint32 false "状态"
+// @Param tagIds query string false "标签ids"
 // @Tags 草稿
 // @Success 200 {string} string "ok"
 // @Router /getDraftList [get]
@@ -266,6 +268,7 @@ func (d *DraftApi) GetDraftList(c *gin.Context) {
 	param.UserId = tokenInfo.UserId
 	param.Status = convert.StrTo(c.Query("status")).MustUInt32()
 	param.Title = c.Query("title")
+	param.TagIds = c.Query("tag_ids")
 
 	svc := service.New(c.Request.Context())
 	list, err2 := svc.GetDraftList(&param)
