@@ -77,8 +77,8 @@ func (d *Dao) QueryRecommendList(userId uint32, page int, pageSize int, tagIds [
 				drafts.user_id as user_id,
 				GROUP_CONCAT(tags.id) as tag_ids,
 				GROUP_CONCAT(tags.name) as tag_names,
-				GROUP_CONCAT(tags.bg_color) as tag_bg_colors,
-				GROUP_CONCAT(tags.color) as tag_colors`).
+				GROUP_CONCAT(tags.bg_color SEPARATOR '|') as tag_bg_colors,
+				GROUP_CONCAT(tags.color SEPARATOR '|') as tag_colors`).
 			Joins("LEFT JOIN draft_tags ON drafts.id = draft_tags.draft_id").
 			Joins("LEFT JOIN tags ON tags.id = draft_tags.tag_id").
 			Where("drafts.id IN (?)", draftIds).
@@ -106,8 +106,8 @@ func (d *Dao) QueryRecommendList(userId uint32, page int, pageSize int, tagIds [
 
 			ids := strings.Split(item.TagIds, ",")
 			names := strings.Split(item.TagNames, ",")
-			bgColors := strings.Split(item.TagBgColors, ",")
-			colors := strings.Split(item.TagColors, ",")
+			bgColors := strings.Split(item.TagBgColors, "|")
+			colors := strings.Split(item.TagColors, "|")
 
 			for i := 0; i < len(names); i++ {
 				if i >= len(ids) {
