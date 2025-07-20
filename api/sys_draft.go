@@ -239,6 +239,7 @@ func (d *DraftApi) PublishDraft(c *gin.Context) {
 // @Summary 获取草稿
 // @Param page query uint32 false "页数"
 // @Param page_size query uint32 false "页码"
+// @Param title query string false "标题"
 // @Param status query uint32 false "状态"
 // @Param tagIds query string false "标签ids"
 // @Tags 草稿

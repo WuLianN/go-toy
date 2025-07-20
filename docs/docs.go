@@ -480,7 +480,7 @@ const docTemplate = `{
                 "tags": [
                     "草稿"
                 ],
-                "summary": "获取草稿箱",
+                "summary": "获取草稿",
                 "parameters": [
                     {
                         "type": "integer",
@@ -492,6 +492,24 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "页码",
                         "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "标题",
+                        "name": "title",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "状态",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "标签ids",
+                        "name": "tagIds",
                         "in": "query"
                     }
                 ],
@@ -652,12 +670,12 @@ const docTemplate = `{
                 "summary": "获取标签",
                 "parameters": [
                     {
-                        "description": "用户id",
+                        "description": "1个或多个标签id",
                         "name": "ids",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "number"
+                            "type": "string"
                         }
                     }
                 ],
@@ -980,6 +998,48 @@ const docTemplate = `{
                     {
                         "description": "排序号",
                         "name": "sort",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/searchTags": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "标签"
+                ],
+                "summary": "模糊搜索标签",
+                "parameters": [
+                    {
+                        "description": "标签名称",
+                        "name": "name",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "用户id",
+                        "name": "user_id",
                         "in": "body",
                         "required": true,
                         "schema": {

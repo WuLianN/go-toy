@@ -333,12 +333,24 @@ paths:
         in: query
         name: page_size
         type: integer
+      - description: 标题
+        in: query
+        name: title
+        type: string
+      - description: 状态
+        in: query
+        name: status
+        type: integer
+      - description: 标签ids
+        in: query
+        name: tagIds
+        type: string
       responses:
         "200":
           description: ok
           schema:
             type: string
-      summary: 获取草稿箱
+      summary: 获取草稿
       tags:
       - 草稿
   /getDraftTagList:
@@ -431,12 +443,12 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: 用户id
+      - description: 1个或多个标签id
         in: body
         name: ids
         required: true
         schema:
-          type: number
+          type: string
       produces:
       - application/json
       responses:
@@ -655,6 +667,33 @@ paths:
       summary: 保存菜单排序
       tags:
       - 菜单
+  /searchTags:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 标签名称
+        in: body
+        name: name
+        required: true
+        schema:
+          type: string
+      - description: 用户id
+        in: body
+        name: user_id
+        required: true
+        schema:
+          type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 模糊搜索标签
+      tags:
+      - 标签
   /unbindTag2Draft:
     post:
       consumes:
