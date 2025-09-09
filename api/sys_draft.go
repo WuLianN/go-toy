@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/WuLianN/go-toy/global"
+	"github.com/WuLianN/go-toy/internal/model"
 	"github.com/WuLianN/go-toy/internal/service"
 	"github.com/WuLianN/go-toy/pkg/app"
 	"github.com/WuLianN/go-toy/pkg/convert"
@@ -295,6 +296,7 @@ func (d *DraftApi) SearchDrafts(c *gin.Context) {
 	pageStr := c.Query("page")
 	pageSizeStr := c.Query("page_size")
 	userIdStr := c.Query("user_id")
+	searchType := c.Query("search_type")
 
 	if pageStr == "" {
 		pageStr = "1"
@@ -336,7 +338,17 @@ func (d *DraftApi) SearchDrafts(c *gin.Context) {
 	page := convert.StrTo(pageStr).MustInt()
 	pageSize := convert.StrTo(pageSizeStr).MustInt()
 
-	list, err := svc.SearchDrafts(userId, keyword, page, pageSize, isSelf)
+	searchDraft := &model.SearchDraft{}
+	searchDraft.UserId = userId
+	searchDraft.Keyword = keyword
+	searchDraft.Page = page
+	searchDraft.PageSize = pageSize
+	searchDraft.IsSelf = isSelf
+	if searchType != "" {
+		searchDraft.SerachType = uint8(convert.StrTo(searchType).MustInt())
+	}
+	
+	list, err := svc.SearchDrafts(searchDraft)
 
 	if err != nil {
 		response.ToErrorResponse(errcode.Fail)

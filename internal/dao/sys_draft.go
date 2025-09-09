@@ -216,20 +216,44 @@ func (d *Dao) QueryDraftList(userId uint32, status uint32, page int, pageSize in
 	return list, nil
 }
 
-func (d *Dao) QuerySearchDraftList(userId uint32, keyword string, page int, pageSize int, isSelf uint8) ([]model.DraftWithTags, error) {
-	offset := app.GetPageOffset(page, pageSize)
+func (d *Dao) QuerySearchDraftList(search *model.SearchDraft) ([]model.DraftWithTags, error) {
+	offset := app.GetPageOffset(search.Page, search.PageSize)
 	var list []model.DraftWithTags
 	var err error
 
-	if isSelf == 1 {
-		err = d.engine.Table("drafts").Where("user_id = ? AND title LIKE ? AND is_publish = 1 AND is_delete = 0", userId, "%"+keyword+"%").Limit(pageSize).Offset(offset).Find(&list).Error
+	if search.IsSelf == 1 {
+		if search.SerachType == 1 {
+			err = d.engine.Table("drafts").Where("user_id = ? AND title LIKE ? AND is_publish = 1 AND is_delete = 0", search.UserId, "%"+search.Keyword+"%").Limit(search.PageSize).Offset(offset).Find(&list).Error
+		} else if search.SerachType == 2 {
+			// 关联账号搜索
+			var bingList []uint32
+			err = d.engine.Table("user_binding").Where("user_id_1 = ?", search.UserId).Select("user_id_2").Find(&bingList).Error
+			if err != nil {
+				return list, err
+			}
+
+			// 添加当前用户ID到查询列表中
+			bingList = append(bingList, uint32(search.UserId))
+
+			err = d.engine.Table("drafts").Where("user_id IN ? AND title LIKE ? AND is_publish = 1 AND is_delete = 0", bingList, "%"+search.Keyword+"%").Limit(search.PageSize).Offset(offset).Find(&list).Error
+			if err != nil {
+				return list, err
+			}
+		}
+
 	} else {
-		err = d.engine.Table("drafts").Where("user_id = ? AND title LIKE ? AND is_publish = 1 AND is_delete = 0 AND is_privacy = ?", userId, "%"+keyword+"%", 0).Limit(pageSize).Offset(offset).Find(&list).Error
+		err = d.engine.Table("drafts").Where("user_id = ? AND title LIKE ? AND is_publish = 1 AND is_delete = 0 AND is_privacy = ?", search.UserId, "%"+search.Keyword+"%", 0).Limit(search.PageSize).Offset(offset).Find(&list).Error
+		if err != nil {
+			return list, err
+		}
 	}
 
 	for index, item := range list {
 		var tags []model.Tag
 		err = d.engine.Table("draft_tags").Select("tags.name AS name, tags.Id AS id, tags.user_id, tags.bg_color, tags.color").Where("draft_tags.draft_id = ?", item.Id).Joins("left join tags on draft_tags.tag_id = tags.id").Find(&tags).Error
+		if err != nil {
+			return list, err
+		}
 		list[index].Tags = append(list[index].Tags, tags...)
 	}
 

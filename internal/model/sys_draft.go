@@ -16,3 +16,12 @@ type Draft struct {
 type CreateDraftResponse struct {
 	Draft_id uint32 `json:"draft_id" example:"1"`
 }
+
+type SearchDraft struct {
+	UserId     uint32 `json:"user_id"`
+	Keyword    string `json:"keyword"`
+	Page       int    `json:"page"`
+	PageSize   int    `json:"page_size"`
+	IsSelf     uint8  `json:"is_self"`
+	SerachType uint8  `json:"serach_type"`
+}

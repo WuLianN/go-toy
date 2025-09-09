@@ -99,6 +99,6 @@ func (svc *Service) GetDraftList(request *DraftListRequest) ([]model.DraftWithTa
 	return svc.dao.QueryDraftList(request.UserId, request.Status, request.Page, request.PageSize, request.Title, request.TagIds)
 }
 
-func (svc *Service) SearchDrafts(userId uint32, keyword string, page int, pageSize int, isSelf uint8) ([]model.DraftWithTags, error) {
-	return svc.dao.QuerySearchDraftList(userId, keyword, page, pageSize, isSelf)
+func (svc *Service) SearchDrafts(search *model.SearchDraft) ([]model.DraftWithTags, error) {
+	return svc.dao.QuerySearchDraftList(search)
 }
