@@ -28,7 +28,7 @@ type DeleteRequest struct {
 
 type PublishRequest struct {
 	Id        uint32 `json:"id" binding:"required"`
-	IsPrivacy uint8  `json:"is_privacy" binding:"required"`
+	IsPrivacy uint8  `json:"is_privacy"`
 }
 
 type DraftListRequest struct {
