@@ -120,8 +120,8 @@ func (d *Dao) DeleteDraft(id uint32) error {
 	return nil
 }
 
-func (d *Dao) PublishDraft(id uint32) error {
-	err := d.engine.Table("drafts").Where("id = ?", id).Update("is_publish", 1).Error
+func (d *Dao) PublishDraft(id uint32, isPrivacy uint8) error {
+	err := d.engine.Table("drafts").Where("id = ?", id).Update("is_privacy", isPrivacy).Error
 	if err != nil {
 		return err
 	}

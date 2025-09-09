@@ -27,7 +27,8 @@ type DeleteRequest struct {
 }
 
 type PublishRequest struct {
-	Id uint32 `json:"id" binding:"required"`
+	Id        uint32 `json:"id" binding:"required"`
+	IsPrivacy uint8  `json:"is_privacy" binding:"required"`
 }
 
 type DraftListRequest struct {
@@ -91,7 +92,7 @@ func (svc *Service) DeleteDraft(request DeleteRequest) error {
 }
 
 func (svc *Service) PublishDraft(request PublishRequest) error {
-	return svc.dao.PublishDraft(request.Id)
+	return svc.dao.PublishDraft(request.Id, request.IsPrivacy)
 }
 
 func (svc *Service) GetDraftList(request *DraftListRequest) ([]model.DraftWithTags, error) {
