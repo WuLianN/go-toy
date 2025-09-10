@@ -24,6 +24,16 @@ func (d *Dao) QueryPublishDraft(id uint32, userId uint32) (model.Draft, error) {
 		return draft, nil
 	}
 
+	// 非用户自己的草稿，userId关联draft.UserId，允许访问
+	if userId != 0 {
+		var binding model.UserBinding
+		err = d.engine.Table("user_binding").Where("user_id_1 = ? AND user_id_2 = ?", userId, draft.UserId).First(&binding).Error
+
+		if err == nil {
+			return draft, nil
+		}
+	}
+
 	// 非用户自己的草稿，并且是私密文章，抛错
 	if draft.IsPrivacy == 1 {
 		return draft, errors.New("私密文章")
